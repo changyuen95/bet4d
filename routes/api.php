@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\ForgotPasswordController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,5 +20,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::namespace('API')->group(function () {
-    Route::get("login", 'LoginController@index');
+    Route::post("login", LoginController::class);
+    Route::post("register", RegisterController::class);
 });
+
+Route::namespace('API')->middleware(['auth:sanctum'])->group(function () {
+    // Route::get('testsanctum', ForgotPasswordController::class);
+});
+
