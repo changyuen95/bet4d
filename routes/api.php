@@ -28,6 +28,7 @@ Route::namespace('API')->group(function () {
 
 Route::namespace('API')->middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', 'LoginController@logout');
+    Route::get('getOutletListing','OutletController@index');
 });
 
 Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::NORMAL_USER])->group(function () {
