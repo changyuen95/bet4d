@@ -44,4 +44,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    const TYPE = [
+        'Normal_User' => 0,
+        'Member' => 1,
+        'Staff' => 2,
+        'Admin' => 3
+    ];
 }

@@ -31,7 +31,19 @@ class LoginController extends Controller
             $user->access_token = $user->createToken('Mobile App', ['access:api'])->plainTextToken;
             return $user;
         } else {
-            return response(['message' => 'The provided credentials is incorrect.'], 422);
+            return response(['message' => trans('auth.failed')], 422);
         }
+    }
+
+    public function logout(Request $request)
+    {
+        $user = $request->user();
+
+        // Revoke all of the user's tokens.
+        $user->tokens->each(function ($token, $key) {
+            $token->delete();
+        });
+
+        return response()->json(['message' => trans('messages.logout_successfully')], 200);
     }
 }

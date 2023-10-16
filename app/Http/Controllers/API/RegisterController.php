@@ -35,7 +35,7 @@ class RegisterController extends Controller
         $user->password = bcrypt($request->get('password'));
         $user->save();
 
-        return response(['message' => 'Register Successfully !'], 200);
+        return response(['message' =>  trans('messages.register_successfully') ], 200);
 
         // $user->sendEmailVerificationNotification();
     }
