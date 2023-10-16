@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Validator;
 use Auth;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 
 class LoginController extends Controller
 {
@@ -28,8 +29,16 @@ class LoginController extends Controller
             //     return response(['message' => 'Please verify your email'], 422);
             // }
 
-            $user->access_token = $user->createToken('Mobile App', ['access:api'])->plainTextToken;
-            return $user;
+            if($user->status === User::STATUS['Active']){
+                $user->access_token = $user->createToken('Mobile App', ['access:api'])->plainTextToken;
+                return $user;
+            }elseif($user->status === User::STATUS['Inactive']){
+                return response(['message' => 'Account is Inactive'], 422);
+            }elseif($user->status === User::STATUS['Disabled']){
+                return response(['message' => 'Account is disabled'], 422);
+            }else{
+                return response(['message' => trans('auth.failed')], 422);
+            }
         } else {
             return response(['message' => trans('auth.failed')], 422);
         }

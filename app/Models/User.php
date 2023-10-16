@@ -45,10 +45,9 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    const TYPE = [
-        'Normal_User' => 0,
-        'Member' => 1,
-        'Staff' => 2,
-        'Admin' => 3
+    const STATUS = [
+        'Active' => 1,
+        'Inactive' => 2,
+        'Disabled' => 3,
     ];
 }
