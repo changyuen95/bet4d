@@ -15,7 +15,7 @@ class CheckUserType
      */
     public function handle(Request $request, Closure $next, $userType): Response
     {
-        if ($request->user() && $request->user()->user_type === intVal($userType)) {
+        if ($request->user() && $request->user()->hasRole($userType)) {
             return $next($request);
         }
     

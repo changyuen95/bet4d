@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\ForgotPasswordController;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -29,18 +30,18 @@ Route::namespace('API')->middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', 'LoginController@logout');
 });
 
-Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.User::TYPE['Normal_User']])->group(function () {
+Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::NORMAL_USER])->group(function () {
     Route::get('forgotpassword', ForgotPasswordController::class);
 });
 
-Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.User::TYPE['Member']])->group(function () {
+Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::MEMBER])->group(function () {
     // Routes for Member users
 });
 
-Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.User::TYPE['Staff']])->group(function () {
-    // Routes for Staff users
+Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::OPERATOR])->group(function () {
+    // Routes for Operator users
 });
 
-Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.User::TYPE['Admin']])->group(function () {
-    // Routes for admin users
+Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::SUPER_ADMIN])->group(function () {
+    // Routes for Super Admin users
 });
