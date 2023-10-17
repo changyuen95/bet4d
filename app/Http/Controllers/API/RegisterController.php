@@ -19,7 +19,7 @@ class RegisterController extends Controller
             $validator = Validator::make($request->all(), [
                 'name' => ['required'],
                 'username' => ['required', Rule::unique('users')->whereNull('deleted_at')],
-                'phone_no' => ['required','numeric'],
+                'phone_e164' => ['required','phone',Rule::unique('users')->whereNull('deleted_at')],
                 'email' => ['required','email',Rule::unique('users')->whereNull('deleted_at')],
                 'password' => 'required|min:6|confirmed',
                 'password_confirmation' => 'min:6'
@@ -35,7 +35,7 @@ class RegisterController extends Controller
                 return response(['message' => 'This email has been taken'], 422);
             }
     
-            $user->fill($request->only('name', 'email', 'username', 'phone_no'));
+            $user->fill($request->only('name', 'email', 'username', 'phone_e164'));
             $user->password = bcrypt($request->get('password'));
             $user->save();
             

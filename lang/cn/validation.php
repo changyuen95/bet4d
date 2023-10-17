@@ -151,7 +151,7 @@ return [
     'url' => ':attribute 必须是一个有效的 URL。',
     'ulid' => ':attribute 必须是一个有效的 ULID。',
     'uuid' => ':attribute 必须是一个有效的 UUID。',
-    
+    'phone' => ':attribute 必须是一个有效的数字。',
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
