@@ -46,6 +46,7 @@ class RegisterController extends Controller
             // $user->sendEmailVerificationNotification();
         }catch (Exception $e) {
             DB::rollback();
+            dd($e);
             return response(['message' =>  trans('messages.register_failed') ], 422);
         }
     
