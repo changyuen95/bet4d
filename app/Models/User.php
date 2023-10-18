@@ -51,4 +51,14 @@ class User extends Authenticatable
         'Inactive' => 2,
         'Disabled' => 3,
     ];
+
+    public function tacs()
+    {
+        return $this->morphMany(Tac::class, 'ownerable');
+    }
+
+    public function routeNotificationForVonage($notification)
+    {
+        return $this->phone_e164;
+    }
 }

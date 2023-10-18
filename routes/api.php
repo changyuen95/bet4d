@@ -24,11 +24,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::namespace('API')->group(function () {
     Route::post("login", LoginController::class);
     Route::post("register", RegisterController::class);
+    Route::post('forgotPassword',ForgotPasswordController::class);
+    Route::post('resetPassword','ForgotPasswordController@reset');
+    Route::post('verifyTac', VerifyTacController::class);
+    Route::post('registerTac','RegisterController@registerTac');
+
 });
 
 Route::namespace('API')->middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', 'LoginController@logout');
     Route::get('getOutletListing','OutletController@index');
+
 });
 
 Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::NORMAL_USER])->group(function () {
