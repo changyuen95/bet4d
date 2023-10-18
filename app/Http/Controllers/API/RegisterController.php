@@ -42,6 +42,10 @@ class RegisterController extends Controller
             $user->password = bcrypt($request->get('password'));
             $user->save();
             
+            $user->credit()->create([
+                'credit' => 0
+            ]);
+
             $user->assignRole('normal_user');
             DB::commit();
             return response(['message' =>  trans('messages.register_successfully') ], 200);
