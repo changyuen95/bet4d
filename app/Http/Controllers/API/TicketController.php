@@ -206,6 +206,22 @@ class TicketController extends Controller
             return response(['message' =>  trans('messages.invalid_ticket') ], 422);
         }
 
+        if($request->status == Ticket::STATUS['TICKET_CANCELLED']){
+            if($ticket->status == Ticket::STATUS['TICKET_COMPLETED'] || $ticket->status == Ticket::STATUS['TICKET_IN_PROGRESS']){
+                return response(['message' =>  trans('messages.unable_to_cancel_when_ticket_status_is_completed_or_in_progress') ], 422);
+            }
+        }
+
+        if($request->status == Ticket::STATUS['TICKET_IMCOMPLETED'] || $request->status == Ticket::STATUS['TICKET_REQUESTED']){
+            if($ticket->status == Ticket::STATUS['TICKET_COMPLETED'] || $ticket->status == Ticket::STATUS['TICKET_IN_PROGRESS']){
+                return response(['message' =>  trans('messages.unable_change_to_imcomplete_or_requested_status_when_ticket_status_is_completed_or_in_progress') ], 422);
+            }
+        }
+
+        if($ticket->status == Ticket::STATUS['TICKET_COMPLETED']){
+            return response(['message' =>  trans('messages.unable_to_change_status_when_ticket_is_completed') ], 422);
+        }
+
         $ticket->status = $request->status;
         $ticket->save();
 

@@ -35,4 +35,7 @@ return [
     'failed_to_submit_ticket_request' => 'Failed to submit ticket request.',
     'invalid_ticket' => 'Invalid ticket',
     'update_status_successfully' => 'Update status successfully.',
+    'unable_to_cancel_when_ticket_status_is_completed_or_in_progress' => 'Unable to cancel when ticket status is completed or in progress',
+    'unable_change_to_imcomplete_or_requested_status_when_ticket_status_is_completed_or_in_progress' => 'Unable change status to imcomplete or requested when ticket status is completed or in progress',
+    'unable_to_change_status_when_ticket_is_completed' => 'Unable to change ticket status when ticket is completed',
 ];

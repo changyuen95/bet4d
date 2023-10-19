@@ -34,5 +34,8 @@ return [
     'submit_ticket_request_successfully' => '成功提交票请求。',
     'failed_to_submit_ticket_request' => '提交票请求失败。',
     'invalid_ticket' => '票无效',
-    'update_status_successfully' => '成功更新状态。'
+    'update_status_successfully' => '成功更新状态。',
+    'unable_to_cancel_when_ticket_status_is_completed_or_in_progress' => '当票务状态为已完成或进行中时无法取消',
+    'unable_change_to_imcomplete_or_requested_status_when_ticket_status_is_completed_or_in_progress' => '当票务状态为已完成或进行中时无法更改为不完整或已请求的状态',
+    'unable_to_change_status_when_ticket_is_completed' => '当票务已完成时无法更改票务状态',
 ];
