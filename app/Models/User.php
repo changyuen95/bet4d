@@ -61,4 +61,19 @@ class User extends Authenticatable
     {
         return $this->phone_e164;
     }
+
+    public function credit()
+    {
+        return $this->hasOne(UserCredit::class, 'user_id');
+    }
+
+    public function creditTransaction()
+    {
+        return $this->hasMany(CreditTransaction::class, 'user_id');
+    }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class, 'user_id');
+    }
 }

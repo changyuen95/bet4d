@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\OutletResource;
-use App\Models\Outlet;
+use App\Http\Resources\GameResource;
+use App\Models\Game;
 use Illuminate\Http\Request;
 use Validator;
-class OutletController extends Controller
+use Illuminate\Validation\Rule;
+
+class GameController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,15 +18,25 @@ class OutletController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'platform_id' => ['required'],
+            'status' => ['nullable',Rule::in(array_values(Game::STATUS))],
         ]);
 
-        $query = Outlet::query();
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->first()], 422);
+        }
+        $query = Game::query();
+
         $query->where('platform_id',$request->platform_id);
 
-        $outlets = $query->get();
+        if($request->status != ''){
+            $query->where('status','=',$request->status);
+        }
+
+        $games = $query->get();
+
         return response([
             'success' => true,
-            'outlet' =>  OutletResource::collection($outlets)
+            'games' =>  GameResource::collection($games)
         ], 200);
     }
 

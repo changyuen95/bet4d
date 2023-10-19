@@ -7,18 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class CreditTransaction extends Model
+class Game extends Model
 {
-    use HasFactory, HasUlids, SoftDeletes;
+    use HasFactory, SoftDeletes, HasUlids;
     protected $guarded = ['id'];
 
-    const TYPE = [
-        'Increase' => 1,
-        'Decrease' => 2
+    const STATUS = [
+        'Active' => 1,
+        'Inactive' => 0
     ];
-
-    public function target()
-    {
-        return $this->morphTo();
-    }
 }

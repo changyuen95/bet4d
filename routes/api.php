@@ -34,7 +34,12 @@ Route::namespace('API')->group(function () {
 Route::namespace('API')->middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', 'LoginController@logout');
     Route::get('getOutletListing','OutletController@index');
+    Route::get('getPlatformListing','PlatformController@index');
+    Route::get('getGameListing','GameController@index');
+    Route::post('ticketRequest','TicketController@store');
+    Route::post('ticket/updateTicketStatus','TicketController@updateTicketStatus');
 
+    
 });
 
 Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::NORMAL_USER])->group(function () {

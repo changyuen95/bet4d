@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\OutletResource;
-use App\Models\Outlet;
+use App\Http\Resources\PlatformResource;
+use App\Models\Platform;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Validator;
-class OutletController extends Controller
+class PlatformController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,16 +16,24 @@ class OutletController extends Controller
     public function index(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'platform_id' => ['required'],
+            // 'user_id' => ['required'],
+            'status' => ['nullable',Rule::in(array_values(Platform::STATUS))],
         ]);
 
-        $query = Outlet::query();
-        $query->where('platform_id',$request->platform_id);
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->first()], 422);
+        }
+        $query = Platform::query();
 
-        $outlets = $query->get();
+        if($request->status != ''){
+            $query->where('status','=',$request->status);
+        }
+
+        $platforms = $query->get();
+
         return response([
             'success' => true,
-            'outlet' =>  OutletResource::collection($outlets)
+            'platform' =>  PlatformResource::collection($platforms)
         ], 200);
     }
 
