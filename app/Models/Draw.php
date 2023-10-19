@@ -15,15 +15,15 @@ class Draw extends Model
     protected $appends = ['full_draw_no'];
     public static function getDrawData($platformId){
         $platform = Platform::find($platformId);
-        // $todayDateString = "21/10/2023 19:00:00";
+        // $todayDateString = "04/11/2023 19:00:00";
         $todayDateString = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now()->toDateTimeString())->format('d/m/Y H:i:s');
         $todayDateTime = Carbon::createFromFormat('d/m/Y H:i:s', $todayDateString);
-        $dateAddHour = $todayDateTime->addHour();
+        // $dateAddHour = $todayDateTime;
         $draw = $platform->draws()
-                        ->where('expired_at', '>', $dateAddHour)
+                        ->where('expired_at', '>', $todayDateTime)
                         ->orderBy('expired_at', 'ASC')
                         ->first();
-                    
+
         if($draw){
             return $draw;
         }else{
@@ -42,54 +42,20 @@ class Draw extends Model
             $nextSaturday = $currentDate1->next(Carbon::SATURDAY);
             $nextWednesday = $currentDate2->next(Carbon::WEDNESDAY);
             $todayDate = Carbon::now();
-            $nextWednesday->setTime(20, 0, 0);
-            $nextSaturday->setTime(20, 0, 0);
+            $nextWednesday->setTime(19, 0, 0);
+            $nextSaturday->setTime(19, 0, 0);
             if ($nextWednesday->lt($nextSaturday)) {
-                //The next upcoming day is Wednesday;
-                if($todayDate->isSaturday()){
-                    if($todayDate->hour >= 19){
-                        $draw = $platform->draws()->create([
-                            'draw_no' => $drawNo,
-                            'year'  => $lastTwoDigitsOfYear,
-                            'expired_at' => $nextWednesday
-                        ]);
-                    }else{
-                        $draw = $platform->draws()->create([
-                            'draw_no' => $drawNo,
-                            'year'  => $lastTwoDigitsOfYear,
-                            'expired_at' => Carbon::createFromFormat('d/m/Y H:i:s', $todayDateString)->setTime(20, 0, 0)
-                        ]);
-                    }
-                }else{
-                    $draw = $platform->draws()->create([
-                        'draw_no' => $drawNo,
-                        'year'  => $lastTwoDigitsOfYear,
-                        'expired_at' => $nextWednesday
-                    ]);
-                }
+                $draw = $platform->draws()->create([
+                    'draw_no' => $drawNo,
+                    'year'  => $lastTwoDigitsOfYear,
+                    'expired_at' => $nextWednesday
+                ]);
             } else {
-                //The next upcoming day is Saturday;
-                if($todayDate->isWednesday()){
-                    if($todayDate->hour >= 19){
-                        $draw = $platform->draws()->create([
-                            'draw_no' => $drawNo,
-                            'year'  => $lastTwoDigitsOfYear,
-                            'expired_at' => $nextSaturday
-                        ]);
-                    }else{
-                        $draw = $platform->draws()->create([
-                            'draw_no' => $drawNo,
-                            'year'  => $lastTwoDigitsOfYear,
-                            'expired_at' => Carbon::createFromFormat('d/m/Y H:i:s', $todayDateString)->setTime(20, 0, 0)
-                        ]);
-                    }
-                }else{
-                    $draw = $platform->draws()->create([
-                        'draw_no' => $drawNo,
-                        'year'  => $lastTwoDigitsOfYear,
-                        'expired_at' => $nextSaturday
-                    ]);
-                }
+                $draw = $platform->draws()->create([
+                    'draw_no' => $drawNo,
+                    'year'  => $lastTwoDigitsOfYear,
+                    'expired_at' => $nextSaturday
+                ]);
             }
 
             return $draw;
