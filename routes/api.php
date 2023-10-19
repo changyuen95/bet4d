@@ -38,6 +38,7 @@ Route::namespace('API')->middleware(['auth:sanctum'])->group(function () {
     Route::get('getGameListing','GameController@index');
     Route::post('ticketRequest','TicketController@store');
     Route::post('ticket/updateTicketStatus','TicketController@updateTicketStatus');
+    Route::get('getUserTicketListing','TicketController@index');
 
     
 });

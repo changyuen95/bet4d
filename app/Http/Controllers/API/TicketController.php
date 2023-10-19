@@ -22,9 +22,18 @@ class TicketController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $query = Auth::user()->tickets();
+        if($request->status != ''){
+            $query->where('status',$request->status);
+        }
+
+        $tickets = $query->get();
+        return response([
+            'success' => true,
+            'outlet' =>  TicketResource::collection($tickets)
+        ], 200);
     }
 
     /**

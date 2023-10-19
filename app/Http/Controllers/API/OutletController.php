@@ -18,6 +18,10 @@ class OutletController extends Controller
             'platform_id' => ['required'],
         ]);
 
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->first()], 422);
+        }
+        
         $query = Outlet::query();
         $query->where('platform_id',$request->platform_id);
 
