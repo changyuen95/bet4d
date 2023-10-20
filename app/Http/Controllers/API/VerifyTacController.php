@@ -12,8 +12,8 @@ class VerifyTacController extends Controller
 {
     public function __invoke(Request $request)
     {
-         // phone, tac,expired_at
-         $validator = Validator::make($request->all(), [
+        // phone, tac,expired_at
+        $validator = Validator::make($request->all(), [
             'phone_e164' => 'required|phone',
             'tac' => 'required'
         ]);

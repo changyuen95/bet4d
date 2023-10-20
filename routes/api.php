@@ -23,28 +23,52 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::namespace('API')->group(function () {
     Route::post("login", LoginController::class);
-    Route::post("register", RegisterController::class);
-    Route::post('forgotPassword',ForgotPasswordController::class);
-    Route::post('resetPassword','ForgotPasswordController@reset');
-    Route::post('verifyTac', VerifyTacController::class);
-    Route::post('registerTac','RegisterController@registerTac');
 
-});
+    Route::prefix('tac')->group(function () {
+        Route::post('verify', VerifyTacController::class);
+    });
 
-Route::namespace('API')->middleware(['auth:sanctum'])->group(function () {
-    Route::post('logout', 'LoginController@logout');
-    Route::get('getOutletListing','OutletController@index');
-    Route::get('getPlatformListing','PlatformController@index');
-    Route::get('getGameListing','GameController@index');
-    Route::post('ticketRequest','TicketController@store');
-    Route::post('ticket/updateTicketStatus','TicketController@updateTicketStatus');
-    Route::get('getUserTicketListing','TicketController@index');
-
+    Route::prefix('register')->group(function () {
+        Route::post('', RegisterController::class);
+        Route::post('send-tac','RegisterController@registerTac');
+    });
     
+    Route::prefix('forgot-password')->middleware(['throttle:10,60'])->group(function () {
+        Route::post('', ForgotPasswordController::class);
+        Route::post('reset', [ForgotPasswordController::class, 'reset']);
+    });
+
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::post('logout', 'LoginController@logout');
+
+        Route::prefix('outlet')->group(function () {
+            Route::get('','OutletController@index');
+        });
+
+        Route::prefix('platform')->group(function () {
+            Route::get('','PlatformController@index');
+        });
+
+        Route::prefix('game')->group(function () {
+            Route::get('','GameController@index');
+        });
+
+        Route::prefix('ticket')->group(function () {
+            Route::post('','TicketController@store');
+            Route::post('update-status','TicketController@updateTicketStatus');
+
+        });
+
+        Route::prefix('me')->group(function () {
+            Route::get('ticket','TicketController@index');
+        });
+
+    });
 });
+
+
 
 Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::NORMAL_USER])->group(function () {
-    Route::get('forgotpassword', ForgotPasswordController::class);
 });
 
 Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::MEMBER])->group(function () {

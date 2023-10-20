@@ -32,7 +32,7 @@ class TicketController extends Controller
         $tickets = $query->get();
         return response([
             'success' => true,
-            'outlet' =>  TicketResource::collection($tickets)
+            'tickets' =>  TicketResource::collection($tickets)
         ], 200);
     }
 
