@@ -43,8 +43,10 @@ class ForgotPasswordController extends Controller
 
             // $tacNo = $this->sendTac($request->phone_e164);
             $tacNo = mt_rand(100000, 999999);
-            $user->notify(new TacNotification($tacNo));
-            
+            if(env('APP_ENV') == 'production'){
+                $user->notify(new TacNotification($tacNo));
+            }
+
             $currentDatetime = Carbon::now();
             $expired_at = $currentDatetime->addMinutes(2);
             $user->tacs()->create([
@@ -55,8 +57,12 @@ class ForgotPasswordController extends Controller
             ]);
             
             DB::commit();
+            $response = ['message' =>  trans('messages.send_tac_successfully') ];
+            if(env('APP_ENV') != 'production'){
+                $response['tac'] = $tacNo;
+            }
 
-            return response(['message' =>  trans('messages.send_tac_successfully') ], 200);
+            return response($response, 200);
         }catch (Exception $e) {
             DB::rollback();
             return response(['message' =>  trans('messages.send_tac_failed') ], 422);
