@@ -41,17 +41,19 @@ Route::namespace('API')->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('logout', 'LoginController@logout');
 
-        Route::prefix('outlet')->group(function () {
-            Route::get('','OutletController@index');
-        });
-
         Route::prefix('platform')->group(function () {
             Route::get('','PlatformController@index');
+
+            Route::prefix('{platform_id}/game')->group(function () {
+                Route::get('','GameController@index');
+            });
+
+            Route::prefix('{platform_id}/outlet')->group(function () {
+                Route::get('','OutletController@index');
+            });
         });
 
-        Route::prefix('game')->group(function () {
-            Route::get('','GameController@index');
-        });
+        
 
         Route::prefix('ticket')->group(function () {
             Route::post('','TicketController@store');

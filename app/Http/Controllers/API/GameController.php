@@ -14,10 +14,10 @@ class GameController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request,$platform_id)
     {
         $validator = Validator::make($request->all(), [
-            'platform_id' => ['required'],
+            // 'platform_id' => ['required'],
             'status' => ['nullable',Rule::in(array_values(Game::STATUS))],
         ]);
 
@@ -26,7 +26,7 @@ class GameController extends Controller
         }
         $query = Game::query();
 
-        $query->where('platform_id',$request->platform_id);
+        $query->where('platform_id',$platform_id);
 
         if($request->status != ''){
             $query->where('status','=',$request->status);
