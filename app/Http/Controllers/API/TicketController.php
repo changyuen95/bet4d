@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\TicketResource;
 use App\Models\CreditTransaction;
 use App\Models\Draw;
+use App\Models\Game;
 use App\Models\Platform;
 use App\Models\Ticket;
 use App\Models\TicketNumber;
@@ -92,12 +93,12 @@ class TicketController extends Controller
                 return response(['message' => trans('messages.no_user_credit_found')], 422);
             }
 
-            $platform = Platform::find($request->platform_id);
+            $platform = Platform::where('id',$request->platform_id)->where('status',Platform::STATUS['Active'])->first();
             if(!$platform){
                 return response(['message' => trans('messages.invalid_platform')], 422);
             }
 
-            $game = $platform->games()->find($request->game_id);
+            $game = $platform->games()->where('id',$request->game_id)->where('status',Game::STATUS['Active'])->first();
             if(!$game){
                 return response(['message' => trans('messages.invalid_game')], 422);
             }
