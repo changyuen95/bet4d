@@ -15,12 +15,6 @@ return new class extends Migration
             $table->ulid('id')->change();
         });
 
-        Schema::table('credit_transactions', function (Blueprint $table) {
-            $table->ulid('id')->change();
-            $table->ulid('user_id')->change();
-            $table->ulid('target_id')->change();
-        });
-
         Schema::table('draws', function (Blueprint $table) {
             $table->ulid('id')->change();
         });

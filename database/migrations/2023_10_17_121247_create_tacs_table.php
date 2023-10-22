@@ -15,8 +15,7 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->string('phone_e164');
             $table->bigInteger('verify_code');
-            $table->string('ownerable_id')->nullable();
-            $table->string('ownerable_type')->nullable();
+            $table->nullableUlidMorphs('ownerable');
             $table->longText('response')->nullable();
             $table->string('ref')->nullable();
             $table->dateTime('available_at')->nullable();
