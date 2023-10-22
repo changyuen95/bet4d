@@ -14,7 +14,7 @@ class Tac extends Model
         'Forgot_Password' => 'Forgot Password TAC',
         'Register_User' => 'Register User',
     ];
-    public function tacable()
+    public function ownerable()
     {
         return $this->morphTo();
     }
