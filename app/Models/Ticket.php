@@ -27,7 +27,7 @@ class Ticket extends Model
 
     public function creditTransaction()
     {
-        return $this->morphOne(CreditTransaction::class, 'target');
+        return $this->morphOne(CreditTransaction::class, 'targetable');
     }
 
     public function draws()

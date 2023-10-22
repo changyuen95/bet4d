@@ -17,7 +17,7 @@ class CreditTransaction extends Model
         'Decrease' => 2
     ];
 
-    public function target()
+    public function targetable()
     {
         return $this->morphTo();
     }
