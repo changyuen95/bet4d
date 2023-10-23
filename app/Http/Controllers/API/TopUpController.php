@@ -64,6 +64,7 @@ class TopUpController extends Controller
 
             $topup = $user->topup()->create([
                 'amount' => $request->amount,
+                'remark' => $request->remark,
                 'created_by' => Auth::user()->id
             ]);
 

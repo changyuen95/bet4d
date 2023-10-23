@@ -15,6 +15,7 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->foreignUlid('user_id')->constrained('users');
             $table->decimal('amount',11,2);
+            $table->longtext('remark')->nullable();
             $table->foreignUlid('created_by')->constrained('users');
             $table->timestamps();
             $table->softDeletes();
