@@ -46,6 +46,10 @@ class RegisterController extends Controller
                 'credit' => 0
             ]);
 
+            $user->point()->create([
+                'point' => 0
+            ]);
+
             $user->assignRole('normal_user');
             DB::commit();
             return response(['message' =>  trans('messages.register_successfully') ], 200);

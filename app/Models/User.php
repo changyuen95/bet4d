@@ -67,6 +67,11 @@ class User extends Authenticatable
         return $this->hasOne(UserCredit::class, 'user_id');
     }
 
+    public function point()
+    {
+        return $this->hasOne(UserPoint::class, 'user_id');
+    }
+
     public function creditTransaction()
     {
         return $this->hasMany(CreditTransaction::class, 'user_id');
@@ -75,5 +80,10 @@ class User extends Authenticatable
     public function tickets()
     {
         return $this->hasMany(Ticket::class, 'user_id');
+    }
+
+    public function topup()
+    {
+        return $this->hasMany(TopUp::class, 'user_id');
     }
 }

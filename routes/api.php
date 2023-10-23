@@ -53,8 +53,6 @@ Route::namespace('API')->group(function () {
             });
         });
 
-        
-
         Route::prefix('ticket')->group(function () {
             Route::post('','TicketController@store');
             Route::post('update-status','TicketController@updateTicketStatus');
@@ -79,6 +77,9 @@ Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::MEMB
 
 Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::OPERATOR])->group(function () {
     // Routes for Operator users
+    Route::prefix('topup')->group(function () {
+        Route::post('{id}','TopUpController@store');
+    });
 });
 
 Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::SUPER_ADMIN])->group(function () {
