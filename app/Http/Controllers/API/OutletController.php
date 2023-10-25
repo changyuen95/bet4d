@@ -25,11 +25,8 @@ class OutletController extends Controller
         $query = Outlet::query();
         $query->where('platform_id',$platform_id);
 
-        $outlets = $query->get();
-        return response([
-            'success' => true,
-            'outlet' =>  OutletResource::collection($outlets)
-        ], 200);
+        $outlets = $query->paginate($request->get('limit') ?? 10);
+        return response($outlets, 200);
     }
 
     /**

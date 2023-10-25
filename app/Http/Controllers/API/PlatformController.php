@@ -29,12 +29,9 @@ class PlatformController extends Controller
             $query->where('status','=',$request->status);
         }
 
-        $platforms = $query->get();
+        $platforms = $query->paginate($request->get('limit') ?? 10);
 
-        return response([
-            'success' => true,
-            'platform' =>  PlatformResource::collection($platforms)
-        ], 200);
+        return response($platforms, 200);
     }
 
     /**

@@ -32,12 +32,9 @@ class GameController extends Controller
             $query->where('status','=',$request->status);
         }
 
-        $games = $query->get();
+        $games = $query->paginate($request->get('limit') ?? 10);
 
-        return response([
-            'success' => true,
-            'games' =>  GameResource::collection($games)
-        ], 200);
+        return response($games, 200);
     }
 
     /**
