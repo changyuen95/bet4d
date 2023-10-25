@@ -7,7 +7,7 @@ use Validator;
 use Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-
+use Illuminate\Support\Facades\Hash;
 class LoginController extends Controller
 {
     public function __invoke(Request $request)
@@ -22,9 +22,8 @@ class LoginController extends Controller
         }
 
         $credentials = $request->only('username', 'password');
-
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
+        $user = User::where('username', $request->username)->first();
+        if ($user && Hash::check($request->password, $user->password)) {
             // if ($user->email_verified_at === null) {
             //     return response(['message' => 'Please verify your email'], 422);
             // }
