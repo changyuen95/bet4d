@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
        $this->call(RoleSeeder::class);
        $this->call(PlatformSeeder::class);
        $this->call(PotentialWinningPriceSeeder::class);
+       $this->call(TransferOptionSeeder::class);
 
     }
 }
