@@ -86,4 +86,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(TopUp::class, 'user_id');
     }
+
+    public function getStatusAttribute($status)
+    {
+        return $this->status = (int)$status;
+    }
 }

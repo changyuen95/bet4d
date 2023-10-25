@@ -22,8 +22,8 @@ class LoginController extends Controller
         }
 
         $credentials = $request->only('username', 'password');
-        $user = User::where('username', $request->username)->first();
-        if ($user && Hash::check($request->password, $user->password)) {
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
             // if ($user->email_verified_at === null) {
             //     return response(['message' => 'Please verify your email'], 422);
             // }
