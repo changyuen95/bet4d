@@ -30,11 +30,9 @@ class TicketController extends Controller
             $query->where('status',$request->status);
         }
 
-        $tickets = $query->get();
-        return response([
-            'success' => true,
-            'tickets' =>  TicketResource::collection($tickets)
-        ], 200);
+        $tickets = $query->with(['ticketNumbers', 'draws'])->paginate($request->get('limit') ?? 10);
+        
+        return response($tickets, 200);
     }
 
     /**

@@ -41,5 +41,6 @@ return [
     'you_had_successfully_top_up' => 'You had successfully top up',
     'credit' => 'credit',
     'for' => 'for',
-    'top_up_failed' => 'Top up failed'
+    'top_up_failed' => 'Top up failed',
+    'update_profile_successfully' => 'Update Profile Successfully',
 ];
