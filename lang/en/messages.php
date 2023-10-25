@@ -43,4 +43,13 @@ return [
     'for' => 'for',
     'top_up_failed' => 'Top up failed',
     'update_profile_successfully' => 'Update Profile Successfully',
+    'no_transfer_option_found' => 'No Transfer Option Found',
+    'invalid_transfer_option_type' => 'Invalid Transfer Option Type',
+    'failed_to_create_transfer_details' => 'Failed to create transfer details',
+    'create_transfer_details_successfully' => 'Create transfer details successfully',
+    'no_transfer_detail_found' => 'No transfer details found',
+    'remove_transfer_details_successfully' => 'Remove transfer details successfully',
+    'failed_to_remove_transfer_details' => 'Failed to remove transfer details',
+    'update_transfer_details_successfully' => 'Update transfer details successfully',
+    'failed_to_update_transfer_details' => 'Failed to update transfer details',
 ];

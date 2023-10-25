@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\ForgotPasswordController;
+use App\Http\Controllers\API\UserTransferDetailsController;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -37,7 +38,9 @@ Route::namespace('API')->group(function () {
         Route::post('', ForgotPasswordController::class);
         Route::post('reset', [ForgotPasswordController::class, 'reset']);
     });
-
+    Route::prefix('transfer-options')->group(function () {
+        Route::get('','TransferOptionsController@index');
+    });
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('logout', 'LoginController@logout');
 
@@ -63,6 +66,12 @@ Route::namespace('API')->group(function () {
             Route::get('','MeController@me');
             Route::put('','MeController@update');
             Route::get('ticket','TicketController@index');
+            Route::prefix('transfer-details')->group(function () {
+                Route::get('','UserTransferDetailsController@index');
+                Route::post('','UserTransferDetailsController@store');
+                Route::put('{id}','UserTransferDetailsController@update');
+                Route::delete('{id}','UserTransferDetailsController@destroy');
+            });
         });
 
     });
