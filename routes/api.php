@@ -38,9 +38,15 @@ Route::namespace('API')->group(function () {
         Route::post('', ForgotPasswordController::class);
         Route::post('reset', [ForgotPasswordController::class, 'reset']);
     });
+
     Route::prefix('transfer-options')->group(function () {
         Route::get('','TransferOptionsController@index');
     });
+
+    Route::prefix('banner')->group(function () {
+        Route::get('', 'BannerController@index');
+    });
+    
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('logout', 'LoginController@logout');
 
