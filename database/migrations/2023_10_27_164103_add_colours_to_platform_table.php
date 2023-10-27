@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('platforms', function (Blueprint $table) {
             //
-            $table->string('primary_colour',50)->after('label');
+            $table->string('primary_colour',50)->after('status');
             $table->ulid('secondary_colour',50)->after('primary_colour');
 
         });
