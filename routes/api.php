@@ -33,7 +33,7 @@ Route::namespace('API')->group(function () {
         Route::post('', RegisterController::class);
         Route::post('send-tac','RegisterController@registerTac');
     });
-    
+
     Route::prefix('forgot-password')->middleware(['throttle:10,60'])->group(function () {
         Route::post('', ForgotPasswordController::class);
         Route::post('reset', [ForgotPasswordController::class, 'reset']);
@@ -46,21 +46,23 @@ Route::namespace('API')->group(function () {
     Route::prefix('banner')->group(function () {
         Route::get('', 'BannerController@index');
     });
-    
+
+    Route::prefix('platforms')->group(function () {
+        Route::get('','PlatformController@index');
+
+        Route::prefix('{platform_id}/games')->group(function () {
+            Route::get('','GameController@index');
+        });
+
+        Route::prefix('{platform_id}/outlets')->group(function () {
+            Route::get('','OutletController@index');
+        });
+    });
+
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('logout', 'LoginController@logout');
 
-        Route::prefix('platforms')->group(function () {
-            Route::get('','PlatformController@index');
 
-            Route::prefix('{platform_id}/games')->group(function () {
-                Route::get('','GameController@index');
-            });
-
-            Route::prefix('{platform_id}/outlets')->group(function () {
-                Route::get('','OutletController@index');
-            });
-        });
 
         Route::prefix('tickets')->group(function () {
             Route::post('','TicketController@store');
