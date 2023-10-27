@@ -52,4 +52,11 @@ return [
     'failed_to_remove_transfer_details' => 'Failed to remove transfer details',
     'update_transfer_details_successfully' => 'Update transfer details successfully',
     'failed_to_update_transfer_details' => 'Failed to update transfer details',
+    'no_credit_transaction_found' => 'No credit transaction found',
+    'credit_top_up_by_scan_qr'  => 'Credit Top-Up By Scan QR',
+    'credit_top_up_at_outlet'  => 'Credit Top-Up At Outlet',
+    'ticket_request_cancelled' => 'Ticket Request Cancelled',
+    'ticket_request_rejected' => 'Ticket Request Rejected',
+    'ticket_request' => 'Ticket Request',
+    'failed_to_update_status' => 'Failed to update status',
 ];

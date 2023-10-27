@@ -12,6 +12,11 @@ class TopUp extends Model
     use HasFactory, HasUlids, SoftDeletes;
     protected $guarded = ['id'];
 
+    const TOP_UP_WITH = [
+        'Outlet' => 1,
+        'QR'    => 2
+    ];
+    
     public function creditTransaction()
     {
         return $this->morphOne(CreditTransaction::class, 'targetable');
