@@ -64,11 +64,7 @@ Route::namespace('API')->group(function () {
 
 
 
-        Route::prefix('tickets')->group(function () {
-            Route::post('','TicketController@store');
-            Route::post('update-status','TicketController@updateTicketStatus');
-
-        });
+       
 
         Route::prefix('me')->group(function () {
             Route::get('','MeController@me');
@@ -79,6 +75,16 @@ Route::namespace('API')->group(function () {
                 Route::post('','UserTransferDetailsController@store');
                 Route::put('{id}','UserTransferDetailsController@update');
                 Route::delete('{id}','UserTransferDetailsController@destroy');
+            });
+            Route::prefix('credit-transactions')->group(function () {
+                Route::get('','CreditTransactionController@index');
+                Route::get('{id}','CreditTransactionController@show');
+
+            });
+            Route::prefix('tickets')->group(function () {
+                Route::post('','TicketController@store');
+                Route::post('update-status/{id}','TicketController@updateTicketStatus');
+    
             });
         });
 

@@ -17,7 +17,8 @@ class Ticket extends Model
         'TICKET_COMPLETED' => 1,
         'TICKET_REQUESTED' => 2,
         'TICKET_IN_PROGRESS' => 3,
-        'TICKET_CANCELLED' => 4
+        'TICKET_CANCELLED' => 4,
+        'TICKET_REJECTED' => 5,
     ];
 
     public function ticketNumbers()

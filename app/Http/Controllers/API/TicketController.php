@@ -113,9 +113,9 @@ class TicketController extends Controller
                 $billAmount += $ticket['big_amount'];
             }
 
-            if($userCredit->credit < floatVal($billAmount)){
-                return response(['message' => trans('messages.insufficient_balance')], 422);
-            }
+            // if($userCredit->credit < floatVal($billAmount)){
+            //     return response(['message' => trans('messages.insufficient_balance')], 422);
+            // }
 
             $ticketCreated = $user->tickets()->create([
                 'outlet_id' => $outlet->id,
@@ -134,15 +134,15 @@ class TicketController extends Controller
                 ]);
             }
 
-            $ticketCreated->creditTransaction()->create([
-                'user_id' => $user->id,
-                'amount' => $billAmount,
-                'type'  => CreditTransaction::TYPE['Decrease'],
-                'before_amount' => $userCredit->credit,
-            ]);
+            // $ticketCreated->creditTransaction()->create([
+            //     'user_id' => $user->id,
+            //     'amount' => $billAmount,
+            //     'type'  => CreditTransaction::TYPE['Decrease'],
+            //     'before_amount' => $userCredit->credit,
+            // ]);
 
-            $userCredit->credit = $userCredit->credit - $billAmount;
-            $userCredit->save();
+            // $userCredit->credit = $userCredit->credit - $billAmount;
+            // $userCredit->save();
             DB::commit();
 
             return response([
@@ -188,46 +188,92 @@ class TicketController extends Controller
         //
     }
 
-    public function updateTicketStatus(Request $request)
+    public function updateTicketStatus(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             // 'user_id' => ['required'],
-            'ticket_id' => ['required','exists:tickets,id'],
-            'status' => ['required',Rule::in(array_values(Ticket::STATUS))],
+            'status' => ['required',Rule::in(array_values([Ticket::STATUS['TICKET_REQUESTED'],Ticket::STATUS['TICKET_CANCELLED']]))],
         ]);
 
         if ($validator->fails()) {
             return response(['message' => $validator->errors()->first()], 422);
         }
 
-        $ticket = Auth::user()->tickets()->find($request->ticket_id);
+        $user = Auth::user();
+        $ticket = $user->tickets()->find($id);
         if(!$ticket){
             return response(['message' =>  trans('messages.invalid_ticket') ], 422);
         }
 
         if($request->status == Ticket::STATUS['TICKET_CANCELLED']){
-            if($ticket->status == Ticket::STATUS['TICKET_COMPLETED'] || $ticket->status == Ticket::STATUS['TICKET_IN_PROGRESS']){
+            if($ticket->status == Ticket::STATUS['TICKET_COMPLETED'] || $ticket->status == Ticket::STATUS['TICKET_IN_PROGRESS'] || $ticket->status == Ticket::STATUS['TICKET_REJECTED']){
                 return response(['message' =>  trans('messages.unable_to_cancel_when_ticket_status_is_completed_or_in_progress') ], 422);
             }
         }
 
         if($request->status == Ticket::STATUS['TICKET_IMCOMPLETED'] || $request->status == Ticket::STATUS['TICKET_REQUESTED']){
-            if($ticket->status == Ticket::STATUS['TICKET_COMPLETED'] || $ticket->status == Ticket::STATUS['TICKET_IN_PROGRESS']){
+            if($ticket->status == Ticket::STATUS['TICKET_COMPLETED'] || $ticket->status == Ticket::STATUS['TICKET_IN_PROGRESS'] || $ticket->status == Ticket::STATUS['TICKET_REJECTED']){
                 return response(['message' =>  trans('messages.unable_change_to_imcomplete_or_requested_status_when_ticket_status_is_completed_or_in_progress') ], 422);
             }
         }
 
-        if($ticket->status == Ticket::STATUS['TICKET_COMPLETED']){
+        if($ticket->status == Ticket::STATUS['TICKET_COMPLETED'] || $ticket->status == Ticket::STATUS['TICKET_REJECTED'] || $ticket->status == Ticket::STATUS['TICKET_CANCELLED']){
             return response(['message' =>  trans('messages.unable_to_change_status_when_ticket_is_completed') ], 422);
         }
 
-        $ticket->status = $request->status;
-        $ticket->save();
+        DB::beginTransaction();
+        try{
+            $ticketNumber = $ticket->ticketNumbers;
+            $billAmount = 0;
+            foreach($ticketNumber as $ticketNo){
+                $billAmount += $ticketNo->small_amount;
+                $billAmount += $ticketNo->big_amount;
+            }
 
-        return response([
-            'message' =>  trans('messages.update_status_successfully'),
-            'ticket' => new TicketResource($ticket)
-        ], 200);
+            $userCredit = $user->credit;
+            if(!$userCredit){
+                return response(['message' => trans('messages.no_user_credit_found')], 422);
+            }
 
+            if($ticket->status == Ticket::STATUS['TICKET_REQUESTED'] && $request->status == Ticket::STATUS['TICKET_CANCELLED']){
+                $ticket->creditTransaction()->create([
+                    'user_id' => $user->id,
+                    'amount' => $billAmount,
+                    'type'  => CreditTransaction::TYPE['Increase'],
+                    'before_amount' => $userCredit->credit,
+                ]);
+
+                $userCredit->credit = $userCredit->credit + $billAmount;
+                $userCredit->save();
+            }
+
+            if($ticket->status == Ticket::STATUS['TICKET_IMCOMPLETED'] && $request->status == Ticket::STATUS['TICKET_REQUESTED']){
+                if($userCredit->credit < floatVal($billAmount)){
+                    return response(['message' => trans('messages.insufficient_balance')], 422);
+                }
+
+                $ticket->creditTransaction()->create([
+                    'user_id' => $user->id,
+                    'amount' => $billAmount,
+                    'type'  => CreditTransaction::TYPE['Decrease'],
+                    'before_amount' => $userCredit->credit,
+                ]);
+
+                $userCredit->credit = $userCredit->credit - $billAmount;
+                $userCredit->save();
+            }
+
+            $ticket->status = $request->status;
+            $ticket->save();
+            DB::commit();
+
+            return response([
+                'message' =>  trans('messages.update_status_successfully'),
+                'ticket' => new TicketResource($ticket)
+            ], 200);
+        }catch (Exception $e) {
+            DB::rollback();
+            return response(['message' =>  trans('messages.failed_to_update_status') ], 422);
+        }
     }
 }

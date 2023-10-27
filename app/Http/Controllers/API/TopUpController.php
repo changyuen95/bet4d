@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\CreditTransaction;
 use App\Models\PointTransaction;
+use App\Models\TopUp;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Auth;
@@ -65,6 +66,7 @@ class TopUpController extends Controller
             $topup = $user->topup()->create([
                 'amount' => $request->amount,
                 'remark' => $request->remark,
+                'top_up_with' => TopUp::TOP_UP_WITH['Outlet'],
                 'created_by' => Auth::user()->id
             ]);
 
