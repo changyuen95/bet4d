@@ -24,9 +24,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::namespace('API')->group(function () {
     Route::post("login", LoginController::class);
+    Route::post("admin/login", 'LoginController@adminLogin');
 
     Route::prefix('tac')->group(function () {
         Route::post('verify', VerifyTacController::class);
+        Route::get('latest-tac', 'VerifyTacController@index');
     });
 
     Route::prefix('register')->group(function () {

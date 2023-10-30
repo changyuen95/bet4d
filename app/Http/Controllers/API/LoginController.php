@@ -43,6 +43,39 @@ class LoginController extends Controller
         }
     }
 
+    public function adminLogin(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->first()], 422);
+        }
+        Auth::shouldUse('admin');
+        $credentials = $request->only('username', 'password');
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            // if ($user->email_verified_at === null) {
+            //     return response(['message' => 'Please verify your email'], 422);
+            // }
+
+            if($user->status === User::STATUS['Active']){
+                $user->access_token = $user->createToken('Mobile App', ['access:api'])->plainTextToken;
+                return $user;
+            }elseif($user->status === User::STATUS['Inactive']){
+                return response(['message' => 'Account is Inactive'], 422);
+            }elseif($user->status === User::STATUS['Disabled']){
+                return response(['message' => 'Account is disabled'], 422);
+            }else{
+                return response(['message' => trans('auth.failed')], 422);
+            }
+        } else {
+            return response(['message' => trans('auth.failed')], 422);
+        }
+    }
+    
     public function logout(Request $request)
     {
         $user = $request->user();

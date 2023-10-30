@@ -13,6 +13,7 @@ use Exception;
 use Illuminate\Validation\Rule;
 use Validator;
 use DB;
+use Str;
 class RegisterController extends Controller
 {
     public function __invoke(Request $request)
@@ -92,19 +93,25 @@ class RegisterController extends Controller
             if(env('APP_ENV') == 'production'){
                 $user->notify(new TacNotification($tacNo));
             }
+            $token = Str::random(20);
             
             $currentDatetime = Carbon::now();
             $expired_at = $currentDatetime->addMinutes(2);
             $user->tacs()->create([
                 'phone_e164' => $request->phone_e164,
                 'verify_code' => $tacNo,
+                'token' => $token,
                 'ref' => Tac::REFERENCE['Register_User'],
                 'expired_at' => $expired_at,
             ]);
             
             DB::commit();
 
-            $response = ['message' =>  trans('messages.send_tac_successfully') ];
+            $response = [
+                'message' =>  trans('messages.send_tac_successfully'),
+                'token' => $token
+            ];
+
             if(env('APP_ENV') != 'production'){
                 $response['tac'] = $tacNo;
             }
