@@ -63,11 +63,6 @@ Route::namespace('API')->group(function () {
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('logout', 'LoginController@logout');
-
-
-
-       
-
         Route::prefix('me')->group(function () {
             Route::get('','MeController@me');
             Route::put('','MeController@update');

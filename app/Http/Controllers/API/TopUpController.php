@@ -47,6 +47,8 @@ class TopUpController extends Controller
         if (!$user) {
             return response(['message' => trans('messages.no_user_found')], 422);
         }
+        $staff = Auth::user();
+
         DB::beginTransaction();
         try{
             $userCredit = $user->credit;
@@ -63,13 +65,19 @@ class TopUpController extends Controller
                 ]);
             }
 
-            $topup = $user->topup()->create([
+            // $topup = $user->topup()->create([
+            //     'amount' => $request->amount,
+            //     'remark' => $request->remark,
+            //     'top_up_with' => TopUp::TOP_UP_WITH['Outlet'],
+            //     'created_by' => Auth::user()->id
+            // ]);
+            $topup = $staff->topUpMorph()->create([
+                'user_id' => $user->id,
                 'amount' => $request->amount,
                 'remark' => $request->remark,
                 'top_up_with' => TopUp::TOP_UP_WITH['Outlet'],
-                'created_by' => Auth::user()->id
             ]);
-
+            
             $creditTransaction = $topup->creditTransaction()->create([
                 'user_id' => $user->id,
                 'amount' => $request->amount,

@@ -52,9 +52,23 @@ class User extends Authenticatable
         'Disabled' => 3,
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->reference_id = uniqid();
+        });
+    }
+
     public function tacs()
     {
         return $this->morphMany(Tac::class, 'ownerable');
+    }
+
+    public function topUpMorph()
+    {
+        return $this->morphMany(TopUp::class, 'creatable');
     }
 
     public function routeNotificationForVonage($notification)

@@ -16,4 +16,13 @@ class Game extends Model
         'Active' => 1,
         'Inactive' => 0
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->reference_id = uniqid();
+        });
+    }
 }

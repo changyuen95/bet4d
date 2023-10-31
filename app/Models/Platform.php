@@ -17,6 +17,15 @@ class Platform extends Model
         'Inactive' => 0
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->reference_id = uniqid();
+        });
+    }
+    
     public function games()
     {
         return $this->hasMany(Game::class, 'platform_id');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CreditTransactionResource;
 use Illuminate\Http\Request;
 use Auth;
 use Carbon\Carbon;
@@ -67,13 +68,13 @@ class CreditTransactionController extends Controller
             return response(['message' => trans('messages.no_user_found')], 422);
         }
 
-        $creditTransaction = $user->creditTransaction()->where('id',$id)->with('targetable')->first();
+        $creditTransaction = $user->creditTransaction()->where('id',$id)->first();
 
         if(!$creditTransaction){
             return response(['message' => trans('messages.no_credit_transaction_found')], 422);
         }
 
-        return response($creditTransaction, 200);
+        return response(new CreditTransactionResource($creditTransaction), 200);
     }
 
     /**
