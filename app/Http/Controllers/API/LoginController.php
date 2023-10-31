@@ -53,7 +53,7 @@ class LoginController extends Controller
         if ($validator->fails()) {
             return response(['message' => $validator->errors()->first()], 422);
         }
-        Auth::shouldUse('admin');
+        Auth::shouldUse('admin-api');
         $credentials = $request->only('username', 'password');
         if (Auth::attempt($credentials)) {
             $user = Auth::user();

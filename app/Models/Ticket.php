@@ -21,6 +21,15 @@ class Ticket extends Model
         'TICKET_REJECTED' => 5,
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->reference_id = uniqid();
+        });
+    }
+    
     public function ticketNumbers()
     {
         return $this->hasMany(TicketNumber::class, 'ticket_id');

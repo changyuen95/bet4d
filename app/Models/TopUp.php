@@ -16,7 +16,16 @@ class TopUp extends Model
         'Outlet' => 1,
         'QR'    => 2
     ];
-    
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->reference_id = uniqid();
+        });
+    }
+
     public function creditTransaction()
     {
         return $this->morphOne(CreditTransaction::class, 'targetable');
@@ -25,5 +34,10 @@ class TopUp extends Model
     public function pointTransaction()
     {
         return $this->morphOne(PointTransaction::class, 'targetable');
+    }
+
+    public function creatable()
+    {
+        return $this->morphTo();
     }
 }

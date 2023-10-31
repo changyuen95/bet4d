@@ -13,6 +13,16 @@ class Draw extends Model
     use HasFactory, HasUlids, SoftDeletes;
     protected $guarded = ['id'];
     protected $appends = ['full_draw_no'];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->reference_id = uniqid();
+        });
+    }
+    
     public static function getDrawData($platformId){
         $platform = Platform::find($platformId);
         // $todayDateString = "04/11/2023 19:00:00";
