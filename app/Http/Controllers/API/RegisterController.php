@@ -38,9 +38,11 @@ class RegisterController extends Controller
             if ($user->email_verified_at) {
                 return response(['message' => 'This email has been taken'], 422);
             }
-    
+            $defaultAvatar = asset('images/default_avatar.jpg');
+            
             $user->fill($request->only('name', 'email', 'username', 'phone_e164'));
             $user->password = bcrypt($request->get('password'));
+            $user->avatar = $defaultAvatar;
             $user->save();
             
             $user->credit()->create([

@@ -59,4 +59,5 @@ return [
     'ticket_request_rejected' => 'Ticket Request Rejected',
     'ticket_request' => 'Ticket Request',
     'failed_to_update_status' => 'Failed to update status',
+    'no_point_transaction_found' => 'No point transaction found'
 ];

@@ -52,6 +52,8 @@ class User extends Authenticatable
         'Disabled' => 3,
     ];
 
+    protected $appends = ['is_finish_first_time_topup','is_bank_transferrable'];
+
     protected static function boot()
     {
         parent::boot();
@@ -86,6 +88,11 @@ class User extends Authenticatable
         return $this->hasOne(UserPoint::class, 'user_id');
     }
 
+    public function pointTransaction()
+    {
+        return $this->hasMany(PointTransaction::class, 'user_id');
+    }
+
     public function creditTransaction()
     {
         return $this->hasMany(CreditTransaction::class, 'user_id');
@@ -109,5 +116,25 @@ class User extends Authenticatable
     public function getStatusAttribute($status)
     {
         return $this->status = (int)$status;
+    }
+
+    public function getIsFinishFirstTimeTopUpAttribute($status)
+    {
+        $isFinishFirstTimeTopUp = false;
+        $topUpCount = $this->topup()->count();
+        if($topUpCount > 0){
+            $isFinishFirstTimeTopUp = true; 
+        }
+        return $isFinishFirstTimeTopUp;
+    }
+    
+    public function getIsBankTransferrableAttribute($status)
+    {
+        $isBankTransferrable = false;
+        $transferDetailsCount = $this->transferDetails()->count();
+        if($transferDetailsCount > 0){
+            $isBankTransferrable = true; 
+        }
+        return $isBankTransferrable;
     }
 }

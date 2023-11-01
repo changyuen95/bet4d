@@ -24,7 +24,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('platform', function (Blueprint $table) {
+        Schema::table('platforms', function (Blueprint $table) {
             //
             $table->dropColumn('primary_colour');
             $table->dropColumn('secondary_colour');

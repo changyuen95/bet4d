@@ -45,7 +45,7 @@ Route::namespace('API')->group(function () {
         Route::get('','TransferOptionsController@index');
     });
 
-    Route::prefix('banner')->group(function () {
+    Route::prefix('banners')->group(function () {
         Route::get('', 'BannerController@index');
     });
 
@@ -76,6 +76,11 @@ Route::namespace('API')->group(function () {
             Route::prefix('credit-transactions')->group(function () {
                 Route::get('','CreditTransactionController@index');
                 Route::get('{id}','CreditTransactionController@show');
+
+            });
+            Route::prefix('point-transactions')->group(function () {
+                Route::get('','PointTransactionController@index');
+                Route::get('{id}','PointTransactionController@show');
 
             });
             Route::prefix('tickets')->group(function () {
