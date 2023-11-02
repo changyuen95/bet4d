@@ -25,4 +25,9 @@ class Outlet extends Model
     {
         return $this->belongsTo(Platform::class, 'platform_id');
     }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class, 'outlet_id');
+    }
 }

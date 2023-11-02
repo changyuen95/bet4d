@@ -40,6 +40,11 @@ class Ticket extends Model
         return $this->morphOne(CreditTransaction::class, 'targetable');
     }
 
+    public function barcode()
+    {
+        return $this->hasMany(BarCode::class, 'ticket_id');
+    }
+
     public function draws()
     {
         return $this->belongsTo(Draw::class, 'draw_id');

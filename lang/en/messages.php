@@ -59,5 +59,16 @@ return [
     'ticket_request_rejected' => 'Ticket Request Rejected',
     'ticket_request' => 'Ticket Request',
     'failed_to_update_status' => 'Failed to update status',
-    'no_point_transaction_found' => 'No point transaction found'
+    'no_point_transaction_found' => 'No point transaction found',
+    'you_are_not_belongs_to_any_outlet' => 'You re not belongs to any outlet',
+    'this_ticket_had_been_accepted_by_another_staff' => 'This ticket had been accepted_by_another_staff',
+    'unable_to_accept_ticket_request_when_ticket_status_is_not_requested' => 'Unable to accept ticket request when ticket status is not requested',
+    'unable_to_reject_ticket_request_when_ticket_status_is_not_requested' => 'Unable to reject ticket request when ticket status is not requested',
+    'unable_to_complete_ticket_request_when_ticket_status_is_not_in_progress' => 'Unable to complete ticket request when ticket status is not in progress',
+    'no_ticket_owner_found' => 'No ticket owner found',
+    'at_least_1_barcode_is_scanned_in_order_to_complete_ticket_request' => 'At least 1 barcode is scanned in order to complete ticket request',
+    'ticket_request_selected_is_not_belongs_to_you' => 'Ticket request selected is not belongs to you',
+    'successfully_scanned_barcode' => 'Successfully scanned barcode',
+    'failed_to_scan_barcode' => 'Failed to scan barcode',
+    'this_ticket_had_scanned_before_please_try_another_ticket' => 'This ticket had scanned before. Please try another ticket',
 ];
