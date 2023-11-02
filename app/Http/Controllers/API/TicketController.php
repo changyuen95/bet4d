@@ -276,4 +276,158 @@ class TicketController extends Controller
             return response(['message' =>  trans('messages.failed_to_update_status') ], 422);
         }
     }
+
+    public function staffUpdateTicketStatus(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            // 'user_id' => ['required'],
+            'status' => ['required',Rule::in(array_values([Ticket::STATUS['TICKET_IN_PROGRESS'],Ticket::STATUS['TICKET_REJECTED'],Ticket::STATUS['TICKET_COMPLETED']]))],
+        ]);
+
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->first()], 422);
+        }
+
+        $staff = Auth::user();
+        $staffOutlet = $staff->outlet;
+        if(!$staffOutlet){
+            return response(['message' =>  trans('messages.you_are_not_belongs_to_any_outlet') ], 422);
+        }
+
+        $ticket = $staffOutlet->tickets()->find($id);
+        if(!$ticket){
+            return response(['message' =>  trans('messages.invalid_ticket') ], 422);
+        }
+
+        $user = User::find($ticket->user_id);
+        if(!$user){
+            return response(['message' =>  trans('messages.no_ticket_owner_found') ], 422);
+        }
+
+        if($ticket->action_by != '' && $ticket->action_by != $staff->id){
+            return response(['message' =>  trans('messages.this_ticket_had_been_accepted_by_another_staff') ], 422);
+        }
+
+        $ticket->action_by = $staff->id;
+        $ticket->save();
+
+
+        if($request->status == Ticket::STATUS['TICKET_IN_PROGRESS']){
+            if($ticket->status != Ticket::STATUS['TICKET_REQUESTED']){
+                $ticket->action_by = null;
+                $ticket->save();
+                return response(['message' =>  trans('messages.unable_to_accept_ticket_request_when_ticket_status_is_not_requested') ], 422);
+            }
+        }
+
+        if($request->status == Ticket::STATUS['TICKET_REJECTED']){
+            if($ticket->status != Ticket::STATUS['TICKET_REQUESTED']){
+                $ticket->action_by = null;
+                $ticket->save();
+                return response(['message' =>  trans('messages.unable_to_reject_ticket_request_when_ticket_status_is_not_requested') ], 422);
+            }
+
+            $validator1 = Validator::make($request->all(), [
+                // 'user_id' => ['required'],
+                'reject_reason' => ['required'],
+            ]);
+    
+            if ($validator1->fails()) {
+                return response(['message' => $validator1->errors()->first()], 422);
+            }
+        }
+
+        if($request->status == Ticket::STATUS['TICKET_COMPLETED']){
+            if($ticket->action_by != $staff->id){
+                return response(['message' =>  trans('messages.ticket_request_selected_is_not_belongs_to_you') ], 422);
+            }
+
+            if($ticket->status != Ticket::STATUS['TICKET_IN_PROGRESS']){
+                return response(['message' =>  trans('messages.unable_to_complete_ticket_request_when_ticket_status_is_not_in_progress') ], 422);
+            }
+        }
+
+        DB::beginTransaction();
+        try{
+            $ticketNumber = $ticket->ticketNumbers;
+            $billAmount = 0;
+            foreach($ticketNumber as $ticketNo){
+                $billAmount += $ticketNo->small_amount;
+                $billAmount += $ticketNo->big_amount;
+            }
+
+            $userCredit = $user->credit;
+            if(!$userCredit){
+                $ticket->action_by = null;
+                $ticket->save();
+                return response(['message' => trans('messages.no_user_credit_found')], 422);
+            }
+            if($request->status != Ticket::STATUS['TICKET_COMPLETED']){
+                if($request->status == Ticket::STATUS['TICKET_REJECTED']){
+                    $ticket->reject_reason = $request->reject_reason;
+                    $ticket->creditTransaction()->create([
+                        'user_id' => $user->id,
+                        'amount' => $billAmount,
+                        'type'  => CreditTransaction::TYPE['Increase'],
+                        'before_amount' => $userCredit->credit,
+                    ]);
+                    $userCredit->credit = $userCredit->credit + $billAmount;
+                    $userCredit->save();
+                }
+                
+            }else{
+                $barCodeCount = $ticket->barcode()->count();
+                if($barCodeCount <= 0){
+                    return response(['message' => trans('messages.at_least_1_barcode_is_scanned_in_order_to_complete_ticket_request')], 422);
+                }
+            }
+
+            $ticket->status = $request->status;
+            $ticket->save();
+            DB::commit();
+
+            return response([
+                'message' =>  trans('messages.update_status_successfully'),
+                'ticket' => new TicketResource($ticket)
+            ], 200);
+        }catch (Exception $e) {
+            DB::rollback();
+            $ticket->action_by = null;
+            $ticket->save();
+            return response(['message' =>  trans('messages.failed_to_update_status') ], 422);
+        }
+    }
+
+    public function staffScanBarcode(Request $request, $id){
+        $validator = Validator::make($request->all(), [
+            'barcode' => ['required'],
+        ]);
+
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->first()], 422);
+        }
+
+        $staff = Auth::user();
+        $ticket = Ticket::find($id);
+        if($ticket->action_by != $staff->id){
+            return response(['message' =>  trans('messages.invalid_ticket') ], 422);
+        }
+        $checkDuplicateBarcode = $ticket->barcode()->where('barcode',$request->barcode)->count();
+        if($checkDuplicateBarcode > 0){
+            return response(['message' =>  trans('messages.this_ticket_had_scanned_before_please_try_another_ticket') ], 422);
+        }
+        
+        DB::beginTransaction();
+        try{
+
+            $ticket->barcode()->create([
+                'barcode' => $request->barcode
+            ]);
+
+            DB::commit();
+            return response(['message' =>  trans('messages.successfully_scanned_barcode') ], 200);
+        }catch (Exception $e) {
+            DB::rollback();
+            return response(['message' =>  trans('messages.failed_to_scan_barcode') ], 422);
+        }
+    }
 }
