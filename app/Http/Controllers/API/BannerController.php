@@ -15,7 +15,7 @@ class BannerController extends Controller
     {
         $banners = Banner::all();
 
-        return response(['banners'=>$banners], 200);
+        return $banners;
     }
 
     /**
