@@ -14,9 +14,7 @@ class MeController extends Controller
 {
     public function me()
     {
-        return response([
-            'user' => new UserResource(Auth::user()),
-        ], 200);
+        return new UserResource(Auth::user());
     }
 
     public function bank()

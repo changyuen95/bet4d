@@ -7,6 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
 {
+    public static $wrap = null;
     /**
      * Transform the resource into an array.
      *
@@ -15,6 +16,8 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         $userCredit = $this->credit;
+        $userPoint = $this->point;
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -29,6 +32,7 @@ class UserResource extends JsonResource
             'is_bank_transferrable' => $this->is_bank_transferrable,
             'is_finish_first_time_topup' => $this->is_finish_first_time_topup,
             'user_credit' => $userCredit,
+            'user_point' => $userPoint, 
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->updated_at,

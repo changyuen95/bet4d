@@ -29,7 +29,7 @@ class PlatformController extends Controller
             $query->where('status','=',$request->status);
         }
 
-        $platforms = $query->paginate($request->get('limit') ?? 10);
+        $platforms = $query->with('outlets')->paginate($request->get('limit') ?? 10);
 
         return response($platforms, 200);
     }
