@@ -25,7 +25,7 @@ class UserResource extends JsonResource
             'email_verified_at' => $this->email_verified_at,
             'remember_token' => $this->remember_token,
             'status' => $this->status,
-            'is_verified' => $this->is_verified,
+            'is_verified' => $this->is_verified ? true : false,
             'is_bank_transferrable' => $this->is_bank_transferrable,
             'is_finish_first_time_topup' => $this->is_finish_first_time_topup,
             'user_credit' => $userCredit,
