@@ -42,17 +42,17 @@ class ForgotPasswordController extends Controller
             }
 
             // $tacNo = $this->sendTac($request->phone_e164);
-            $tacNo = mt_rand(100000, 999999);
+            $tacNo = mt_rand(1000, 9999);
             if(env('APP_ENV') == 'production'){
                 $user->notify(new TacNotification($tacNo));
             }
-            $token = Str::random(20);
+            
             $currentDatetime = Carbon::now();
             $expired_at = $currentDatetime->addMinutes(2);
             $user->tacs()->create([
                 'phone_e164' => $request->phone_e164,
                 'verify_code' => $tacNo,
-                'token' => $token,
+                'token' => '',
                 'ref' => Tac::REFERENCE['Forgot_Password'],
                 'expired_at' => $expired_at,
             ]);
@@ -60,7 +60,6 @@ class ForgotPasswordController extends Controller
             DB::commit();
             $response = [
                 'message' =>  trans('messages.send_tac_successfully'),
-                'token' => $token
             ];
             if(env('APP_ENV') != 'production'){
                 $response['tac'] = $tacNo;
@@ -78,6 +77,7 @@ class ForgotPasswordController extends Controller
         $validator = Validator::make($request->all(), [
             'phone_e164' => 'required|phone',
             'password' => 'required|min:6|confirmed',
+            'token' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -89,9 +89,16 @@ class ForgotPasswordController extends Controller
             return response(['message' => trans('messages.phone_doesnt_exist')], 422);
         }
 
+        $token = Tac::where('phone_e164',$request->phone_e164)->where('token',$request->token)->where('token_used_at',null)->where('ref',Tac::REFERENCE['Forgot_Password'])->first();
+        if(!$token){
+            return response(['message' => trans('messages.invalid_token')], 422);
+        }
         $user->password = Hash::make($request->password);
         $user->save();
 
+        $token->token_used_at = Carbon::now();
+        $token->save();
+        
         return response(['message' => trans('messages.reset_password_successfully')], 200);
     }
 }

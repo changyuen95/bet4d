@@ -71,4 +71,6 @@ return [
     'successfully_scanned_barcode' => 'Successfully scanned barcode',
     'failed_to_scan_barcode' => 'Failed to scan barcode',
     'this_ticket_had_scanned_before_please_try_another_ticket' => 'This ticket had scanned before. Please try another ticket',
+    'invalid_token' => 'Invalid Token',
+
 ];

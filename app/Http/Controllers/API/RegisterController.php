@@ -91,18 +91,17 @@ class RegisterController extends Controller
             }
 
             // $tacNo = $this->sendTac($request->phone_e164);
-            $tacNo = mt_rand(100000, 999999);        
+            $tacNo = mt_rand(1000, 9999);        
             if(env('APP_ENV') == 'production'){
                 $user->notify(new TacNotification($tacNo));
             }
-            $token = Str::random(20);
             
             $currentDatetime = Carbon::now();
             $expired_at = $currentDatetime->addMinutes(2);
             $user->tacs()->create([
                 'phone_e164' => $request->phone_e164,
                 'verify_code' => $tacNo,
-                'token' => $token,
+                'token' => '',
                 'ref' => Tac::REFERENCE['Register_User'],
                 'expired_at' => $expired_at,
             ]);
@@ -111,7 +110,6 @@ class RegisterController extends Controller
 
             $response = [
                 'message' =>  trans('messages.send_tac_successfully'),
-                'token' => $token
             ];
 
             if(env('APP_ENV') != 'production'){
