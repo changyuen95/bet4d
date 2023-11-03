@@ -72,8 +72,4 @@ class Admin extends Authenticatable
         return $this->belongsTo(Outlet::class, 'outlet_id');
     }
 
-    public function getStatusAttribute($status)
-    {
-        return $this->status = (int)$status;
-    }
 }

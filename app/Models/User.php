@@ -5,13 +5,14 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasUlids;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasUlids, SoftDeletes;
     protected $guard_name = 'api';
     /**
      * The attributes that are mass assignable.
@@ -111,11 +112,6 @@ class User extends Authenticatable
     public function transferDetails()
     {
         return $this->hasMany(UserTransferDetails::class, 'user_id');
-    }
-
-    public function getStatusAttribute($status)
-    {
-        return $this->status = (int)$status;
     }
 
     public function getIsFinishFirstTimeTopUpAttribute($status)

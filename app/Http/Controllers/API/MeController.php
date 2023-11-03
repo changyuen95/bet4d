@@ -47,4 +47,25 @@ class MeController extends Controller
 
     }
 
+    public function destroy(Request $request)
+    {
+        $user = Auth::user();
+        if(!$user){
+            return response(['message' => trans('messages.no_user_found')], 422);
+        }
+    
+
+        $user->tokens->each(function ($token, $key) {
+            $token->delete();
+        });
+        
+        $user->delete();
+
+        
+        return response([
+            'message' => trans('messages.successfully_deleted_account'),
+        ], 200);
+
+    }
+
 }
