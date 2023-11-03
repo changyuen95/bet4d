@@ -13,7 +13,7 @@ class Ticket extends Model
     protected $guarded = ['id'];
 
     const STATUS = [
-        'TICKET_IMCOMPLETED' => 'imcompleted',
+        'TICKET_IMCOMPLETED' => 'incompleted',
         'TICKET_COMPLETED' => 'completed',
         'TICKET_REQUESTED' => 'requested',
         'TICKET_IN_PROGRESS' => 'in_progress',

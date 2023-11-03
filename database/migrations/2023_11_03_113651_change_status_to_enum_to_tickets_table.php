@@ -16,7 +16,7 @@ return new class extends Migration
         });
         
         Schema::table('tickets', function (Blueprint $table) {
-            $table->enum('status',['imcompleted','completed','requested','in_progress','cancelled','rejected'])->after('draw_id');
+            $table->enum('status',['incompleted','completed','requested','in_progress','cancelled','rejected'])->after('draw_id');
         });
     }
 
