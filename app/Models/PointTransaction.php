@@ -13,8 +13,8 @@ class PointTransaction extends Model
     protected $guarded = ['id'];
 
     const TYPE = [
-        'Increase' => 1,
-        'Decrease' => 2
+        'Increase' => 'increase',
+        'Decrease' => 'decrease'
     ];
 
     public function targetable()

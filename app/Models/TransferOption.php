@@ -13,7 +13,7 @@ class TransferOption extends Model
     protected $guarded = ['id'];
 
     const TYPE = [
-        'Bank' => 1,
-        'eWallet' => 2
+        'Bank' => 'bank',
+        'eWallet' => 'ewallet'
     ];
 }

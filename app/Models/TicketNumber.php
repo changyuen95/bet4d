@@ -13,8 +13,8 @@ class TicketNumber extends Model
     protected $appends = ['potential_winning'];
 
     const TYPE = [
-        'Straight' => 1,
-        'Permutation' => 2
+        'Straight' => 'straight',
+        'Permutation' => 'permutation'
     ];
 
     public function getPotentialWinningAttribute()

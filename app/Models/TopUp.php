@@ -13,8 +13,8 @@ class TopUp extends Model
     protected $guarded = ['id'];
 
     const TOP_UP_WITH = [
-        'Outlet' => 1,
-        'QR'    => 2
+        'Outlet' => 'outlet',
+        'QR'    => 'qr'
     ];
 
     protected static function boot()

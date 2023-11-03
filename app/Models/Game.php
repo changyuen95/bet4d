@@ -13,8 +13,8 @@ class Game extends Model
     protected $guarded = ['id'];
 
     const STATUS = [
-        'Active' => 1,
-        'Inactive' => 0
+        'Active' => 'active',
+        'Inactive' => 'inactive'
     ];
 
     protected static function boot()

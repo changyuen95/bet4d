@@ -48,9 +48,9 @@ class Admin extends Authenticatable
     ];
 
     const STATUS = [
-        'Active' => 1,
-        'Inactive' => 2,
-        'Disabled' => 3,
+        'Active' => 'active',
+        'Inactive' => 'inactive',
+        'Disabled' => 'disabled',
     ];
 
     protected static function boot()

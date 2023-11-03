@@ -83,10 +83,11 @@ Route::namespace('API')->group(function () {
                 Route::get('{id}','PointTransactionController@show');
 
             });
-            Route::prefix('tickets')->group(function () {
-                Route::post('','TicketController@store');
-                Route::post('update-status/{id}','TicketController@updateTicketStatus');    
-            });
+        });
+
+        Route::prefix('tickets')->group(function () {
+            Route::post('','TicketController@store');
+            Route::post('update-status/{id}','TicketController@updateTicketStatus');    
         });
 
     });
@@ -107,11 +108,11 @@ Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::OPER
         Route::post('{id}','TopUpController@store');
     });
     Route::prefix('me')->group(function () {
-        Route::prefix('tickets')->group(function () {
-            Route::post('staff-update-status/{id}','TicketController@staffUpdateTicketStatus');
-            Route::post('staff-scan-barcode/{id}','TicketController@staffScanBarcode');
-
-        });
+        
+    });
+    Route::prefix('tickets')->group(function () {
+        Route::post('staff-update-status/{id}','TicketController@staffUpdateTicketStatus');
+        Route::post('staff-scan-barcode/{id}','TicketController@staffScanBarcode');
     });
 });
 

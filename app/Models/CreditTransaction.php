@@ -14,8 +14,8 @@ class CreditTransaction extends Model
     protected $appends = ['transaction_type','description'];
 
     const TYPE = [
-        'Increase' => 1,
-        'Decrease' => 2
+        'Increase' => 'increase',
+        'Decrease' => 'decrease'
     ];
 
     public function targetable()

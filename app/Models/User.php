@@ -47,9 +47,9 @@ class User extends Authenticatable
     ];
 
     const STATUS = [
-        'Active' => 1,
-        'Inactive' => 2,
-        'Disabled' => 3,
+        'Active' => 'active',
+        'Inactive' => 'inactive',
+        'Disabled' => 'disabled',
     ];
 
     protected $appends = ['is_finish_first_time_topup','is_bank_transferrable'];
