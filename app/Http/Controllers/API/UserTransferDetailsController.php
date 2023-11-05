@@ -106,7 +106,13 @@ class UserTransferDetailsController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $user = Auth::user();
+        $transferDetails = $user->transferDetails()->with('transferOption')->find($id);
+        if(!$transferDetails){
+            return response(['message' => trans('messages.no_transfer_detail_found')], 422);
+
+        }
+        return response(new UserTransferDetailResources($transferDetails), 200);
     }
 
     /**

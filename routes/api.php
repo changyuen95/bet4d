@@ -70,6 +70,7 @@ Route::namespace('API')->group(function () {
             Route::get('ticket','TicketController@index');
             Route::prefix('transfer-details')->group(function () {
                 Route::get('','UserTransferDetailsController@index');
+                Route::get('{id}','UserTransferDetailsController@show');
                 Route::post('','UserTransferDetailsController@store');
                 Route::put('{id}','UserTransferDetailsController@update');
                 Route::delete('{id}','UserTransferDetailsController@destroy');
