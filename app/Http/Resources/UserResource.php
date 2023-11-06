@@ -18,7 +18,7 @@ class UserResource extends JsonResource
         $userCredit = $this->credit;
         $userPoint = $this->point;
 
-        return [
+        $result = [
             'id' => $this->id,
             'name' => $this->name,
             'username' => $this->username,
@@ -37,5 +37,11 @@ class UserResource extends JsonResource
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->updated_at,
         ];
+
+        if(isset($this->access_token)){
+            $result['accessToken'] = $this->access_token;
+        }
+        
+        return $result;
     }
 }

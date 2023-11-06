@@ -11,5 +11,9 @@ class UserPoint extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
     protected $guarded = ['id'];
+    protected $appends = ['amount'];
 
+    public function getAmountAttribute(){
+        return $this->point;
+    }
 }

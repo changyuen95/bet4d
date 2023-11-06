@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Validator;
 use Auth;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 class LoginController extends Controller
@@ -30,6 +31,7 @@ class LoginController extends Controller
 
             if($user->status === User::STATUS['Active']){
                 $user->access_token = $user->createToken('Mobile App', ['access:api'])->plainTextToken;
+                $user = new UserResource($user);
                 return $user;
             }elseif($user->status === User::STATUS['Inactive']){
                 return response(['message' => 'Account is Inactive'], 422);
