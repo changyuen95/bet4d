@@ -65,14 +65,14 @@ Route::namespace('API')->group(function () {
         Route::post('logout', 'LoginController@logout');
         Route::prefix('me')->group(function () {
             Route::get('','MeController@me');
-            Route::put('','MeController@update');
+            Route::post('','MeController@update');
             Route::delete('','MeController@destroy');
             Route::get('ticket','TicketController@index');
             Route::prefix('transfer-details')->group(function () {
                 Route::get('','UserTransferDetailsController@index');
                 Route::get('{id}','UserTransferDetailsController@show');
                 Route::post('','UserTransferDetailsController@store');
-                Route::put('{id}','UserTransferDetailsController@update');
+                Route::post('{id}','UserTransferDetailsController@update');
                 Route::delete('{id}','UserTransferDetailsController@destroy');
             });
             Route::prefix('credit-transactions')->group(function () {
