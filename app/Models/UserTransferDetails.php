@@ -14,7 +14,7 @@ class UserTransferDetails extends Model
 
     const PRIMARY = [
         'Yes' => 1,
-        'No' => 2
+        'No' => 0
     ];
 
     public function transferOption()
