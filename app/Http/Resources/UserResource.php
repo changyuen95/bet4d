@@ -31,6 +31,7 @@ class UserResource extends JsonResource
             'is_verified' => $this->is_verified ? true : false,
             'is_bank_transferrable' => $this->is_bank_transferrable,
             'is_finish_first_time_topup' => $this->is_finish_first_time_topup,
+            'winning_amount' => $this->winning_amount,
             'user_credit' => $userCredit,
             'user_point' => $userPoint, 
             'created_at' => $this->created_at,

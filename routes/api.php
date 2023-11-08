@@ -85,6 +85,10 @@ Route::namespace('API')->group(function () {
                 Route::get('{id}','PointTransactionController@show');
 
             });
+            Route::prefix('winning-history')->group(function () {
+                Route::get('','WinningHistoryController@index');
+                // Route::get('{id}','WinningHistoryController@show');
+            });
         });
 
         Route::prefix('tickets')->group(function () {

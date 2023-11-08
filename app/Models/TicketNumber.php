@@ -17,6 +17,16 @@ class TicketNumber extends Model
         'Permutation' => 'permutation'
     ];
 
+    public function ticket()
+    {
+        return $this->belongsTo(Ticket::class, 'ticket_id');
+    }
+
+    public function win()
+    {
+        return $this->hasOne(WinnerList::class, 'ticket_number_id');
+    }
+
     public function getPotentialWinningAttribute()
     {
         $potentialWinningData = PotentialWinningPriceList::where('type_id',$this->type)->first();
