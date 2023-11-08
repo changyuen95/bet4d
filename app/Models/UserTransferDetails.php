@@ -13,8 +13,8 @@ class UserTransferDetails extends Model
     protected $guarded = ['id'];
 
     const PRIMARY = [
-        'Yes' => 1,
-        'No' => 0
+        'Yes' => true,
+        'No' => false
     ];
 
     public function transferOption()
