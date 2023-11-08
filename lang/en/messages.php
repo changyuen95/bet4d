@@ -73,4 +73,6 @@ return [
     'this_ticket_had_scanned_before_please_try_another_ticket' => 'This ticket had scanned before. Please try another ticket',
     'invalid_token' => 'Invalid Token',
     'successfully_deleted_account' => 'Successfully deleted account',
+    'top_up_completed' => 'Top Up Completed',
+
 ];

@@ -11,7 +11,7 @@ class PointTransaction extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
     protected $guarded = ['id'];
-    protected $appends = ['amount','before_amount'];
+    protected $appends = ['amount','before_amount','transaction_type','description'];
 
     const TYPE = [
         'Increase' => 'increase',
@@ -31,5 +31,21 @@ class PointTransaction extends Model
     public function getBeforeAmountAttribute()
     {
         return $this->before_point;
+    }
+
+    public function getTransactionTypeAttribute()
+    {
+        return str_replace('App\\Models\\',"",$this->targetable_type);
+    }
+
+    public function getDescriptionAttribute()
+    {
+        $relatedModel = $this->targetable;
+        $description = '';
+        if($this->targetable_type == 'App\Models\TopUp'){
+            $description = trans('messages.top_up_completed');
+        }
+
+        return $description;
     }
 }

@@ -62,18 +62,18 @@ class TicketController extends Controller
             ]);
 
             $customMessages = [
-                'ticket.*.ticket_number.digits' => trans('the_ticket_number_must_be_4_digits_for_all_items'),
-                'ticket.*.ticket_number.required' => trans('the_ticket_number_is_required_for_all_items'),
-                'ticket.*.ticket_number.numeric' => trans('the_ticket_number_must_be_numeric_for_all_items'),
-                'ticket.*.ticket_number.integer' => trans('the_ticket_number_must_be_integer_for_all_items'),
-                'ticket.*.small_amount.required' => trans('the_small_amount_is_required_for_all_items'),
-                'ticket.*.small_amount.numeric' => trans('the_small_amount_must_be_numeric_for_all_items'),
-                'ticket.*.small_amount.integer' => trans('the_small_amount_must_be_integer_for_all_items'),
-                'ticket.*.big_amount.required' => trans('the_big_amount_is_required_for_all_items'),
-                'ticket.*.big_amount.numeric' => trans('the_big_amount_must_be_numeric_for_all_items'),
-                'ticket.*.big_amount.integer' => trans('the_big_amount_must_be_integer_for_all_items'),
-                'ticket.*.type.required' => trans('the_type_is_required_for_all_items'),
-                'ticket.*.type.in' => trans('invalid_type_value_for_some_items'),
+                'ticket.*.ticket_number.digits' => trans('messages.the_ticket_number_must_be_4_digits_for_all_items'),
+                'ticket.*.ticket_number.required' => trans('messages.the_ticket_number_is_required_for_all_items'),
+                'ticket.*.ticket_number.numeric' => trans('messages.the_ticket_number_must_be_numeric_for_all_items'),
+                'ticket.*.ticket_number.integer' => trans('messages.the_ticket_number_must_be_integer_for_all_items'),
+                'ticket.*.small_amount.required' => trans('messages.the_small_amount_is_required_for_all_items'),
+                'ticket.*.small_amount.numeric' => trans('messages.the_small_amount_must_be_numeric_for_all_items'),
+                'ticket.*.small_amount.integer' => trans('messages.the_small_amount_must_be_integer_for_all_items'),
+                'ticket.*.big_amount.required' => trans('messages.the_big_amount_is_required_for_all_items'),
+                'ticket.*.big_amount.numeric' => trans('messages.the_big_amount_must_be_numeric_for_all_items'),
+                'ticket.*.big_amount.integer' => trans('messages.the_big_amount_must_be_integer_for_all_items'),
+                'ticket.*.type.required' => trans('messages.the_type_is_required_for_all_items'),
+                'ticket.*.type.in' => trans('messages.invalid_type_value_for_some_items'),
             ];
             
             $validator->setCustomMessages($customMessages);
