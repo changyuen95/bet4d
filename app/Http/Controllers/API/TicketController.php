@@ -161,7 +161,13 @@ class TicketController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $ticket = Auth::user()->tickets()->find($id);
+
+        if(!$ticket){
+            return response(['message' => trans('messages.no_ticket_found')], 422);
+        }
+        
+        return new TicketResource($ticket);
     }
 
     /**

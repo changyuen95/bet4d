@@ -74,5 +74,6 @@ return [
     'invalid_token' => 'Invalid Token',
     'successfully_deleted_account' => 'Successfully deleted account',
     'top_up_completed' => 'Top Up Completed',
+    'no_ticket_found' => 'No ticket found',
 
 ];

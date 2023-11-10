@@ -67,7 +67,11 @@ Route::namespace('API')->group(function () {
             Route::get('','MeController@me');
             Route::post('','MeController@update');
             Route::delete('','MeController@destroy');
-            Route::get('tickets','TicketController@index');
+            
+            Route::prefix('tickets')->group(function () {
+                Route::get('','TicketController@index');
+                Route::get('{id}','TicketController@show');
+            });
             Route::prefix('transfer-details')->group(function () {
                 Route::get('','UserTransferDetailsController@index');
                 Route::get('{id}','UserTransferDetailsController@show');
