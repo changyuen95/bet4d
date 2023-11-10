@@ -24,6 +24,8 @@ class TicketResource extends JsonResource
             'game_id' => $this->game_id,
             'draw_id' => $this->draw_id,
             'draw' => $this->draws,
+            'platform' => $this->platform,
+            'game' => $this->game,
             'status' => $this->status,
             'ticketNumbers' => TicketNumberResource::collection($ticketNumber),
             'created_at' => $this->created_at,
