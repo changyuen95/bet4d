@@ -11,7 +11,7 @@ class Ticket extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
     protected $guarded = ['id'];
-
+    protected $appends = ['total_amount'];
     const STATUS = [
         'TICKET_IMCOMPLETED' => 'incompleted',
         'TICKET_COMPLETED' => 'completed',
@@ -49,4 +49,23 @@ class Ticket extends Model
     {
         return $this->belongsTo(Draw::class, 'draw_id');
     }
+
+    public function platform()
+    {
+        return $this->belongsTo(Platform::class, 'platform_id');
+    }
+
+    public function game()
+    {
+        return $this->belongsTo(Game::class, 'game_id');
+    }
+    public function getTotalAmountAttribute(){
+        $ticketNumbers = $this->ticketNumbers;
+        $totalAmount = 0;
+        foreach($ticketNumbers as $ticketNumber){
+            $totalAmount += ($ticketNumber->small_amount + $ticketNumber->big_amount);
+        }
+        return number_format((float)$totalAmount, 2, '.', '');
+    }
+
 }

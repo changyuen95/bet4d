@@ -30,7 +30,7 @@ class TicketController extends Controller
             $query->where('status',$request->status);
         }
 
-        $tickets = $query->with(['ticketNumbers', 'draws'])->paginate($request->get('limit') ?? 10);
+        $tickets = $query->with(['ticketNumbers', 'draws','platform','game'])->paginate($request->get('limit') ?? 10);
         
         return response($tickets, 200);
     }
