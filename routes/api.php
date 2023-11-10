@@ -67,7 +67,7 @@ Route::namespace('API')->group(function () {
             Route::get('','MeController@me');
             Route::post('','MeController@update');
             Route::delete('','MeController@destroy');
-            Route::get('ticket','TicketController@index');
+            Route::get('tickets','TicketController@index');
             Route::prefix('transfer-details')->group(function () {
                 Route::get('','UserTransferDetailsController@index');
                 Route::get('{id}','UserTransferDetailsController@show');
@@ -93,7 +93,7 @@ Route::namespace('API')->group(function () {
 
         Route::prefix('tickets')->group(function () {
             Route::post('','TicketController@store');
-            Route::post('update-status/{id}','TicketController@updateTicketStatus');    
+            Route::post('update-status/{id}','TicketController@updateTicketStatus');
         });
 
     });
@@ -114,7 +114,7 @@ Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::OPER
         Route::post('{id}','TopUpController@store');
     });
     Route::prefix('me')->group(function () {
-        
+
     });
     Route::prefix('tickets')->group(function () {
         Route::post('staff-update-status/{id}','TicketController@staffUpdateTicketStatus');
