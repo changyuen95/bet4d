@@ -75,6 +75,11 @@ class User extends Authenticatable
         return $this->morphMany(TopUp::class, 'creatable');
     }
 
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'receivable');
+    }
+
     public function routeNotificationForVonage($notification)
     {
         return $this->phone_e164;
