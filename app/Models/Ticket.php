@@ -59,6 +59,12 @@ class Ticket extends Model
     {
         return $this->belongsTo(Game::class, 'game_id');
     }
+
+    public function outlet()
+    {
+        return $this->belongsTo(Outlet::class, 'outlet_id');
+    }
+
     public function getTotalAmountAttribute(){
         $ticketNumbers = $this->ticketNumbers;
         $totalAmount = 0;
@@ -67,5 +73,9 @@ class Ticket extends Model
         }
         return number_format((float)$totalAmount, 2, '.', '');
     }
-
+    
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'targetable');
+    }
 }

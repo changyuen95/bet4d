@@ -30,4 +30,9 @@ class Outlet extends Model
     {
         return $this->hasMany(Ticket::class, 'outlet_id');
     }
+
+    public function staffs()
+    {
+        return $this->hasMany(Admin::class, 'outlet_id');
+    }
 }

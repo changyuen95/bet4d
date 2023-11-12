@@ -1,0 +1,88 @@
+<?php
+
+namespace App\Http\Controllers\API;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Auth;
+use Carbon\Carbon;
+
+class NotificationController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        $user = Auth::user();
+        $query = $user->notifications();
+        $notifications = $query->paginate($request->get('limit') ?? 10);
+        return response($notifications, 200);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+
+    public function markAsRead(string $id)
+    {
+        $user = Auth::user();
+        $notification = $user->notifications()->find($id);
+        if(!$notification){
+            return response(['message' => trans('messages.no_notification_found')], 422);
+        }
+
+        if($notification->read_at == null){
+            $notification->update([
+                'read_at' => Carbon::now()
+            ]);
+        }
+
+        return response(['message' => trans('messages.marked_as_read')], 422);
+
+    }
+}

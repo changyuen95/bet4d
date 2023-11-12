@@ -25,6 +25,7 @@ class User extends Authenticatable
         'phone_e164',
         'email',
         'password',
+        'is_verified',
     ];
 
     /**
@@ -74,6 +75,11 @@ class User extends Authenticatable
         return $this->morphMany(TopUp::class, 'creatable');
     }
 
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'receivable');
+    }
+
     public function routeNotificationForVonage($notification)
     {
         return $this->phone_e164;
@@ -117,6 +123,11 @@ class User extends Authenticatable
     public function winningHistory()
     {
         return $this->hasMany(WinnerList::class, 'user_id');
+    }
+
+    public function verifyProfile()
+    {
+        return $this->hasMany(VerifyProfile::class, 'user_id');
     }
 
     public function getIsFinishFirstTimeTopUpAttribute($status)
