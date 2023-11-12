@@ -93,6 +93,11 @@ Route::namespace('API')->group(function () {
                 Route::get('','WinningHistoryController@index');
                 // Route::get('{id}','WinningHistoryController@show');
             });
+
+            Route::prefix('verify-profile')->group(function () {
+                Route::post('','VerifyProfileController@store');
+            });
+
         });
 
         Route::prefix('tickets')->group(function () {
@@ -123,6 +128,12 @@ Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::OPER
     Route::prefix('tickets')->group(function () {
         Route::post('staff-update-status/{id}','TicketController@staffUpdateTicketStatus');
         Route::post('staff-scan-barcode/{id}','TicketController@staffScanBarcode');
+    });
+
+    Route::prefix('verify-user-profile')->group(function () {
+        Route::get('','VerifyProfileController@pendingListing');
+        Route::post('approved/{id}','VerifyProfileController@approvedICVerification');
+        Route::post('rejected/{id}','VerifyProfileController@rejectedICVerification');
     });
 });
 

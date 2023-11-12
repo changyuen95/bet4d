@@ -25,6 +25,7 @@ class User extends Authenticatable
         'phone_e164',
         'email',
         'password',
+        'is_verified',
     ];
 
     /**
@@ -117,6 +118,11 @@ class User extends Authenticatable
     public function winningHistory()
     {
         return $this->hasMany(WinnerList::class, 'user_id');
+    }
+
+    public function verifyProfile()
+    {
+        return $this->hasMany(VerifyProfile::class, 'user_id');
     }
 
     public function getIsFinishFirstTimeTopUpAttribute($status)
