@@ -88,4 +88,7 @@ return [
     'not_able_to_approve_when_status_is_reject' => 'Not able to approve when status is rejected',
     'profile_verification_unsuccessful' => 'Profile verification unsuccessful',
     'not_able_to_reject_when_status_is_not_pending' => 'Not able to reject when status is not pending',
+    'marked_as_read' => 'Marked as read',
+    'no_notification_found' => 'No notification found',
+    'notification_is_already_mark_as_read' => 'Notification is already mark as read',
 ];

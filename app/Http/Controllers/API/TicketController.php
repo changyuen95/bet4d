@@ -18,8 +18,10 @@ use Validator;
 use Illuminate\Validation\Rule;
 use Exception;
 use Auth;
+use App\Traits\NotificationTrait;
 class TicketController extends Controller
 {
+    use NotificationTrait;
     /**
      * Display a listing of the resource.
      */
@@ -272,6 +274,17 @@ class TicketController extends Controller
             $ticket->status = $request->status;
             $ticket->save();
             DB::commit();
+
+            if($ticket->status == Ticket::STATUS['TICKET_REQUESTED']){
+                $outlet = $ticket->outlet;
+                if($outlet){
+                    $staffs = $outlet->staffs;
+                    $message = 'You have receive new ticket request.';
+                    foreach($staffs as $staff){
+                        $this->sendNotification($staff,$message,$ticket);
+                    }
+                }
+            }
 
             return response([
                 'message' =>  trans('messages.update_status_successfully'),
