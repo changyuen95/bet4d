@@ -19,7 +19,7 @@ use App\Http\Controllers\ProfileController;
     });
 
     Route::get('/login', function () {
-        dd('here');
+        
         return redirect()->route('admin.login');
     });
 
@@ -39,7 +39,7 @@ use App\Http\Controllers\ProfileController;
 
     Route::get('/dashboard', function () {
 
-        return view('dashboard');
+        return view('admin.dashboard');
     })->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
