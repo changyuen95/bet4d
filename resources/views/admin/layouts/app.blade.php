@@ -14,10 +14,10 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
+    {{-- <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-slate-100">
             @include('admin.components.topbar')
-            @include('admin.components.sidebar')
+
 
 
             @yield('content')
@@ -25,6 +25,7 @@
           <!-- Control Sidebar -->
           <aside class="control-sidebar control-sidebar-dark">
             <!-- Control sidebar content goes here -->
+            @include('admin.components.sidebar')
           </aside>
             <!-- Page Heading -->
             @if (isset($header))
@@ -36,9 +37,40 @@
             @endif
 
             <!-- Page Content -->
-            <main>
+            <main class="ml-auto">
                 {{ $slot }}
             </main>
         </div>
+    </body> --}}
+    <body class="font-sans antialiased">
+        <div class="min-h-screen bg-gray-100 dark:bg-slate-100">
+            @include('admin.components.topbar')
+    
+            <div class="grid grid-cols-12 gap-4">
+                <!-- Sidebar -->
+                <aside class="control-sidebar control-sidebar-dark col-span-2">
+                    <!-- Control sidebar content goes here -->
+                    @include('admin.components.sidebar')
+                </aside>
+    
+                <!-- Content -->
+                <main class="col-span-9">
+                    <!-- Page Heading -->
+                    @if (isset($header))
+                        <header class="bg-white dark:bg-gray-800 shadow">
+                            <div class="max-w-7xl ml-auto py-6 px-4 sm:px-6 lg:px-8">
+                                {{ $header }}
+                            </div>
+                        </header>
+                    @endif
+    
+                    <!-- Page Content -->
+                    <div class="ml-4 mt-4">
+                        {{ $slot }}
+                    </div>
+                </main>
+            </div>
+        </div>
     </body>
 </html>
+

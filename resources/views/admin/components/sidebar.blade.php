@@ -24,7 +24,7 @@
             </li>
 
             <li>
-                <a href="#">
+                <a href="{{ route('admin.admins.create') }}">
                     <i class="fa fa-user"></i>
                     <span class="link_name">Admin</span>
                 </a>
@@ -71,7 +71,7 @@
 
     {{-- <section class="home-section">
         <div class="home-content">
-        <i class='bx bx-menu' ></i>
+        <i class="fa fa-user bx-menu"></i>
             <span class="text">Drop Down Sidebar</span>
         </div>
     </section> --}}
