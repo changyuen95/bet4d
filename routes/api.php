@@ -61,6 +61,10 @@ Route::namespace('API')->group(function () {
         });
     });
 
+    Route::prefix('dictionaries')->group(function () {
+        Route::get('','DictionaryController@index');
+    });
+
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('logout', 'LoginController@logout');
         Route::prefix('me')->group(function () {
