@@ -11,17 +11,18 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Str;
+use Goutte\Client;
+
 class SyncDrawResult implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $drawNo = '';
     /**
      * Create a new job instance.
      */
-    public function __construct($drawNo)
+    public function __construct()
     {
-        $this->drawNo = $drawNo;
+        //
     }
 
     /**
@@ -29,87 +30,116 @@ class SyncDrawResult implements ShouldQueue
      */
     public function handle(): void
     {
-        $drawNoArray = explode('/',$this->drawNo);
+        // Create a Goutte client
+        $client = new Client();
+        // Specify the URL you want to scrape
+        $url = 'http://www.stc4d.com/live_draw.aspx';
+        // Send a GET request to the URL
+        $crawler = $client->request('GET', $url);
+        // Extract content by element ID
+        $elementId = 'MainCont_LBL001';
+        $content = $crawler->filter("#$elementId")->text();
+        $contentArray = explode(':',$content);
+        $drawNo = str_replace(" ","",$contentArray[1]);
+        $drawNoArray = explode('/', $drawNo );
         $draw = Draw::where('draw_no',$drawNoArray[0])->where('year',$drawNoArray[1])->first();
         $results = [
             DrawResult::TYPE['1st'] => [
                 [
-                    'number' => '7666',
+                    'number' => $crawler->filter("#MainCont_LBL003")->text(),
                     'position' => 1
                 ]
             ],
             DrawResult::TYPE['2nd'] => [
                 [
-                    'number' => '2222',
+                    'number' => $crawler->filter("#MainCont_LBL004")->text(),
                     'position' => 1
                 ]
             ],
             DrawResult::TYPE['3rd'] => [
                 [
-                    'number' => '3333',
+                    'number' => $crawler->filter("#MainCont_LBL005")->text(),
                     'position' => 1
                 ]
             ],
             DrawResult::TYPE['special'] => [
                 [
-                    'number' => '4444',
+                    'number' => $crawler->filter("#MainCont_LBL006")->text(),
                     'position' => 1
                 ],[
-                    'number' => '5555',
+                    'number' => $crawler->filter("#MainCont_LBL007")->text(),
                     'position' => 2
                 ],[
-                    'number' => '6666',
+                    'number' => $crawler->filter("#MainCont_LBL008")->text(),
+                    'position' => 3
+                ],[
+                    'number' => $crawler->filter("#MainCont_LBL009")->text(),
                     'position' => 4
                 ],[
-                    'number' => '7777',
+                    'number' => $crawler->filter("#MainCont_LBL010")->text(),
                     'position' => 5
                 ],[
-                    'number' => '8888',
+                    'number' => $crawler->filter("#MainCont_LBL011")->text(),
                     'position' => 6
                 ],[
-                    'number' => '9999',
+                    'number' => $crawler->filter("#MainCont_LBL012")->text(),
+                    'position' => 7
+                ],[
+                    'number' => $crawler->filter("#MainCont_LBL013")->text(),
                     'position' => 8
                 ],[
-                    'number' => '0000',
+                    'number' => $crawler->filter("#MainCont_LBL014")->text(),
                     'position' => 9
+                ],[
+                    'number' => $crawler->filter("#MainCont_LBL015")->text(),
+                    'position' => 10
+                ],[
+                    'number' => $crawler->filter("#MainCont_LBL016")->text(),
+                    'position' => 11
+                ],[
+                    'number' => $crawler->filter("#MainCont_LBL017")->text(),
+                    'position' => 12
+                ],[
+                    'number' => $crawler->filter("#MainCont_LBL018")->text(),
+                    'position' => 13
                 ],
             ],
             DrawResult::TYPE['consolation'] => [
                 [
-                    'number' => '1222',
+                    'number' => $crawler->filter("#MainCont_LBL019")->text(),
                     'position' => 1
                 ],[
-                    'number' => '1333',
+                    'number' => $crawler->filter("#MainCont_LBL020")->text(),
                     'position' => 2
                 ],[
-                    'number' => '1444',
+                    'number' => $crawler->filter("#MainCont_LBL021")->text(),
                     'position' => 3
                 ],[
-                    'number' => '1555',
+                    'number' => $crawler->filter("#MainCont_LBL022")->text(),
                     'position' => 4
                 ],[
-                    'number' => '1666',
+                    'number' => $crawler->filter("#MainCont_LBL023")->text(),
                     'position' => 5
                 ],[
-                    'number' => '1777',
+                    'number' => $crawler->filter("#MainCont_LBL024")->text(),
                     'position' => 6
                 ],[
-                    'number' => '1888',
+                    'number' => $crawler->filter("#MainCont_LBL025")->text(),
                     'position' => 7
                 ],[
-                    'number' => '1999',
+                    'number' => $crawler->filter("#MainCont_LBL026")->text(),
                     'position' => 8
                 ],[
-                    'number' => '2111',
+                    'number' => $crawler->filter("#MainCont_LBL027")->text(),
                     'position' => 9
                 ],[
-                    'number' => '6345',
+                    'number' => $crawler->filter("#MainCont_LBL028")->text(),
                     'position' => 10
                 ],
             ],
         ];
         if($draw){
-            $firstPrice = $draw->results()->where('type',DrawResult::TYPE['1st'])->where('number','!=','')->first(); 
+            $firstPrice = $draw->results()->where('type',DrawResult::TYPE['1st'])->whereNotIn('number',['-',''])->first(); 
             if(!$firstPrice){
                 foreach($results as $key => $result){
                     foreach($result as $number){
@@ -125,7 +155,7 @@ class SyncDrawResult implements ShouldQueue
                 $updatedFirstPrice = $draw->results()->where('type',DrawResult::TYPE['1st'])->first(); 
 
                 if($updatedFirstPrice){
-                    if($updatedFirstPrice->number != ''){
+                    if($updatedFirstPrice->number != '-' && $updatedFirstPrice->number != ''){
                         GetWinnerList::dispatch($draw);
                     }
                 }
