@@ -26,7 +26,6 @@ class DrawResult extends Command
      */
     public function handle()
     {
-        $drawNo = '4/23';
-        SyncDrawResult::dispatch($drawNo);
+        SyncDrawResult::dispatch();
     }
 }
