@@ -71,7 +71,7 @@ Route::namespace('API')->group(function () {
             Route::get('','MeController@me');
             Route::post('','MeController@update');
             Route::delete('','MeController@destroy');
-            
+
             Route::prefix('tickets')->group(function () {
                 Route::get('','TicketController@index');
                 Route::get('{id}','TicketController@show');
@@ -102,11 +102,11 @@ Route::namespace('API')->group(function () {
                 Route::post('','VerifyProfileController@store');
             });
 
-            Route::prefix('notifications')->group(function () {
-                Route::get('','NotificationController@index');
-                Route::post('mark-as-read/{id}','NotificationController@markAsRead');
+        });
 
-            });
+        Route::prefix('notifications')->group(function () {
+            Route::get('','NotificationController@index');
+            Route::post('mark-as-read/{id}','NotificationController@markAsRead');
 
         });
 
