@@ -11,8 +11,11 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+
         <!-- Scripts -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     </head>
     {{-- <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-slate-100">
@@ -43,6 +46,7 @@
         </div>
     </body> --}}
     <body class="font-sans antialiased">
+        
         <div class="min-h-screen bg-gray-100 dark:bg-slate-100">
             @include('admin.components.topbar')
     
@@ -55,6 +59,7 @@
     
                 <!-- Content -->
                 <main class="col-span-9">
+                    
                     <!-- Page Heading -->
                     @if (isset($header))
                         <header class="bg-white dark:bg-gray-800 shadow">
@@ -66,6 +71,7 @@
     
                     <!-- Page Content -->
                     <div class="ml-4 mt-4">
+
                         {{ $slot }}
                     </div>
                 </main>

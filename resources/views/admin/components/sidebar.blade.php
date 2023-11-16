@@ -24,7 +24,7 @@
             </li>
 
             <li>
-                <a href="{{ route('admin.admins.create') }}">
+                <a href="{{ route('admin.admins.index') }}">
                     <i class="fa fa-user"></i>
                     <span class="link_name">Admin</span>
                 </a>
