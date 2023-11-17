@@ -118,6 +118,15 @@ Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::OPER
     });
 });
 
-Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::SUPER_ADMIN])->group(function () {
+Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkUserType:'.Role::SUPER_ADMIN])->group(function () {
     // Routes for Super Admin users
+    Route::prefix('downlines')->group(function () {
+        Route::get('','DownlineController@index');
+        Route::get('{id}/credit-transactions','DownlineController@creditTransactions');
+        Route::get('{id}/credit-transactions-detail','DownlineController@creditTransactionsDetail');
+        Route::get('{id}/clear-transactions','DownlineController@clearTransactions');
+        Route::get('{id}/clear-transactions/credit-distribute','DownlineController@creditDistribute');
+        Route::get('{admin_id}/clear-transactions/credit-distribute/{id}','DownlineController@creditDistributeDetail');
+        Route::post('{id}/clear-transactions','DownlineController@clearTransactionsProcess');
+    });
 });

@@ -72,4 +72,9 @@ class Admin extends Authenticatable
         return $this->belongsTo(Outlet::class, 'outlet_id');
     }
 
+    public function admin_credit()
+    {
+        return $this->hasOne(AdminCredit::class, 'admin_id');
+    }
+
 }
