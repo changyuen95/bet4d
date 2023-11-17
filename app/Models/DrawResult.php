@@ -24,4 +24,9 @@ class DrawResult extends Model
     {
         return $this->hasMany(WinnerList::class, 'draw_result_id');
     }
+
+    public function draw()
+    {
+        return $this->belongsTo(Draw::class, 'draw_id');
+    }
 }
