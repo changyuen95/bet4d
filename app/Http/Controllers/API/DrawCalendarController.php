@@ -23,10 +23,7 @@ class DrawCalendarController extends Controller
         }
 
         $query = DrawCalendar::query();
-        $query->whereMonth('date', $request->month)
-            ->whereYear('date', $request->year);
-       
-        
+        $query->whereMonth('date', $request->month)->whereYear('date', $request->year);
 
         $calendar = $query->get();
 
