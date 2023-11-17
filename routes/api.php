@@ -65,6 +65,15 @@ Route::namespace('API')->group(function () {
         Route::get('','DictionaryController@index');
     });
 
+    Route::prefix('draw-results')->group(function () {
+        Route::get('','DrawResultController@index');
+        Route::get('{id}','DrawResultController@show');
+    });
+
+    Route::prefix('draw-calendar')->group(function () {
+        Route::get('','DrawCalendarController@index');
+    });
+
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('logout', 'LoginController@logout');
         Route::prefix('me')->group(function () {
