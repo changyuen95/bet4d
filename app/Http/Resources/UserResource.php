@@ -33,16 +33,16 @@ class UserResource extends JsonResource
             'is_finish_first_time_topup' => $this->is_finish_first_time_topup,
             'winning_amount' => $this->winning_amount,
             'user_credit' => $userCredit,
-            'user_point' => $userPoint, 
+            'user_point' => $userPoint,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->updated_at,
         ];
 
         if(isset($this->access_token)){
-            $result['accessToken'] = $this->access_token;
+            $result['access_token'] = $this->access_token;
         }
-        
+
         return $result;
     }
 }

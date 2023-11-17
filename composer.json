@@ -12,6 +12,7 @@
         "intervention/image": "^2.7",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.2",
+        "laravel/telescope": "^4.17",
         "laravel/tinker": "^2.8",
         "laravel/vonage-notification-channel": "^3.2",
         "propaganistas/laravel-phone": "^5.0",
