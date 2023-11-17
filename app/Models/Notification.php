@@ -7,18 +7,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class UserTransferDetails extends Model
+class Notification extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
     protected $guarded = ['id'];
 
-    const PRIMARY = [
-        'Yes' => true,
-        'No' => false
-    ];
-
-    public function transferOption()
+    public function targetable()
     {
-        return $this->belongsTo(TransferOption::class, 'transfer_option_id');
+        return $this->morphTo();
+    }
+
+    public function receivable()
+    {
+        return $this->morphTo();
     }
 }

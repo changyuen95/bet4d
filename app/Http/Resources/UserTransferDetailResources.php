@@ -20,7 +20,7 @@ class UserTransferDetailResources extends JsonResource
             'id' => $this->id,
             'transfer_option_id' => $this->transfer_option_id,
             'transfer_option' => $transferOption,
-            'primary' => $this->primary,
+            'primary' => (boolean) $this->primary,
             'bank_no' => $this->bank_no,
             'bank_account_holder_name' => $this->bank_account_holder_name,
             'phone_e164' => $this->phone_e164,

@@ -79,4 +79,14 @@ class Draw extends Model
     {
         return $this->draw_no.'/'.$this->year;
     }
+
+    public function results()
+    {
+        return $this->hasMany(DrawResult::class, 'draw_id');
+    }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class, 'draw_id');
+    }
 }

@@ -40,10 +40,7 @@ class MeController extends Controller
         $user->fill($request->only('name', 'email'));
         $user->save();
 
-        return response([
-            'message' => trans('messages.update_profile_successfully'),
-            'user' => new UserResource($user),
-        ], 200);
+        return response(new UserResource($user));
 
     }
 

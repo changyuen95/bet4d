@@ -187,6 +187,9 @@ class UserTransferDetailsController extends Controller
             $transferDetail->phone_owner_name = $request->phone_owner_name;
             $transferDetail->save();
             DB::commit();
+            
+            $transferDetails = UserTransferDetails::find($id);
+
             return response([
                 'message' =>  trans('messages.update_transfer_details_successfully'),
                 'transfer_details' => new UserTransferDetailResources($transferDetails),

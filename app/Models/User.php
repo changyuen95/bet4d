@@ -25,6 +25,7 @@ class User extends Authenticatable
         'phone_e164',
         'email',
         'password',
+        'is_verified',
     ];
 
     /**
@@ -53,7 +54,7 @@ class User extends Authenticatable
         'Disabled' => 'disabled',
     ];
 
-    protected $appends = ['is_finish_first_time_topup','is_bank_transferrable'];
+    protected $appends = ['is_finish_first_time_topup','is_bank_transferrable','winning_amount'];
 
     protected static function boot()
     {
@@ -72,6 +73,11 @@ class User extends Authenticatable
     public function topUpMorph()
     {
         return $this->morphMany(TopUp::class, 'creatable');
+    }
+
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'receivable');
     }
 
     public function routeNotificationForVonage($notification)
@@ -114,6 +120,16 @@ class User extends Authenticatable
         return $this->hasMany(UserTransferDetails::class, 'user_id');
     }
 
+    public function winningHistory()
+    {
+        return $this->hasMany(WinnerList::class, 'user_id');
+    }
+
+    public function verifyProfile()
+    {
+        return $this->hasMany(VerifyProfile::class, 'user_id');
+    }
+
     public function getIsFinishFirstTimeTopUpAttribute($status)
     {
         $isFinishFirstTimeTopUp = false;
@@ -132,5 +148,11 @@ class User extends Authenticatable
             $isBankTransferrable = true; 
         }
         return $isBankTransferrable;
+    }
+
+    public function getWinningAmountAttribute($status)
+    {
+        $winningAmount = $this->winningHistory()->sum('amount');
+        return $winningAmount;
     }
 }

@@ -7,6 +7,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class TicketResource extends JsonResource
 {
+
+    public static $wrap = null;
     /**
      * Transform the resource into an array.
      *
@@ -15,17 +17,23 @@ class TicketResource extends JsonResource
     public function toArray(Request $request): array
     {
         $ticketNumber = $this->ticketNumbers;
-        
+
         return [
             'id' => $this->id,
             'user_id' => $this->user_id,
             'outlet_id' => $this->outlet_id,
+            'outlet' => $this->outlet,
             'platform_id' => $this->platform_id,
             'game_id' => $this->game_id,
             'draw_id' => $this->draw_id,
+            'total_amount' => $this->total_amount,
             'draw' => $this->draws,
+            'platform' => $this->platform,
+            'game' => $this->game,
             'status' => $this->status,
             'ticketNumbers' => TicketNumberResource::collection($ticketNumber),
+            'action_by' => $this->action_by,
+            'reject_reason' => $this->reject_reason,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->updated_at,

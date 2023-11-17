@@ -7,18 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class UserTransferDetails extends Model
+class DrawCalendar extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
     protected $guarded = ['id'];
 
-    const PRIMARY = [
-        'Yes' => true,
-        'No' => false
+    const TYPE = [
+        'Normal' => 'normal',
+        'Special' => 'special',
     ];
-
-    public function transferOption()
-    {
-        return $this->belongsTo(TransferOption::class, 'transfer_option_id');
-    }
 }

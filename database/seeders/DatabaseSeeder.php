@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
        $this->call(PlatformSeeder::class);
        $this->call(PotentialWinningPriceSeeder::class);
        $this->call(TransferOptionSeeder::class);
+       $this->call(DrawCalendarSeeder::class);
 
     }
 }

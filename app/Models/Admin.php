@@ -76,5 +76,9 @@ class Admin extends Authenticatable
     {
         return $this->hasOne(AdminCredit::class, 'admin_id');
     }
-
+    
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'receivable');
+    }
 }

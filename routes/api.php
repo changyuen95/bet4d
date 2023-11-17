@@ -61,13 +61,30 @@ Route::namespace('API')->group(function () {
         });
     });
 
+    Route::prefix('dictionaries')->group(function () {
+        Route::get('','DictionaryController@index');
+    });
+
+    Route::prefix('draw-results')->group(function () {
+        Route::get('','DrawResultController@index');
+        Route::get('{id}','DrawResultController@show');
+    });
+
+    Route::prefix('draw-calendar')->group(function () {
+        Route::get('','DrawCalendarController@index');
+    });
+
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('logout', 'LoginController@logout');
         Route::prefix('me')->group(function () {
             Route::get('','MeController@me');
             Route::post('','MeController@update');
             Route::delete('','MeController@destroy');
-            Route::get('ticket','TicketController@index');
+
+            Route::prefix('tickets')->group(function () {
+                Route::get('','TicketController@index');
+                Route::get('{id}','TicketController@show');
+            });
             Route::prefix('transfer-details')->group(function () {
                 Route::get('','UserTransferDetailsController@index');
                 Route::get('{id}','UserTransferDetailsController@show');
@@ -85,11 +102,26 @@ Route::namespace('API')->group(function () {
                 Route::get('{id}','PointTransactionController@show');
 
             });
+            Route::prefix('winning-history')->group(function () {
+                Route::get('','WinningHistoryController@index');
+                // Route::get('{id}','WinningHistoryController@show');
+            });
+
+            Route::prefix('verify-profile')->group(function () {
+                Route::post('','VerifyProfileController@store');
+            });
+
+        });
+
+        Route::prefix('notifications')->group(function () {
+            Route::get('','NotificationController@index');
+            Route::post('mark-as-read/{id}','NotificationController@markAsRead');
+
         });
 
         Route::prefix('tickets')->group(function () {
             Route::post('','TicketController@store');
-            Route::post('update-status/{id}','TicketController@updateTicketStatus');    
+            Route::post('update-status/{id}','TicketController@updateTicketStatus');
         });
 
     });
@@ -110,11 +142,17 @@ Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::OPER
         Route::post('{id}','TopUpController@store');
     });
     Route::prefix('me')->group(function () {
-        
+
     });
     Route::prefix('tickets')->group(function () {
         Route::post('staff-update-status/{id}','TicketController@staffUpdateTicketStatus');
         Route::post('staff-scan-barcode/{id}','TicketController@staffScanBarcode');
+    });
+
+    Route::prefix('verify-user-profile')->group(function () {
+        Route::get('','VerifyProfileController@pendingListing');
+        Route::post('approved/{id}','VerifyProfileController@approvedICVerification');
+        Route::post('rejected/{id}','VerifyProfileController@rejectedICVerification');
     });
 });
 
