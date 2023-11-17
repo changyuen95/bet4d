@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::table('admins', function (Blueprint $table) {
             //
-            $table->enum('role', ['Superadmin', 'Operator'])->nullable();
+            $table->enum('role', ['Superadmin', 'Operator'])->after('username')->nullable();
+            $table->string('profile_image')->after('remember_token')->nullable();
         });
     }
 
@@ -25,6 +26,7 @@ return new class extends Migration
         Schema::table('admins', function (Blueprint $table) {
             //
             $table->dropColumn('role');
+            $table->dropColumn('profile_image');
         });
     }
 };

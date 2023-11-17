@@ -183,47 +183,10 @@
     </section>
 <!-- /#page-wrapper -->
 
-{{-- <script src="{!! asset('plugin/ckeditor_min/ckeditor.js') !!}" type="text/javascript"></script> --}}
-{{-- <script src="https://cdn.ckeditor.com/4.11.1/full/ckeditor.js">
-
-
-
-
-
-</script> --}}
 <script>
     $(document).ready(function(){
 
-        var role = $('#role :selected').val();
 
-
-        if(role != 'superadmin'){
-            $('#company_div').css('display','block');
-        }else{
-            $('#company_div').css('display','none');
-
-        }
-
-        $("#role").change(function (e) {
-            var role = $('#role :selected').val();
-            console.log(role);
-
-            if(role != 'superadmin'){
-                $('#multi_company_div').css('display','block');
-            }else{
-                $('#multi_company_div').css('display','none');
-            }
-
-            // if(role == 'challenger_admin' || role == 'challenger_admin_comment')
-            // {
-            //     $('#company_div').addClass('d-none');
-            //     $('#multi_company_div').removeClass('d-none');
-
-            // }else{
-            //     $('#company_div').removeClass('d-none');
-            //     $('#multi_company_div').addClass('d-none');
-            // }
-        });
 
 
         document.getElementById('file-upload').addEventListener('change', function(event) {

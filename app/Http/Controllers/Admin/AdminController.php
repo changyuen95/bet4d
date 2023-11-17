@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 
@@ -49,6 +50,7 @@ class AdminController extends Controller
 
             'name' => 'required',
             'email' => 'required|email|unique:admins,email',
+            'phone_number' => 'nullable|number',
             'password' => 'required|same:password_confirmation|min:8',
             'role' => 'required|in:superadmin,operator',
             'outlet' => 'required',
@@ -59,15 +61,32 @@ class AdminController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        try{
+        // try{
 
             DB::beginTransaction();
 
+            $new_admin = new Admin();
+            $new_admin->name = $request->name;
+            $new_admin->username = $request->name;
+            $new_admin->email = $request->email;
+            $new_admin->outlet_id = $request->outlet;
+            $new_admin->password = bcrypt($request->password);
+            $new_admin->role = $request->role;
+            $new_admin->phone_e164 = $request->phone_number;
+            $new_admin->save();
 
-        } catch( \Exception $ex)
-        {
+            DB::commit();
 
-        }
+
+            Session::flash('success', 'New admin added!');
+            return redirect()->route('admin.admins.show', $new_admin->id);
+
+        // } catch (\Exception $ex){
+
+        //     DB::rollback();
+        //     Log::info("error : " .$ex->getMessage());
+        //     return redirect()->back()->withErrors('Something went wrong. Please try again later')->withInput();
+        // }
     }
 
     /**
@@ -76,14 +95,19 @@ class AdminController extends Controller
     public function show(string $id)
     {
         //
+        $admin = Admin::findOrFail($id);
+
+        return view('admin.show', compact('admin'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Admin $admin)
     {
         //
+
+        return view('admin.edit', compact('admin'));
     }
 
     /**

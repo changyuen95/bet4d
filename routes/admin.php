@@ -20,7 +20,7 @@ use App\Http\Controllers\ProfileController;
     });
 
     Route::get('/login', function () {
-        
+
         return redirect()->route('admin.login');
     });
 
@@ -34,20 +34,26 @@ use App\Http\Controllers\ProfileController;
         Route::post('reset-password', 'ForgotPasswordController@reset_password')->name('.password.reset');
         Route::get('forgot-password/{email}/{token}', 'ForgotPasswordController@forgot_password')->name('.forgot-password');
 
+
     });
 
 
+    // Route::group(['middleware' => ['auth', 'admin'], 'namespace' => 'Admin'], function () {
+        Route::get('/dashboard', function () {
 
-    Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('dashboard');
 
-        return view('admin.dashboard');
-    })->name('dashboard');
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    Route::resource("admins", AdminController::class);
+        Route::resource("admins", AdminController::class);
 
 
-    require __DIR__.'/auth.php';
+        require __DIR__.'/auth.php';
+
+
+    // });
+
+
