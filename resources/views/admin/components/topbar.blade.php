@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-white dark:bg-cyan-600 border-b border-gray-100 dark:border-gray-700">
+<nav x-data="{ open: false }" class="bg-gray dark:bg-cyan-600 border-b border-gray-100 dark:border-gray-700">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -10,7 +10,7 @@
             <div class="hidden sm:flex sm:items-center sm:ms-6 items-end">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-600 dark:text-gray-600 bg-white hover:text-gray-700 dark:hover:text-gray-800 focus:outline-none transition ease-in-out duration-150">
                             <div>This this Name</div>
 
                             <div class="ms-1">
@@ -21,7 +21,7 @@
                         </button>
                     </x-slot>
 
-                    <x-slot name="content">
+                    <x-slot name="content" class="text-gray-600 dark:text-gray-600">
                         <x-dropdown-link :href="route('admin.profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>

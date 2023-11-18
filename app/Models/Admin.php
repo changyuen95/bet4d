@@ -9,10 +9,11 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Admin extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasUlids;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasUlids, SoftDeletes;
     protected $guard_name = 'admin';
     /**
      * The attributes that are mass assignable.

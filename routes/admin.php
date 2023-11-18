@@ -38,7 +38,7 @@ use App\Http\Controllers\ProfileController;
     });
 
 
-    // Route::group(['middleware' => ['auth', 'admin'], 'namespace' => 'Admin'], function () {
+    Route::namespace('')->group(function () {
         Route::get('/dashboard', function () {
 
             return view('admin.dashboard');
@@ -54,6 +54,6 @@ use App\Http\Controllers\ProfileController;
         require __DIR__.'/auth.php';
 
 
-    // });
+    });
 
 

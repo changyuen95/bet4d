@@ -2,10 +2,10 @@
 <x-app-layout>
     <x-slot name="header">
       <div class="flex justify-between items-center">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-600 leading-tight bg-gradient">
             {{ __('Admin Information') }}
         </h2>
-        <a href="{{route('admin.admins.edit', $admin->id)}}" class="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-3 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Edit Admin</a>
+        <a href="{{route('admin.admins.edit', $admin->id)}}" class="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-md px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Edit Admin</a>
       </div>
     </x-slot>
 
@@ -60,10 +60,9 @@
       </div> --}}
     </div>
 
-    
     <div class="flex flex-wrap my-6">
       <div class="w-full md:w-1/5 mb-6 md:mb-0">
-        <img class="h-auto max-w-full rounded-lg" src="/images/default_avatar2.jpg" alt="" width="100%">
+        <img class="h-auto max-w-full rounded-lg" src="{{ ($admin->profile_image != null) ? asset($admin->profile_image) : asset('images/default_avatar2.jpg')}}" alt="" width="100%">
       </div>
     </div>
 </x-app-layout>
