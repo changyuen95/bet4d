@@ -19,11 +19,11 @@
             @csrf
             @method('delete')
 
-            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-900">
                 {{ __('Are you sure you want to delete your account?') }}
             </h2>
 
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-500">
                 {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
             </p>
 
@@ -34,7 +34,7 @@
                     id="password"
                     name="password"
                     type="password"
-                    class="mt-1 block w-3/4"
+                    class="mt-1 block w-3/4 bg-body-tertiary text-gray-900 dark:text-gray-900"
                     placeholder="{{ __('Password') }}"
                 />
 
@@ -42,7 +42,7 @@
             </div>
 
             <div class="mt-6 flex justify-end">
-                <x-secondary-button x-on:click="$dispatch('close')">
+                <x-secondary-button x-on:click="$dispatch('close')" class="bg-dark">
                     {{ __('Cancel') }}
                 </x-secondary-button>
 

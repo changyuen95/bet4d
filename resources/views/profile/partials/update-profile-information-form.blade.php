@@ -18,14 +18,29 @@
         @method('patch')
 
         <div>
+            <div class="flex flex-wrap -mx-3 my-6">
+                <div class="w-full md:w-1/5 px-3 mb-6 md:mb-0">
+                  <img class="h-auto max-w-full rounded-lg" src="{{ ($user->profile_image) ? asset($user->profile_image) : asset('images/default_avatar2.jpg') }}" alt="" width="100%">
+                </div>
+                <div class="w-full md:w-4/5 px-3">
+                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="admin_avatar">
+                        Upload Profile Image
+                    </label>
+                    <input class="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-md cursor-pointer bg-body-tertiary dark:text-gray-400 focus:outline-none bg-neutral-200 dark:placeholder-gray-600" aria-describedby="user_avatar_help" id="admin_avatar" name="admin_avatar" type="file" accept=".jpg, .jpeg, .png">
+                    <p class="text-blue-500 text-xs italic pt-1">NOTE: Recommend Size 800 x 800 (px)</p>
+                </div>
+              </div>
+        </div>
+
+        <div>
             <x-input-label for="name" :value="__('Name')" class="mt-1 text-sm text-gray-600 dark:text-gray-500"/>
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full bg-body-tertiary text-gray-900 dark:text-gray-900" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full bg-body-tertiary text-gray-900 dark:text-gray-900 " :value="old('name', $user->name)" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
         <div>
             <x-input-label for="email" :value="__('Email')" class="mt-1 text-sm text-gray-600 dark:text-gray-500"/>
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full bg-body-tertiary text-gray-900 dark:text-gray-900" :value="old('email', $user->email)" required autocomplete="username" />
+            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full bg-body-tertiary text-gray-900 dark:text-gray-900" :value="old('email', $user->email)" required autocomplete="email" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
@@ -45,6 +60,12 @@
                     @endif
                 </div>
             @endif
+        </div>
+
+        <div>
+            <x-input-label for="phone" :value="__('Phone Number')" class="mt-1 text-sm text-gray-600 dark:text-gray-500"/>
+            <x-text-input id="phone" name="phone_num" type="text" class="mt-1 block w-full bg-body-tertiary text-gray-900 dark:text-gray-900 " :value="old('phone_num', $user->phone_e164)" required autofocus autocomplete="phone_num" />
+            <x-input-error class="mt-2" :messages="$errors->get('phone_num')" />
         </div>
 
         <div class="flex items-center gap-4">
