@@ -15,6 +15,8 @@ class Role extends Base
         "editable","deletable"
     ];
 
+    const ADMIN_GUARD = "admin-api";
+
     const DEFAULT_ROLES = [
         self::NORMAL_USER,
         self::MEMBER,

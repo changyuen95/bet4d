@@ -53,7 +53,7 @@ class AdminController extends Controller
             'email' => 'required|email|unique:admins,email',
             'phone_number' => 'nullable|numeric',
             'password' => 'required|same:password_confirmation|min:8',
-            'role' => 'required|in:superadmin,operator',
+            'role' => 'required|in:super_admin,operator',
             'outlet' => 'required',
             'user_avatar' => 'nullable|mimes:jpeg,png,jpg|max:10240'
 
@@ -95,6 +95,8 @@ class AdminController extends Controller
 
             }
 
+            $new_admin->save();
+            $new_admin->assignRole($request->role);
             $new_admin->save();
 
             DB::commit();
