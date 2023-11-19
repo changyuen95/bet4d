@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\NewAdminAddedEmail;
 use App\Models\Admin;
 use App\Models\Outlet;
 use Exception;
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class AdminController extends Controller
 {
@@ -102,6 +105,34 @@ class AdminController extends Controller
             DB::commit();
 
 
+            if($request->email)
+            {
+                /***** Send email notifcation to newly added admin *****/
+                $sender = config('main.admin_email');
+                $receiver = $request->email;
+                $info = [
+                    'title' => 'New Admin Added',
+                    'subtitle' => 'Welcome to the team of ' .$new_admin->outlet->name. ' admin!',
+                    'content' => 'Dear ' .$new_admin->name. ', an admin account has been created for you. You may access to the admin panel through the below link.',
+                    'url' => route('admin.login'),
+                    'name' => $new_admin->name,
+                    'email' => $new_admin->email,
+                    'password' => $request->password,
+                ];
+
+                $title = $info['title'];
+
+                try{
+
+                    $this->sendAdminLoginEmail($sender, $receiver, $info, $title);
+
+
+                } catch (\Exception $ex){
+
+                    Log::info('Error: ' .$ex->getMessage());
+                }
+            }
+
             Session::flash('success', 'New admin added!');
             return redirect()->route('admin.admins.show', $new_admin->id);
 
@@ -134,6 +165,7 @@ class AdminController extends Controller
         return view('admin.edit', compact('admin'));
     }
 
+
     /**
      * Update the specified resource in storage.
      */
@@ -143,7 +175,7 @@ class AdminController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'email' => "required|unique:admins,email,'.$admin->id",
+            'email' => "required|unique:admins,email," . $admin->id . ",id",
             'phone_number' => 'nullable|numeric',
             'user_avatar' => 'nullable|mimes:jpeg,png,jpg|max:10240'
         ]);
@@ -196,6 +228,7 @@ class AdminController extends Controller
 
     }
 
+
     /**
      * Remove the specified resource from storage.
      */
@@ -210,7 +243,58 @@ class AdminController extends Controller
 
         $admin->deleted_at = Carbon::now();
         $admin->save();
-        
+
         return response()->json(['success' => true, 200]);
     }
+    
+
+    public function resendEmail($id){
+
+        $admin = Admin::find($id);
+        if(!$admin)
+        {
+            Session::flash('fail', 'Something went wrong');
+            return response()->json(['success' => false, 200]);
+        }
+
+        $new_password = Admin::generatePassword();
+        $admin->password = Hash::make($new_password);
+        $admin->save();
+
+        if($admin->email)
+        {
+            /***** Send email notifcation to newly added admin *****/
+            $sender = config('main.admin_email');
+            $receiver = $admin->email;
+            $info = [
+                'title' => 'New Admin Added',
+                'subtitle' => 'Welcome to the team of ' .$admin->outlet->name. ' admin!',
+                'content' => 'Dear ' .$admin->name. ', an admin account has been created for you. You may access to the admin panel through the below link.',
+                'url' => route('admin.login'),
+                'name' => $admin->name,
+                'email' => $admin->email,
+                'password' => $new_password,
+            ];
+
+            $title = $info['title'];
+
+            try{
+
+                $this->sendAdminLoginEmail($sender, $receiver, $info, $title);
+                Log::info('Admin login crendential email successfully sent!');
+
+            } catch (\Exception $ex){
+
+                Log::info('Error: ' .$ex->getMessage());
+            }
+        }
+    }
+
+
+    public function sendAdminLoginEmail($sender, $receiver, $info, $subject){
+
+        Mail::send(new NewAdminAddedEmail($sender, $receiver, $info, $subject));
+    }
+
+
 }

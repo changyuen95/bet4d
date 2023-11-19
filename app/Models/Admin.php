@@ -80,6 +80,24 @@ class Admin extends Authenticatable
         return $this->morphMany(Notification::class, 'receivable');
     }
 
+
+     public static function generatePassword()
+     {
+        $characters = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz123456789';
+
+        $characters_length = strlen($characters);
+        $random_string = '';
+        for ($i = 0; $i < 8; $i++) {
+            $random_string .= $characters[rand(0, $characters_length - 1)];
+        }
+        $pwd = $random_string;
+
+        return $pwd;
+     }
+
+
+
+    /********  Attribute  ********/
     public function getStringRoleAttribute()
     {
         $role = $this->role;
@@ -97,4 +115,6 @@ class Admin extends Authenticatable
 
         return $stringRole;
     }
+
+
 }
