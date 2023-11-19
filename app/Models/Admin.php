@@ -15,6 +15,8 @@ class Admin extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, HasUlids, SoftDeletes;
     protected $guard_name = 'admin';
+              //  ^ Hi, the above guard_name supposed to be admin-api right?
+    
     /**
      * The attributes that are mass assignable.
      *

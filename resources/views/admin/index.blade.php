@@ -5,7 +5,9 @@
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-600 leading-tight bg-gradient">
                 {{ __('Admin List') }}
             </h2>
-            <a href="{{route('admin.admins.create')}}" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-md px-4 py-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Create Admin</a>
+            @if(Auth::user()->role == "super_admin")
+                <a href="{{route('admin.admins.create')}}" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-md px-4 py-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Create Admin</a>
+            @endif
         </div>
     </x-slot>
 
@@ -56,9 +58,10 @@
                         <a href="{{ route('admin.admins.show', $admin->id) }}" class="font-medium btn btn-info mr-2"><i class="fa fa-eye"></i></a>
 
 
-                        {{-- Add permission --}}
-                        <a href="{{ route('admin.admins.edit', $admin->id) }}" class="font-large btn btn-warning mr-2"><i class="fa fa-edit"></i></a>
-                        <button class="font-large btn btn-danger delete_admin" data-admin_id="{{$admin->id}}"><i class="fa fa-trash"></i></button>
+                        @if(Auth::user()->role == 'super_admin')
+                            <a href="{{ route('admin.admins.edit', $admin->id) }}" class="font-large btn btn-warning mr-2"><i class="fa fa-edit"></i></a>
+                            <button class="font-large btn btn-danger delete_admin" data-admin_id="{{$admin->id}}"><i class="fa fa-trash"></i></button>
+                        @endif
                     </td>
                 </tr>
                 @endforeach
