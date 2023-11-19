@@ -118,18 +118,35 @@
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
                     Profile Image
                 </label>
-                <input class="block w-full p-2 text-sm text-gray-700 border border-gray-300 rounded cursor-pointer py-3 bg-gray-50 dark:text-gray-400 focus:outline-none bg-neutral-200 dark:placeholder-gray-600" aria-describedby="user_avatar_help" id="user_avatar" name="user_avatar" type="file" accept=".jpg, .jpeg, .png">
+                <input class="block w-full p-2 text-sm text-gray-700 border border-gray-300 rounded cursor-pointer py-3 bg-gray-50 dark:text-gray-400 focus:outline-none bg-neutral-200 dark:placeholder-gray-600" aria-describedby="user_avatar_help" id="user_avatar" name="user_avatar" type="file" accept=".jpg, .jpeg, .png" onchange="showProfileImg(this)">
                 <p class="text-blue-500 text-xs italic pt-2">NOTE: Recommend Size 800 x 800 (px)</p>
                 @error('password')
                 <span class="invalid-feedback d-block text-red-500 text-xs italic" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>
                 @enderror
+                <img id="profile_img_preview" style="width:20%" class="mt-3"/>
             </div>
         </div>
         <a class="btn btn-danger px-4 mt-3 mr-2" href="{{route('admin.admins.index')}}" role="button">Back</a>
         <button type="submit" class="btn btn-success px-4 mt-3 bg-success" role="button">Save</button>
       </form>
+
+
+
+      <script>
+
+        function showProfileImg(fileInput) {
+            var reader = new FileReader();
+            reader.onload = function(){
+            var output = document.getElementById('profile_img_preview');
+            output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        };
+
+
+      </script>
 
 
 </x-app-layout>

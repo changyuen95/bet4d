@@ -26,8 +26,9 @@
                     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="admin_avatar">
                         Upload Profile Image
                     </label>
-                    <input class="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-md cursor-pointer bg-body-tertiary dark:text-gray-400 focus:outline-none bg-neutral-200 dark:placeholder-gray-600" aria-describedby="user_avatar_help" id="admin_avatar" name="admin_avatar" type="file" accept=".jpg, .jpeg, .png">
+                    <input class="block w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-md cursor-pointer bg-body-tertiary dark:text-gray-400 focus:outline-none bg-neutral-200 dark:placeholder-gray-600" aria-describedby="user_avatar_help" id="admin_avatar" name="admin_avatar" type="file" accept=".jpg, .jpeg, .png" onchange="showProfileImg(this)">
                     <p class="text-blue-500 text-xs italic pt-1">NOTE: Recommend Size 800 x 800 (px)</p>
+                    <img id="profile_img_preview" style="width:20%" class="mt-3"/>
                 </div>
               </div>
         </div>
@@ -82,4 +83,16 @@
             @endif
         </div>
     </form>
+
+
+    <script>
+          function showProfileImg(fileInput) {
+            var reader = new FileReader();
+            reader.onload = function(){
+            var output = document.getElementById('profile_img_preview');
+            output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        };
+    </script>
 </section>

@@ -84,6 +84,32 @@
                 </main>
             </div>
         </div>
+
+
+        {{-- Sweet Alert Session Message when has session--}}
+        @if(session()->has('success'))
+            <script>
+                $(document).ready(function(){
+                    swal.fire("Success!", "{{session()->get('success')}}", "success")
+                });
+            </script>
+        @endif
+
+        @if(session()->has('warning'))
+            <script>
+                $(document).ready(function(){
+                    swal.fire("Warning!", "{{session()->get('warning')}}", "info")
+                });
+            </script>
+        @endif
+
+        @if(session()->has('fail'))
+            <script>
+                $(document).ready(function(){
+                    swal.fire("Error!", "{{session()->get('fail')}}", "error")
+                });
+            </script>
+        @endif
     </body>
 </html>
 
