@@ -19,7 +19,7 @@
     
     <div class="max-w-7xl ml-auto sm:px-6 lg:px-8">
         <div class="row">
-            <div class="col-5">
+            <div class="col-4">
                 <div class="d-block bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 font-semibold text-md text-gray-800 dark:text-gray-600 leading-tight bg-gradient">
                         <u>Outlet Information</u>
@@ -79,11 +79,21 @@
                     </div>
                 </div>
             </div>
-            </div>
-            <div class="col-3">
-                Column
+            
+            <div class="col-4">
+                {{-- Column --}}
+                <div class="d-block bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-4">
+                    <div class="d-flex p-6 font-semibold text-md text-gray-800 dark:text-gray-600 leading-tight bg-gradient">
+                        <i class="fa fa-star" style="font-size: 60px" aria-hidden="true"></i>
+                        <div class="pl-8 font-semibold text-md text-gray-800 dark:text-gray-600 leading-tight bg-gradient">
+                            <u>Number</u> <br/>
+                            <span class="h1">5</span>
+                        </div>
+                    </div>
+                </div>
               </div>
           </div>
+        </div>
     </div>
     
 
