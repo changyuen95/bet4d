@@ -17,7 +17,7 @@ class DrawResultController extends Controller
     {
         $query = Draw::query();
        
-        $drawResults = $query->with('results')->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
+        $drawResults = $query->with('results')->where('is_open_result',true)->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
         return response($drawResults, 200);
     }
 
@@ -46,7 +46,10 @@ class DrawResultController extends Controller
         if(!$draw){
             return response(['message' => trans('messages.no_draw_found')], 422);
         }
-        
+
+        if(!$draw->is_open_result){
+            return response(['message' => trans('messages.the_draw_result_havent_release')], 422);
+        }
         return new DrawResource($draw);
     }
 

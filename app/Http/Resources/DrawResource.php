@@ -19,14 +19,16 @@ class DrawResource extends JsonResource
         $results = array();
 
         foreach($drawResults as $drawResult){
-            if($drawResult->type != DrawResult::TYPE['1st'] && $drawResult->type != DrawResult::TYPE['2nd'] && $drawResult->type != DrawResult::TYPE['3rd']){
-                if(!isset($results[$drawResult->type])){
-                    $results[$drawResult->type] = [];
+            if($drawResult->number != '' && $drawResult->number != '-'){
+                if($drawResult->type != DrawResult::TYPE['1st'] && $drawResult->type != DrawResult::TYPE['2nd'] && $drawResult->type != DrawResult::TYPE['3rd']){
+                    if(!isset($results[$drawResult->type])){
+                        $results[$drawResult->type] = [];
+                    }
+                    $results[$drawResult->type][$drawResult->position] = $drawResult->number; 
+                    ksort($results[$drawResult->type]);
+                }else{
+                    $results[$drawResult->type] = $drawResult->number; 
                 }
-                $results[$drawResult->type][$drawResult->position] = $drawResult->number; 
-                ksort($results[$drawResult->type]);
-            }else{
-                $results[$drawResult->type] = $drawResult->number; 
             }
         }
         return [

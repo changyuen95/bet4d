@@ -156,6 +156,9 @@ class SyncDrawResult implements ShouldQueue
 
                 if($updatedFirstPrice){
                     if($updatedFirstPrice->number != '-' && $updatedFirstPrice->number != ''){
+                        $draw->update([
+                            'is_open_result' => true
+                        ]);
                         GetWinnerList::dispatch($draw);
                     }
                 }
