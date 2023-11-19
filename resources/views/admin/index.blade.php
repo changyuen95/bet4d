@@ -43,16 +43,16 @@
                         {{ $index+1 }}
                     </td>
                     <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-black">
-                        {{ $admin->name }}
+                        {{ $admin->name ?? '-' }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $admin->email }}
+                        {{ $admin->email ?? '-' }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $admin->role }}
+                        {{ $admin->StringRole }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $admin->status }}
+                        {{ $admin->status ?? '-' }}
                     </td>
                     <td class="px-6 py-4">
                         <a href="{{ route('admin.admins.show', $admin->id) }}" class="font-medium btn btn-info mr-2"><i class="fa fa-eye"></i></a>

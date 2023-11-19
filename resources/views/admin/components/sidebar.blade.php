@@ -58,10 +58,10 @@
             <li>
                 <div class="profile-details">
                     <div class="profile-content">
-                        <img src="image/profile.jpg" alt="profileImg">
+                        <img src="{{ (Auth::user()->profile_image) ? asset(Auth::user()->profile_image) : asset('images/default_avatar2.jpg') }}" alt="profileImg">
                     </div>
                     <div class="name-job">
-                        <div class="profile_name">Prem Shahi</div>
+                        <div class="profile_name"><a href="{{ route('admin.profile.edit') }}"> {{ Auth::user()->name }} </a></div>
                     </div>
                     <i class='bx bx-log-out' ></i>
                 </div>
@@ -69,12 +69,12 @@
         </ul>
     </div>
 
-    {{-- <section class="home-section">
+    <section class="home-section">
         <div class="home-content">
-        <i class="fa fa-user bx-menu"></i>
-            <span class="text">Drop Down Sidebar</span>
+        <i class="fa fa-bars bx-menu"></i>
+
         </div>
-    </section> --}}
+    </section>
 
     <script>
         let arrow = document.querySelectorAll(".arrow");
@@ -269,7 +269,7 @@
         padding: 12px 0;
         transition: all 0.5s ease;
         -webkit-box-shadow: 0px -7px 8px -4px rgba(57,57,57,0.85); 
-box-shadow: 0px -7px 8px -4px rgba(57,57,57,0.85);
+        box-shadow: 0px -7px 8px -4px rgba(57,57,57,0.85);
     }
     .sidebar.close .profile-details{
         background: none;
@@ -331,7 +331,7 @@ box-shadow: 0px -7px 8px -4px rgba(57,57,57,0.85);
         font-size: 35px;
     }
     .home-section .home-content .bx-menu{
-        margin: 0 15px;
+        margin: -125px 15px 0px 15px;
         cursor: pointer;
     }
     .home-section .home-content .text{

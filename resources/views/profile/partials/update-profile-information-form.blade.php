@@ -65,7 +65,7 @@
 
         <div>
             <x-input-label for="phone" :value="__('Phone Number')" class="mt-1 text-sm text-gray-600 dark:text-gray-500"/>
-            <x-text-input id="phone" name="phone_num" type="text" class="mt-1 block w-full bg-body-tertiary text-gray-900 dark:text-gray-900 " :value="old('phone_num', $user->phone_e164)" required autofocus autocomplete="phone_num" />
+            <x-text-input id="phone" name="phone_num" type="text" class="mt-1 block w-full bg-body-tertiary text-gray-900 dark:text-gray-900 " :value="old('phone_num', $user->phone_e164)" required autofocus autocomplete="phone_num" readonly/>
             <x-input-error class="mt-2" :messages="$errors->get('phone_num')" />
         </div>
 

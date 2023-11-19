@@ -14,9 +14,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Admin extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, HasUlids, SoftDeletes;
-    protected $guard_name = 'admin';
+    protected $guard_name = 'admin-api';
               //  ^ Hi, the above guard_name supposed to be admin-api right?
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -74,9 +74,27 @@ class Admin extends Authenticatable
     {
         return $this->belongsTo(Outlet::class, 'outlet_id');
     }
-    
+
     public function notifications()
     {
         return $this->morphMany(Notification::class, 'receivable');
+    }
+
+    public function getStringRoleAttribute()
+    {
+        $role = $this->role;
+        if($role == "super_admin")
+        {
+            $stringRole = 'Superadmin';
+
+        }else if($role == "operator"){
+
+            $stringRole = 'Operator';
+
+        }else{
+            $stringRole = '-';
+        }
+
+        return $stringRole;
     }
 }

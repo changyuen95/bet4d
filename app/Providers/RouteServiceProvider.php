@@ -39,7 +39,7 @@ class RouteServiceProvider extends ServiceProvider
 
                 Route::middleware('web')
                 ->namespace($this->admin_namespace)
-                ->domain('bet4d.test')
+                ->domain(env('APP_ADMIN_URL'))
                 ->name('admin.')
                 ->group(base_path('routes/admin.php'));
 
