@@ -31,7 +31,7 @@ class AdminController extends Controller
 
         $admins = Admin::where('outlet_id', $user->outlet_id)->orderBy('created_at', 'desc')->get();
 
-        return view('admin.index', compact('admins'));
+        return view('admin.admin.index', compact('admins'));
     }
 
     /**
@@ -41,7 +41,7 @@ class AdminController extends Controller
     {
         //
         $outlets = Outlet::all();
-        return view('admin.create2', compact('outlets'));
+        return view('admin.admin.create2', compact('outlets'));
     }
 
     /**
@@ -152,7 +152,7 @@ class AdminController extends Controller
         //
         $admin = Admin::findOrFail($id);
 
-        return view('admin.show', compact('admin'));
+        return view('admin.admin.show', compact('admin'));
     }
 
     /**
@@ -162,7 +162,7 @@ class AdminController extends Controller
     {
         //
 
-        return view('admin.edit', compact('admin'));
+        return view('admin.admin.edit', compact('admin'));
     }
 
 
