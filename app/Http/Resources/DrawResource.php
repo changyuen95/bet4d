@@ -31,6 +31,19 @@ class DrawResource extends JsonResource
                 }
             }
         }
+
+        $keyMapping = [
+            "1st" => "first_prize",
+            "2nd" => "second_prize",
+            "3rd" => "third_prize",
+            // Add more mappings as needed
+        ];
+        
+        // Use array_map to rename the keys
+        $results = collect($results)->map(function ($item, $key) use ($keyMapping) {
+            return [$keyMapping[$key] ?? $key => $item];
+        })->collapse()->all();
+
         return [
             'id' => $this->id,
             'reference_id' => $this->reference_id,

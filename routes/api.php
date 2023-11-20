@@ -73,7 +73,14 @@ Route::namespace('API')->group(function () {
     Route::prefix('draw-calendar')->group(function () {
         Route::get('','DrawCalendarController@index');
     });
+    Route::prefix('draw')->group(function () {
+        Route::get('{id}/winning-list','WinnerListDisplayController@show');
+    });
 
+    Route::prefix('winning-list')->group(function () {
+        Route::get('','WinnerListDisplayController@index');
+    });
+    
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('logout', 'LoginController@logout');
         Route::prefix('me')->group(function () {

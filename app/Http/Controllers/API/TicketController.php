@@ -249,6 +249,7 @@ class TicketController extends Controller
                     'amount' => $billAmount,
                     'type'  => CreditTransaction::TYPE['Increase'],
                     'before_amount' => $userCredit->credit,
+                    'outlet_id' => $ticket->outlet_id,
                 ]);
 
                 $userCredit->credit = $userCredit->credit + $billAmount;
@@ -265,6 +266,7 @@ class TicketController extends Controller
                     'amount' => $billAmount,
                     'type'  => CreditTransaction::TYPE['Decrease'],
                     'before_amount' => $userCredit->credit,
+                    'outlet_id' => $ticket->outlet_id,
                 ]);
 
                 $userCredit->credit = $userCredit->credit - $billAmount;
@@ -388,6 +390,7 @@ class TicketController extends Controller
                         'amount' => $billAmount,
                         'type'  => CreditTransaction::TYPE['Increase'],
                         'before_amount' => $userCredit->credit,
+                        'outlet_id' => $ticket->outlet_id,
                     ]);
                     $userCredit->credit = $userCredit->credit + $billAmount;
                     $userCredit->save();

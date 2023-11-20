@@ -48,7 +48,7 @@ class TopUpController extends Controller
             return response(['message' => trans('messages.no_user_found')], 422);
         }
         $staff = Auth::user();
-
+        $outlet = $staff->outlet;
         DB::beginTransaction();
         try{
             $userCredit = $user->credit;
@@ -82,7 +82,8 @@ class TopUpController extends Controller
                 'user_id' => $user->id,
                 'amount' => $request->amount,
                 'type' => CreditTransaction::TYPE['Increase'],
-                'before_amount' => $userCredit->credit
+                'before_amount' => $userCredit->credit,
+                'outlet_id' => $outlet->id,
             ]);
 
             $userCredit->credit = $userCredit->credit + $request->amount;
@@ -92,7 +93,8 @@ class TopUpController extends Controller
                 'user_id' => $user->id,
                 'point' => $request->amount,
                 'type' => PointTransaction::TYPE['Increase'],
-                'before_point' => $request->amount
+                'before_point' => $request->amount,
+                'outlet_id' => $outlet->id,
             ]);
 
             $userPoint->point = $userPoint->point + $request->amount;

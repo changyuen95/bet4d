@@ -24,7 +24,13 @@ class DictionaryController extends Controller
             });
         }
 
-        $dictionaries = $query->paginate($request->get('limit') ?? 10);
+        if(app()->getLocale() == 'en'){
+            $dictionaries = $query->select('id', 'keyword_en AS keyword', 'number')->paginate($request->get('limit') ?? 10);
+        }elseif(app()->getLocale() == 'cn'){
+            $dictionaries = $query->select('id', 'keyword_ch AS keyword', 'number')->paginate($request->get('limit') ?? 10);
+        }else{
+            $dictionaries = $query->select('id', 'keyword_en AS keyword', 'number')->paginate($request->get('limit') ?? 10);
+        }
 
         return response($dictionaries, 200);
     }

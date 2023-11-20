@@ -89,4 +89,9 @@ class Draw extends Model
     {
         return $this->hasMany(Ticket::class, 'draw_id');
     }
+
+    public function winnerListDisplay()
+    {
+        return $this->hasMany(WinnerListDisplay::class, 'draw_id');
+    }
 }
