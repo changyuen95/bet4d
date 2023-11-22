@@ -94,4 +94,5 @@ return [
     'the_draw_result_havent_release' => 'The draw result havent release',
     'no_draw_found' => 'No draw found',
     'no_outlet_found' => 'No Outlet found',
+    'no_number_frequency_found' => 'No number frequency found',
 ];

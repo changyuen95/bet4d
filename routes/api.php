@@ -82,6 +82,15 @@ Route::namespace('API')->group(function () {
         Route::get('','WinnerListDisplayController@index');
     });
     
+    Route::prefix('number-frequencies')->group(function () {
+        Route::get('','NumberFrequenciesController@index');
+        Route::get('{id}','NumberFrequenciesController@show');
+    });
+
+    Route::prefix('popular-number')->group(function () {
+        Route::get('','PopularNumberController@index');
+    });
+
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('logout', 'LoginController@logout');
         Route::prefix('me')->group(function () {

@@ -10,6 +10,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         \App\Console\Commands\DrawResult::class,
         \App\Console\Commands\WinnerListDisplay::class,
+        \App\Console\Commands\NumberFrequencies::class,
+        \App\Console\Commands\PopularNumber::class,
     ];
 
     /**
