@@ -55,9 +55,15 @@ class OutletController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($platform_id,string $id)
     {
-        //
+        $outlet = Outlet::where('platform_id',$platform_id)->where('id',$id)->first();
+
+        if(!$outlet){
+            return response(['message' => trans('messages.no_outlet_found')], 422);
+        }
+        
+        return new OutletResource($outlet);
     }
 
     /**

@@ -16,11 +16,14 @@ class OutletResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'reference_id' => $this->reference_id,
+            'platform_id' => $this->platform_id,
             'name' => $this->name,
             'address' => $this->address,
             'image' => $this->image,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'deleted_at' => $this->deleted_at,
         ];
     }
 }

@@ -93,4 +93,5 @@ return [
     'notification_is_already_mark_as_read' => 'Notification is already mark as read',
     'the_draw_result_havent_release' => 'The draw result havent release',
     'no_draw_found' => 'No draw found',
+    'no_outlet_found' => 'No Outlet found',
 ];

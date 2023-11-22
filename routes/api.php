@@ -58,6 +58,7 @@ Route::namespace('API')->group(function () {
 
         Route::prefix('{platform_id}/outlets')->group(function () {
             Route::get('','OutletController@index');
+            Route::get('{id}','OutletController@show');
         });
     });
 
