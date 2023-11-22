@@ -76,4 +76,9 @@ class Admin extends Authenticatable
     {
         return $this->morphMany(Notification::class, 'receivable');
     }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class, 'action_by');
+    }
 }

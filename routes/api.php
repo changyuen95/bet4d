@@ -162,7 +162,9 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkUser
 
     });
     Route::prefix('tickets')->group(function () {
-        Route::get('','TicketController@staffTicketListing');
+        Route::get('','StaffTicketController@index');
+        Route::get('{id}','StaffTicketController@show');
+        Route::get('requested','TicketController@staffTicketListing');
         Route::post('staff-update-status/{id}','TicketController@staffUpdateTicketStatus');
         Route::post('staff-scan-barcode/{id}','TicketController@staffScanBarcode');
     });

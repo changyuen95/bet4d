@@ -306,10 +306,10 @@ class TicketController extends Controller
         }
 
         $query = $staffOutlet->tickets();
-        if($request->status != ''){
-            $query->where('status',$request->status);
-        }
-        $tickets = $query->with(['ticketNumbers', 'draws','platform','game'])->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
+        // if($request->status != ''){
+        //     $query->where('status',$request->status);
+        // }
+        $tickets = $query->where('status',Ticket::STATUS['TICKET_REQUESTED'])->with(['ticketNumbers', 'draws','platform','game'])->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
         return response($tickets, 200);
     }
 
