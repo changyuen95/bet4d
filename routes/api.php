@@ -143,7 +143,7 @@ Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::MEMB
     // Routes for Member users
 });
 
-Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::OPERATOR])->group(function () {
+Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkUserType:'.Role::OPERATOR])->group(function () {
     // Routes for Operator users
     Route::prefix('topup')->group(function () {
         Route::post('{id}','TopUpController@store');
@@ -152,6 +152,7 @@ Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::OPER
 
     });
     Route::prefix('tickets')->group(function () {
+        Route::get('','TicketController@staffTicketListing');
         Route::post('staff-update-status/{id}','TicketController@staffUpdateTicketStatus');
         Route::post('staff-scan-barcode/{id}','TicketController@staffScanBarcode');
     });

@@ -32,7 +32,7 @@ class TicketController extends Controller
             $query->where('status',$request->status);
         }
 
-        $tickets = $query->with(['ticketNumbers', 'draws','platform','game'])->paginate($request->get('limit') ?? 10);
+        $tickets = $query->with(['ticketNumbers', 'draws','platform','game'])->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
         
         return response($tickets, 200);
     }
@@ -296,6 +296,21 @@ class TicketController extends Controller
             DB::rollback();
             return response(['message' =>  trans('messages.failed_to_update_status') ], 422);
         }
+    }
+
+    public function staffTicketListing(Request $request){
+        $staff = Auth::user();
+        $staffOutlet = $staff->outlet;
+        if(!$staffOutlet){
+            return response(['message' =>  trans('messages.you_are_not_belongs_to_any_outlet') ], 422);
+        }
+
+        $query = $staffOutlet->tickets();
+        if($request->status != ''){
+            $query->where('status',$request->status);
+        }
+        $tickets = $query->with(['ticketNumbers', 'draws','platform','game'])->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
+        return response($tickets, 200);
     }
 
     public function staffUpdateTicketStatus(Request $request, $id){
