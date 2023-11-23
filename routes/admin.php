@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\QrcodeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 
@@ -53,6 +54,14 @@ use App\Http\Controllers\ProfileController;
             Route::post('resend-email/{id}', [AdminController::class, 'resendEmail'])->name('.resend_email');
         });
         Route::resource("admins", AdminController::class);
+
+
+        Route::group(['prefix' => 'qrcodes', 'as' => 'qrcodes'], function() {
+            Route::get('index-scanned-list', [QrcodeController::class, 'indexScannedList'])->name('.scanned_list');
+            Route::get('scanned-list-datatable', [QrcodeController::class, 'scannedListDatatable'])->name('.scanned_list_datatable');
+            Route::post('/print-qrcode/{id}', [QrcodeController::class, 'qrCodePrint'])->name('.qr_print');
+        });
+        Route::resource("qrcodes", QrcodeController::class);
 
 
         require __DIR__.'/auth.php';

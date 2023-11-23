@@ -1,4 +1,4 @@
-p<?php
+<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -11,7 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('credit_transactions', function (Blueprint $table) {
+        Schema::create('qr_scanned_lists', function (Blueprint $table) {
+            $table->ulid('id')->primary();
+            $table->ulid('qr_id');
+            $table->ulid('user_id');
+            $table->timestamps();
             $table->softDeletes();
         });
     }
@@ -21,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('credit_transactions', function (Blueprint $table) {
-            $table->dropSoftDeletes();
-        });
+        Schema::dropIfExists('qr_scanned_lists');
     }
 };

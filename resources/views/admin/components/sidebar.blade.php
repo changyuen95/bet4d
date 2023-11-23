@@ -30,21 +30,19 @@
                 </a>
             </li>
 
-            {{-- <li>
+            <li>
                 <div class="iocn-link">
-                <a href="#">
-                    <i class='bx bx-plug' ></i>
-                    <span class="link_name">Plugins</span>
+                <a href="{{ route('admin.qrcodes.index') }}" class="arrow">
+                    <i class='fa fa-qrcode bx bx-plug' ></i>
+                    <span class="link_name">QR Code</span>
                 </a>
-                <i class='bx bxs-chevron-down arrow' ></i>
+                <i class='fa fa-chevron-down arrow' style="font-size:12px"></i>
                 </div>
                 <ul class="sub-menu">
-                <li><a class="link_name" href="#">Plugins</a></li>
-                <li><a href="#">UI Face</a></li>
-                <li><a href="#">Pigments</a></li>
-                <li><a href="#">Box Icons</a></li>
+                    <li><a href="{{ route('admin.qrcodes.index') }}">QR Code List</a></li>
+                    <li><a href="{{ route('admin.qrcodes.scanned_list') }}">Scanned List</a></li>
                 </ul>
-            </li> --}}
+            </li>
             {{-- <li>
                 <a href="#">
                 <i class='bx bx-compass' ></i>
@@ -80,10 +78,11 @@
         let arrow = document.querySelectorAll(".arrow");
         for (var i = 0; i < arrow.length; i++) {
             arrow[i].addEventListener("click", (e)=>{
-        let arrowParent = e.target.parentElement.parentElement;//selecting main parent of arrow
-        arrowParent.classList.toggle("showMenu");
+                let arrowParent = e.target.parentElement.parentElement;//selecting main parent of arrow
+                arrowParent.classList.toggle("showMenu");
             });
         }
+
         let sidebar = document.querySelector(".sidebar");
         let sidebarBtn = document.querySelector(".bx-menu");
         console.log(sidebarBtn);

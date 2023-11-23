@@ -6,7 +6,7 @@
         </h2>
     </x-slot>
 
-    <form class="w-full mb-8" action="{{route('admin.admins.store')}}" class="form-horizontal" method="POST"  enctype="multipart/form-data">
+    <form class="w-full mb-8" action="{{route('admin.qrcodes.store')}}" class="form-horizontal" method="POST"  enctype="multipart/form-data">
         @csrf
         <div class="flex flex-wrap -mx-3 mb-6">
           <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -38,7 +38,11 @@
               Phone Number
             </label>
             <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="phone_no" type="text" name="phone_number" placeholder="Phone Number">
-
+            @error('phone_number')
+            <span class="invalid-feedback d-block text-red-500 text-xs italic" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+            @enderror
             {{-- <div class="flex">
               <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border rounded-e-0 border-gray-300 rounded-s-md dark:bg-gray-300 dark:text-gray-600">
                 +60
@@ -51,7 +55,7 @@
         <div class="flex flex-wrap -mx-3 mb-6">
             <div class="w-full px-3">
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
-                Password
+                    Password
                 </label>
                 <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-password" type="password" placeholder="*********" name="password" required>
                 {{-- <p class="text-gray-600 text-xs italic">Make it as long and as crazy as you'd like</p> --}}
@@ -64,10 +68,10 @@
         </div>
         <div class="flex flex-wrap -mx-3 mb-6">
             <div class="w-full px-3">
-                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-cpassword">
                     Confirm Password
                 </label>
-                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-password" type="password" placeholder="*********" name="password_confirmation" required>
+                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-cpassword" type="password" placeholder="*********" name="password_confirmation" required>
                 {{-- <p class="text-gray-600 text-xs italic">Make it as long and as crazy as you'd like</p> --}}
                 @error('password_confirmation')
                     <span class="invalid-feedback d-block text-red-500 text-xs italic" role="alert">
@@ -78,11 +82,11 @@
         </div>
         <div class="flex flex-wrap -mx-3 mb-10">
             <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-state">
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-role">
                     Role
                 </label>
                 <div class="relative">
-                <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state" name="role" required>
+                <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-role" name="role" required>
                     <option value="super_admin" {{old('role') == 'superadmin' ? 'selected' : ''}}>Superadmin</option>
                     <option value="operator" {{old('role') == 'operator' ? 'selected' : ''}}>Operator</option>
                 </select>
@@ -94,11 +98,11 @@
                 @enderror
             </div>
             <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-city">
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-outlet">
                     Outlet
                 </label>
                 {{-- <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-city" type="text" placeholder="Albuquerque" name="outlet"> --}}
-                <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state" name="outlet" required>
+                <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-outlet" name="outlet" required>
 
                     @forelse($outlets as $outlet)
                         <option value="{{ $outlet->id }}" {{old('outlet') == $outlet->id ? 'selected' : ''}}> {{ $outlet->name }}</option>
@@ -115,12 +119,12 @@
         </div>
         <div class="flex flex-wrap -mx-3 mb-6">
             <div class="w-full px-3">
-                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="user_avatar">
                     Profile Image
                 </label>
                 <input class="block w-full p-2 text-sm text-gray-700 border border-gray-300 rounded cursor-pointer py-3 bg-gray-50 dark:text-gray-400 focus:outline-none bg-neutral-200 dark:placeholder-gray-600" aria-describedby="user_avatar_help" id="user_avatar" name="user_avatar" type="file" accept=".jpg, .jpeg, .png" onchange="showProfileImg(this)">
                 <p class="text-blue-500 text-xs italic pt-2">NOTE: Recommend Size 800 x 800 (px)</p>
-                @error('password')
+                @error('user_avatar')
                 <span class="invalid-feedback d-block text-red-500 text-xs italic" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>

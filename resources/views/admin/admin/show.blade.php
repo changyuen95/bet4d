@@ -22,7 +22,7 @@
           <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-name">
             Name
           </label>
-          <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight" id="grid--name" type="text" placeholder="" value="{{ $admin->name ?? '-'}}" readonly>
+          <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight" id="grid-name" type="text" placeholder="" value="{{ $admin->name ?? '-'}}" readonly>
           {{-- <p class="text-red-500 text-xs italic">Please fill out this field.</p> --}}
         </div>
         <div class="w-full md:w-1/2 px-3">
@@ -49,16 +49,16 @@
     </div>
     <div class="flex flex-wrap -mx-3 mb-2">
         <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-state">
+          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-role">
             Role
           </label>
-          <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight " id="grid-email" type="text" placeholder="" value="{{ $admin->StringRole ?? '-'}}" readonly>
+          <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight " id="grid-role" type="text" placeholder="" value="{{ $admin->StringRole ?? '-'}}" readonly>
         </div>
         <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-city">
+          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-outlet">
             Outlet
           </label>
-          <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight " id="grid-city" type="text" placeholder=""  value="{{ $admin->outlet->name }}" readonly>
+          <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight " id="grid-outlet" type="text" placeholder=""  value="{{ $admin->outlet->name }}" readonly>
         </div>
       {{-- <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
         <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-zip">
@@ -104,8 +104,8 @@
                             if(response.success){
 
                                 Swal.fire(
-                                'Deleted!',
-                                'The admin has been deleted.',
+                                'Sent!',
+                                'The email has been sent.',
                                 'success'
                                 ).then(function(){
                                     window.location.reload(true);
