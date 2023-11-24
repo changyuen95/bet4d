@@ -99,4 +99,6 @@ return [
     'prize_is_already_distributed' => 'Prize is already distributed',
     'the_payment_receipt_is_submitted' => 'The payment receipt is submitted',
     'failed_to_distribute_prize' => 'Failed to distribute prize',
+    'successfully_update_avatar' => 'Successfully updated avatar',
+    'failed_to_update_avatar' => 'Failed to update avatar',
 ];

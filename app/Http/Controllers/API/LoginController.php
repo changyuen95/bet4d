@@ -83,10 +83,13 @@ class LoginController extends Controller
         $user = $request->user();
 
         // Revoke all of the user's tokens.
-        $user->tokens->each(function ($token, $key) {
-            $token->delete();
-        });
-
+        // $user->tokens->each(function ($token, $key) {
+        //     $token->delete();
+        // });
+        // Get the current authenticated user's access token
+        $accessToken = $user->currentAccessToken();
+        // Revoke the current access token
+        $accessToken->delete();
         return response()->json(['message' => trans('messages.logout_successfully')], 200);
     }
 }

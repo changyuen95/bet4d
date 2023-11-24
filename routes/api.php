@@ -96,6 +96,7 @@ Route::namespace('API')->group(function () {
         Route::prefix('me')->group(function () {
             Route::get('','MeController@me');
             Route::post('','MeController@update');
+            Route::post('update-avatar','MeController@updateAvatar');
             Route::delete('','MeController@destroy');
 
             Route::prefix('tickets')->group(function () {
