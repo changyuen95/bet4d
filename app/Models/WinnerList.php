@@ -12,6 +12,7 @@ class WinnerList extends Model
     use HasFactory, HasUlids, SoftDeletes;
 
     protected $guarded = ['id'];
+    protected $appends = ['distribute_attachment_full_path'];
 
     public function ticketNumber()
     {
@@ -26,5 +27,13 @@ class WinnerList extends Model
     public function winner()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function getDistributeAttachmentFullPathAttribute(){
+        if($this->distribute_attachment != ''){
+            return asset('storage/'.$this->distribute_attachment);
+        }else{
+            return $this->distribute_attachment;
+        }
     }
 }
