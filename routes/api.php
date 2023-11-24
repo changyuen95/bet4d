@@ -81,7 +81,7 @@ Route::namespace('API')->group(function () {
     Route::prefix('winning-list')->group(function () {
         Route::get('','WinnerListDisplayController@index');
     });
-    
+
     Route::prefix('number-frequencies')->group(function () {
         Route::get('','NumberFrequenciesController@index');
         Route::get('{id}','NumberFrequenciesController@show');
@@ -164,8 +164,8 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkUser
     });
     Route::prefix('tickets')->group(function () {
         Route::get('','StaffTicketController@index');
-        Route::get('{id}','StaffTicketController@show');
         Route::get('requested','TicketController@staffTicketListing');
+        Route::get('{id}','StaffTicketController@show');
         Route::post('staff-update-status/{id}','TicketController@staffUpdateTicketStatus');
         Route::post('staff-scan-barcode/{id}','TicketController@staffScanBarcode');
     });
