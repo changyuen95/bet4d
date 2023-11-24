@@ -125,6 +125,7 @@ Route::namespace('API')->group(function () {
             });
 
             Route::prefix('verify-profile')->group(function () {
+                Route::get('','VerifyProfileController@index');
                 Route::post('','VerifyProfileController@store');
             });
 
@@ -173,6 +174,12 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkUser
         Route::get('','VerifyProfileController@pendingListing');
         Route::post('approved/{id}','VerifyProfileController@approvedICVerification');
         Route::post('rejected/{id}','VerifyProfileController@rejectedICVerification');
+    });
+
+    Route::prefix('distribute-prize')->group(function () {
+        Route::get('','DistributePrizeController@index');
+        Route::get('{id}','DistributePrizeController@show');
+        Route::post('{id}','DistributePrizeController@store');
     });
 });
 

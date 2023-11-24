@@ -17,4 +17,14 @@ class WinnerList extends Model
     {
         return $this->belongsTo(TicketNumber::class, 'ticket_number_id');
     }
+
+    public function drawResult()
+    {
+        return $this->belongsTo(DrawResult::class, 'draw_result_id');
+    }
+
+    public function winner()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

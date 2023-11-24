@@ -16,9 +16,16 @@ class VerifyProfileController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $query = Auth::user()->verifyProfile();
+        if($request->status != ''){
+            $query->where('status',$request->status);
+        }
+
+        $verifyProfile = $query->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
+        
+        return response($verifyProfile, 200);
     }
 
     /**

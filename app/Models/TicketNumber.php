@@ -29,7 +29,7 @@ class TicketNumber extends Model
 
     public function getPotentialWinningAttribute()
     {
-        $potentialWinningData = PotentialWinningPriceList::where('type_id',$this->type)->first();
+        $potentialWinningData = PotentialWinningPriceList::where('type',$this->type)->first();
         $potentialWinning = [
             'big_1st' => 0,
             'big_2nd' => 0,

@@ -81,4 +81,8 @@ class Admin extends Authenticatable
     {
         return $this->hasMany(Ticket::class, 'action_by');
     }
+
+    public function winnerList(){
+        return $this->hasMany(WinnerList::class, 'action_by');
+    }
 }
