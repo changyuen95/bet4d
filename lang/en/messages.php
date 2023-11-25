@@ -101,4 +101,6 @@ return [
     'failed_to_distribute_prize' => 'Failed to distribute prize',
     'successfully_update_avatar' => 'Successfully updated avatar',
     'failed_to_update_avatar' => 'Failed to update avatar',
+    'no_draw_found' => 'No Draw Found',
+    'draw_expired' => 'Draw Expired',
 ];

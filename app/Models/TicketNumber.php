@@ -17,6 +17,11 @@ class TicketNumber extends Model
         'Permutation' => 'permutation'
     ];
 
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+    
     public function ticket()
     {
         return $this->belongsTo(Ticket::class, 'ticket_id');

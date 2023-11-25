@@ -75,6 +75,7 @@ Route::namespace('API')->group(function () {
         Route::get('','DrawCalendarController@index');
     });
     Route::prefix('draw')->group(function () {
+        Route::get('current-draw','DrawController@getCurrentDraw');
         Route::get('{id}/winning-list','WinnerListDisplayController@show');
     });
 

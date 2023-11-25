@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class DistributeResource extends JsonResource
+class DistributeResource extends BaseResource
 {
     /**
      * Transform the resource into an array.
@@ -26,9 +26,9 @@ class DistributeResource extends JsonResource
             'amount' => $this->amount,
             'is_distribute' => $this->is_distribute,
             'distribute_attachment' => $this->distribute_attachment,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'deleted_at' => $this->deleted_at,
+            'created_at' => $this->formatDate($this->created_at),
+            'updated_at' => $this->formatDate($this->updated_at),
+            'deleted_at' => $this->formatDate($this->deleted_at),
             'draw_result' => $this->drawResult,
             'ticket_number' => $this->ticketNumber,
             'winner' => $winner,

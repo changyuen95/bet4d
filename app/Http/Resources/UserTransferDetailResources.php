@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserTransferDetailResources extends JsonResource
+class UserTransferDetailResources extends BaseResource
 {
     /**
      * Transform the resource into an array.
@@ -25,9 +25,9 @@ class UserTransferDetailResources extends JsonResource
             'bank_account_holder_name' => $this->bank_account_holder_name,
             'phone_e164' => $this->phone_e164,
             'phone_owner_name' => $this->phone_owner_name,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'deleted_at' => $this->updated_at,
+            'created_at' => $this->formatDate($this->created_at),
+            'updated_at' => $this->formatDate($this->updated_at),
+            'deleted_at' => $this->formatDate($this->updated_at),
         ];
     }
 }

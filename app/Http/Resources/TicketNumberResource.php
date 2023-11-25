@@ -6,7 +6,7 @@ use App\Models\PotentialWinningPriceList;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TicketNumberResource extends JsonResource
+class TicketNumberResource extends BaseResource
 {
     /**
      * Transform the resource into an array.
@@ -23,8 +23,8 @@ class TicketNumberResource extends JsonResource
             'small_amount' => $this->small_amount,
             'type' => $this->type,
             'potential_winning' => $this->potentialWinning,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'created_at' => $this->formatDate($this->created_at),
+            'updated_at' => $this->formatDate($this->updated_at),
         ];
     }
 }

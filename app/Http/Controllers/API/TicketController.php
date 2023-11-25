@@ -57,6 +57,7 @@ class TicketController extends Controller
                 'platform_id' => ['required'],
                 'outlet_id' => ['required'],
                 'game_id' => ['required'],
+                'draw_id' => ['required'],
                 'ticket.*.ticket_number' => ['required', 'numeric', 'integer','digits:4'],
                 'ticket.*.small_amount' => ['required', 'numeric', 'integer'],
                 'ticket.*.big_amount' => ['required', 'numeric', 'integer'],
@@ -108,7 +109,15 @@ class TicketController extends Controller
                 return response(['message' => trans('messages.invalid_outlet')], 422);
             }
 
-            $drawData = Draw::getDrawData($platform->id);
+            $drawData = Draw::find($request->draw_id);
+            if(!$drawData){
+                return response(['message' => trans('messages.no_draw_found')], 422);
+            }
+
+            if(Draw::checkIsExpired($drawData)){
+                return response(['message' => trans('messages.draw_expired')], 422);
+            }
+            // $drawData = Draw::getDrawData($platform->id);
             $billAmount = 0;
             foreach($request->ticket as $ticket){
                 $billAmount += $ticket['small_amount'];

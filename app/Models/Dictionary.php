@@ -10,4 +10,8 @@ class Dictionary extends Model
     use HasFactory;
     protected $guarded = ['id'];
 
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
 }

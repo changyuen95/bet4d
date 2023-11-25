@@ -55,6 +55,11 @@ class User extends Authenticatable
         'Disabled' => 'disabled',
     ];
 
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+    
     protected $appends = ['is_finish_first_time_topup','is_bank_transferrable','winning_amount'];
 
     protected static function boot()

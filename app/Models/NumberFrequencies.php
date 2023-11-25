@@ -12,6 +12,11 @@ class NumberFrequencies extends Model
     use HasFactory, HasUlids, SoftDeletes;
     protected $guarded = ['id'];
 
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+    
     public function details()
     {
         return $this->hasMany(NumberFrequenciesDetails::class, 'number_frequency_id');

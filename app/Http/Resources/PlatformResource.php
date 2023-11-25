@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PlatformResource extends JsonResource
+class PlatformResource extends BaseResource
 {
     /**
      * Transform the resource into an array.
@@ -19,9 +19,9 @@ class PlatformResource extends JsonResource
             'name' => $this->name,
             'status' => $this->status,
             'image' => $this->image,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'deleted_at' => $this->deleted_at,
+            'created_at' => $this->formatDate($this->created_at),
+            'updated_at' => $this->formatDate($this->updated_at),
+            'deleted_at' => $this->formatDate($this->deleted_at),
         ];
     }
 }
