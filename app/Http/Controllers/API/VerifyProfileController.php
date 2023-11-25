@@ -175,6 +175,14 @@ class VerifyProfileController extends Controller
         return response($verifyProfiles, 200);
     }
 
+    public function verifyProfileDetail($id){
+        $verifyProfile = VerifyProfile::find($id);
+        if(!$verifyProfile){
+            return response(['message' => trans('messages.no_ic_verification_request_found')], 422);
+        }
+        return response($verifyProfile, 200);
+    }
+
     public function approvedICVerification(Request $request, $id){
         $staff = Auth::user();
 
