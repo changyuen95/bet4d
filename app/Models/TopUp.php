@@ -36,6 +36,11 @@ class TopUp extends Model
         return $this->morphOne(CreditTransaction::class, 'targetable');
     }
 
+    public function adminTransaction()
+    {
+        return $this->morphOne(CreditTransaction::class, 'targetable');
+    }
+
     public function pointTransaction()
     {
         return $this->morphOne(PointTransaction::class, 'targetable');

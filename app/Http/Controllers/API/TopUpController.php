@@ -86,6 +86,14 @@ class TopUpController extends Controller
                 'outlet_id' => $outlet->id,
             ]);
 
+            // admin/staff credit
+            $adminTransaction->adminTransaction()->create([
+                'user_id' => $user->id,
+                'amount' => $request->amount,
+                'type' => CreditTransaction::TYPE['Increase'],
+                'before_amount' => $userCredit->credit
+            ]);
+
             $userCredit->credit = $userCredit->credit + $request->amount;
             $userCredit->save();
 
