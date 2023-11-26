@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TicketResource;
 use Illuminate\Http\Request;
+use App\Models\Ticket;
 use Auth;
 class StaffTicketController extends Controller
 {
@@ -19,7 +20,7 @@ class StaffTicketController extends Controller
         }
 
         $tickets = $query->with(['ticketNumbers', 'draws','platform','game'])->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
-        
+
         return response($tickets, 200);
     }
 
@@ -44,12 +45,13 @@ class StaffTicketController extends Controller
      */
     public function show(string $id)
     {
-        $ticket = Auth::user()->tickets()->find($id);
+        // $ticket = Auth::user()->tickets()->find($id);
+        $ticket = Ticket::find($id);
 
         if(!$ticket){
             return response(['message' => trans('messages.no_ticket_found')], 422);
         }
-        
+
         return new TicketResource($ticket);
     }
 
@@ -76,5 +78,5 @@ class StaffTicketController extends Controller
     {
         //
     }
-    
+
 }

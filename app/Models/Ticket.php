@@ -29,10 +29,19 @@ class Ticket extends Model
             $model->reference_id = uniqid();
         });
     }
-    
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function staff()
+    {
+        return $this->hasOne(Staff::class, 'action_by');
+    }
+
     public function ticketNumbers()
     {
-        return $this->hasMany(TicketNumber::class, 'ticket_id');
+        return $this->hasMany(TicketNumber::class, 'order_id','order_id')->where('a.sku_id,b.skuid');
     }
 
     public function creditTransaction()
@@ -73,7 +82,7 @@ class Ticket extends Model
         }
         return number_format((float)$totalAmount, 2, '.', '');
     }
-    
+
     public function notifications()
     {
         return $this->morphMany(Notification::class, 'targetable');

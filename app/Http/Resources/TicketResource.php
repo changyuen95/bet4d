@@ -21,6 +21,7 @@ class TicketResource extends JsonResource
         return [
             'id' => $this->id,
             'user_id' => $this->user_id,
+            'user' => $this->user,
             'outlet_id' => $this->outlet_id,
             'outlet' => $this->outlet,
             'platform_id' => $this->platform_id,
@@ -33,6 +34,7 @@ class TicketResource extends JsonResource
             'status' => $this->status,
             'ticketNumbers' => TicketNumberResource::collection($ticketNumber),
             'action_by' => $this->action_by,
+            'staff' => $this->staff,
             'reject_reason' => $this->reject_reason,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
