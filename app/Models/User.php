@@ -59,7 +59,7 @@ class User extends Authenticatable
     {
         return $date->format('Y-m-d H:i:s');
     }
-    
+
     protected $appends = ['is_finish_first_time_topup','is_bank_transferrable','winning_amount'];
 
     protected static function boot()
@@ -113,7 +113,7 @@ class User extends Authenticatable
 
     public function tickets()
     {
-        return $this->hasMany(Ticket::class, 'user_id');
+        return $this->hasMany(Ticket::class, 'user_id')->orderby('created_at','desc');
     }
 
     public function topup()
@@ -141,17 +141,17 @@ class User extends Authenticatable
         $isFinishFirstTimeTopUp = false;
         $topUpCount = $this->topup()->count();
         if($topUpCount > 0){
-            $isFinishFirstTimeTopUp = true; 
+            $isFinishFirstTimeTopUp = true;
         }
         return $isFinishFirstTimeTopUp;
     }
-    
+
     public function getIsBankTransferrableAttribute($status)
     {
         $isBankTransferrable = false;
         $transferDetailsCount = $this->transferDetails()->count();
         if($transferDetailsCount > 0){
-            $isBankTransferrable = true; 
+            $isBankTransferrable = true;
         }
         return $isBankTransferrable;
     }

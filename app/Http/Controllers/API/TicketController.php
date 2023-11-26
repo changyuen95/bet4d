@@ -33,7 +33,7 @@ class TicketController extends Controller
         }
 
         $tickets = $query->with(['ticketNumbers', 'draws','platform','game'])->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
-        
+
         return response($tickets, 200);
     }
 
@@ -78,12 +78,12 @@ class TicketController extends Controller
                 'ticket.*.type.required' => trans('messages.the_type_is_required_for_all_items'),
                 'ticket.*.type.in' => trans('messages.invalid_type_value_for_some_items'),
             ];
-            
+
             $validator->setCustomMessages($customMessages);
             if ($validator->fails()) {
                 return response(['message' => $validator->errors()->first()], 422);
             }
-    
+
             $user = User::find(Auth::user()->id);
             if(!$user){
                 return response(['message' => trans('messages.no_user_found')], 422);
@@ -177,7 +177,7 @@ class TicketController extends Controller
         if(!$ticket){
             return response(['message' => trans('messages.no_ticket_found')], 422);
         }
-        
+
         return new TicketResource($ticket);
     }
 
@@ -365,7 +365,7 @@ class TicketController extends Controller
         }
 
         if($request->status == Ticket::STATUS['TICKET_REJECTED']){
-            if($ticket->status != Ticket::STATUS['TICKET_REQUESTED']){
+            if($ticket->status != Ticket::STATUS['TICKET_IN_PROGRESS']){
                 $ticket->action_by = null;
                 $ticket->save();
                 return response(['message' =>  trans('messages.unable_to_reject_ticket_request_when_ticket_status_is_not_requested') ], 422);
@@ -375,7 +375,7 @@ class TicketController extends Controller
                 // 'user_id' => ['required'],
                 'reject_reason' => ['required'],
             ]);
-    
+
             if ($validator1->fails()) {
                 return response(['message' => $validator1->errors()->first()], 422);
             }
@@ -419,7 +419,7 @@ class TicketController extends Controller
                     $userCredit->credit = $userCredit->credit + $billAmount;
                     $userCredit->save();
                 }
-                
+
             }else{
                 $barCodeCount = $ticket->barcode()->count();
                 if($barCodeCount <= 0){
@@ -461,7 +461,7 @@ class TicketController extends Controller
         if($checkDuplicateBarcode > 0){
             return response(['message' =>  trans('messages.this_ticket_had_scanned_before_please_try_another_ticket') ], 422);
         }
-        
+
         DB::beginTransaction();
         try{
 

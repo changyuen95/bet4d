@@ -168,7 +168,7 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkUser
         Route::get('','StaffTicketController@index');
         Route::get('requested','TicketController@staffTicketListing');
         Route::get('{id}','StaffTicketController@show');
-        Route::post('staff-update-status/{id}','TicketController@staffUpdateTicketStatus');
+        Route::post('update-status/{id}','TicketController@staffUpdateTicketStatus');
         Route::post('staff-scan-barcode/{id}','TicketController@staffScanBarcode');
     });
 
