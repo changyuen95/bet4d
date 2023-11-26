@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TicketResource extends JsonResource
+class TicketResource extends BaseResource
 {
 
     public static $wrap = null;
@@ -36,9 +36,9 @@ class TicketResource extends JsonResource
             'action_by' => $this->action_by,
             'staff' => $this->staff,
             'reject_reason' => $this->reject_reason,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'deleted_at' => $this->updated_at,
+            'created_at' => $this->formatDate($this->created_at),
+            'updated_at' => $this->formatDate($this->updated_at),
+            'deleted_at' => $this->formatDate($this->updated_at),
         ];
     }
 }

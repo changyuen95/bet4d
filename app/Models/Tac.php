@@ -14,6 +14,12 @@ class Tac extends Model
         'Forgot_Password' => 'Forgot Password TAC',
         'Register_User' => 'Register User',
     ];
+
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+    
     public function ownerable()
     {
         return $this->morphTo();

@@ -10,6 +10,10 @@ use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Validator;
+use File;
+use Image;
+use DB;
+use Illuminate\Support\Facades\Storage;
 class MeController extends Controller
 {
     public function me()
@@ -63,6 +67,65 @@ class MeController extends Controller
             'message' => trans('messages.successfully_deleted_account'),
         ], 200);
 
+    }
+
+    public function updateAvatar(Request $request)
+    {
+        $validator = Validator::make($request->all(),
+        [
+            'avatar' => 'required|image|mimes:jpg,png,jpeg',
+        ]);
+
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->first()], 422);
+        }
+
+        $user = Auth::user();
+        if(!$user){
+            return response(['message' => trans('messages.no_user_found')], 422);
+        }
+    
+        DB::beginTransaction();
+        try {
+            if($request->hasFile('avatar')) {
+                $allowedfileExtension=['jpg','png','jpeg'];
+                
+                $avatarAttachmentFile = $request->file('avatar');
+                $avatarAttachmentfilename = $avatarAttachmentFile->getClientOriginalName();
+                $avatarAttachmentextension = $avatarAttachmentFile->extension();
+
+                $check =in_array($avatarAttachmentextension,$allowedfileExtension);
+                
+                if($check) {
+                    File::makeDirectory(storage_path('app/public/avatar/user/'.$user->id.'/attachment/'), $mode = 0777, true, true);
+                    $input['imagename'] = 'avatar_'.time().'.'.$avatarAttachmentFile->getClientOriginalExtension();
+                    $destination_path = storage_path('app/public/avatar/user/'.$user->id.'/attachment/');
+                    $img = Image::make($avatarAttachmentFile->path());
+                    $img->save($destination_path.'/'.$input['imagename']);
+                    $avatar_attachment_image_full_path = asset('storage/avatar/user/'.$user->id.'/attachment/'.$input['imagename']);
+                    $oldAvatar = $user->avatar;
+                    $user->update([
+                        'avatar' => $avatar_attachment_image_full_path,
+                    ]);
+                    Storage::delete('public/'.str_replace(asset('storage/'),'',$oldAvatar));
+                    DB::commit();
+                    return response([
+                        'message' =>  trans('messages.successfully_update_avatar'),
+                    ], 200);
+                } else {
+                    DB::rollback();
+                    return response(['message' => trans('messages.only_png_jpg_jpeg_is_accepted')], 422);
+                }
+                
+            }else{
+                DB::rollback();
+                return response(['message' => trans('messages.no_file_detected')], 422);
+            }
+            
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return response(['message' => trans('messages.failed_to_update_avatar')], 422);
+        }
     }
 
 }

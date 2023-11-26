@@ -12,8 +12,13 @@ class Draw extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
     protected $guarded = ['id'];
-    protected $appends = ['full_draw_no'];
+    protected $appends = ['full_draw_no', 'open_result_date'];
 
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+    
     protected static function boot()
     {
         parent::boot();
@@ -80,6 +85,16 @@ class Draw extends Model
         return $this->draw_no.'/'.$this->year;
     }
 
+    public function getOpenResultDateAttribute()
+    {
+        if($this->expired_at != ''){
+            $resultDate = Carbon::createFromFormat('Y-m-d H:i:s',$this->expired_at)->addHour()->format('Y-m-d H:i:s');
+            return $resultDate;
+        }else{
+            return $this->expired_at;
+        }
+    }
+
     public function results()
     {
         return $this->hasMany(DrawResult::class, 'draw_id');
@@ -93,5 +108,22 @@ class Draw extends Model
     public function winnerListDisplay()
     {
         return $this->hasMany(WinnerListDisplay::class, 'draw_id');
+    }
+
+    public static function getCurrentDraw(){
+        // $todayDateString = "25/11/2023 19:00:00";
+        $todayDateString = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now()->toDateTimeString())->format('d/m/Y H:i:s');
+        $currentDateTime = Carbon::createFromFormat('d/m/Y H:i:s', $todayDateString);
+        $draw = Draw::where('expired_at', '>', $currentDateTime)
+                    ->orderBy('expired_at', 'ASC') // Order by expired_at in descending order
+                    ->first();
+        return $draw;
+    }
+
+    public static function checkIsExpired($draw){
+        if (Carbon::parse($draw->expired_at)->isPast()) {
+            return true;
+        } 
+        return false;
     }
 }

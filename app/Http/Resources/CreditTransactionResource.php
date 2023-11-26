@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CreditTransactionResource extends JsonResource
+class CreditTransactionResource extends BaseResource
 {
     /**
      * Transform the resource into an array.
@@ -29,9 +29,9 @@ class CreditTransactionResource extends JsonResource
             'amount' => $this->amount,
             'type' => $this->type,
             'before_amount' => $this->before_amount,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'deleted_at' => $this->deleted_at,
+            'created_at' => $this->formatDate($this->created_at),
+            'updated_at' => $this->formatDate($this->updated_at),
+            'deleted_at' => $this->formatDate($this->deleted_at),
 
         ];
 

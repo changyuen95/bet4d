@@ -75,6 +75,7 @@ Route::namespace('API')->group(function () {
         Route::get('','DrawCalendarController@index');
     });
     Route::prefix('draw')->group(function () {
+        Route::get('current-draw','DrawController@getCurrentDraw');
         Route::get('{id}/winning-list','WinnerListDisplayController@show');
     });
 
@@ -96,6 +97,7 @@ Route::namespace('API')->group(function () {
         Route::prefix('me')->group(function () {
             Route::get('','MeController@me');
             Route::post('','MeController@update');
+            Route::post('update-avatar','MeController@updateAvatar');
             Route::delete('','MeController@destroy');
 
             Route::prefix('tickets')->group(function () {
@@ -125,6 +127,7 @@ Route::namespace('API')->group(function () {
             });
 
             Route::prefix('verify-profile')->group(function () {
+                Route::get('','VerifyProfileController@index');
                 Route::post('','VerifyProfileController@store');
             });
 
@@ -171,8 +174,15 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkUser
 
     Route::prefix('verify-user-profile')->group(function () {
         Route::get('','VerifyProfileController@pendingListing');
-        Route::post('approved/{id}','VerifyProfileController@approvedICVerification');
-        Route::post('rejected/{id}','VerifyProfileController@rejectedICVerification');
+        Route::get('{id}','VerifyProfileController@verifyProfileDetail');
+        Route::post('{id}/approved','VerifyProfileController@approvedICVerification');
+        Route::post('{id}/rejected','VerifyProfileController@rejectedICVerification');
+    });
+
+    Route::prefix('distribute-prize')->group(function () {
+        Route::get('','DistributePrizeController@index');
+        Route::get('{id}','DistributePrizeController@show');
+        Route::post('{id}','DistributePrizeController@store');
     });
 });
 

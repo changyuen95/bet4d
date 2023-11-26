@@ -16,7 +16,7 @@ class PotentialWinningPriceSeeder extends Seeder
     {
         $winningListArray = [
             [
-                'type_id' => TicketNumber::TYPE['Straight'],
+                'type' => TicketNumber::TYPE['Straight'],
                 'big1st' => 2500,
                 'big2nd' => 1000,
                 'big3rd' => 500,
@@ -30,7 +30,7 @@ class PotentialWinningPriceSeeder extends Seeder
                 'remark' => 'Straight',
             ],
             [
-                'type_id' => TicketNumber::TYPE['Permutation'],
+                'type' => TicketNumber::TYPE['Permutation'],
                 'big1st' => 625,
                 'big2nd' => 250,
                 'big3rd' => 125,

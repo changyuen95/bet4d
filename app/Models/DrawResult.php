@@ -20,6 +20,11 @@ class DrawResult extends Model
         'consolation' => 'consolation',
     ];
 
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+    
     public function winners()
     {
         return $this->hasMany(WinnerList::class, 'draw_result_id');

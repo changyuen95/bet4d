@@ -53,6 +53,11 @@ class Admin extends Authenticatable
         'Disabled' => 'disabled',
     ];
 
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+    
     protected static function boot()
     {
         parent::boot();
@@ -80,5 +85,9 @@ class Admin extends Authenticatable
     public function tickets()
     {
         return $this->hasMany(Ticket::class, 'action_by');
+    }
+
+    public function winnerList(){
+        return $this->hasMany(WinnerList::class, 'action_by');
     }
 }

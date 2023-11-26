@@ -17,6 +17,11 @@ class TicketNumber extends Model
         'Permutation' => 'permutation'
     ];
 
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+    
     public function ticket()
     {
         return $this->belongsTo(Ticket::class, 'ticket_id');
@@ -29,7 +34,7 @@ class TicketNumber extends Model
 
     public function getPotentialWinningAttribute()
     {
-        $potentialWinningData = PotentialWinningPriceList::where('type_id',$this->type)->first();
+        $potentialWinningData = PotentialWinningPriceList::where('type',$this->type)->first();
         $potentialWinning = [
             'big_1st' => 0,
             'big_2nd' => 0,

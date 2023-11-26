@@ -95,4 +95,12 @@ return [
     'no_draw_found' => 'No draw found',
     'no_outlet_found' => 'No Outlet found',
     'no_number_frequency_found' => 'No number frequency found',
+    'no_winner_prize_found' => 'No winner prize found',
+    'prize_is_already_distributed' => 'Prize is already distributed',
+    'the_payment_receipt_is_submitted' => 'The payment receipt is submitted',
+    'failed_to_distribute_prize' => 'Failed to distribute prize',
+    'successfully_update_avatar' => 'Successfully updated avatar',
+    'failed_to_update_avatar' => 'Failed to update avatar',
+    'no_draw_found' => 'No Draw Found',
+    'draw_expired' => 'Draw Expired',
 ];

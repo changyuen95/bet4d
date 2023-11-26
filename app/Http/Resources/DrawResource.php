@@ -6,7 +6,7 @@ use App\Models\DrawResult;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class DrawResource extends JsonResource
+class DrawResource extends BaseResource
 {
     /**
      * Transform the resource into an array.
@@ -51,10 +51,11 @@ class DrawResource extends JsonResource
             'draw_no' => $this->draw_no,
             'year' => $this->year,
             'full_draw_no' => $this->full_draw_no,
-            'expired_at' => $this->expired_at,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'deleted_at' => $this->deleted_at,
+            'open_result_date' => $this->formatDate($this->open_result_date),
+            'expired_at' => $this->formatDate($this->expired_at),
+            'created_at' => $this->formatDate($this->created_at),
+            'updated_at' => $this->formatDate($this->updated_at),
+            'deleted_at' => $this->formatDate($this->deleted_at),
             'results' => $results
         ];
     }

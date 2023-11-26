@@ -17,6 +17,11 @@ class UserTransferDetails extends Model
         'No' => false
     ];
 
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+    
     public function transferOption()
     {
         return $this->belongsTo(TransferOption::class, 'transfer_option_id');

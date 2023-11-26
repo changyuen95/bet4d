@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class UserResource extends BaseResource
 {
     public static $wrap = null;
     /**
@@ -34,9 +34,9 @@ class UserResource extends JsonResource
             'winning_amount' => $this->winning_amount,
             'user_credit' => $userCredit,
             'user_point' => $userPoint,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'deleted_at' => $this->updated_at,
+            'created_at' => $this->formatDate($this->created_at),
+            'updated_at' => $this->formatDate($this->updated_at),
+            'deleted_at' => $this->formatDate($this->deleted_at),
         ];
 
         if(isset($this->access_token)){

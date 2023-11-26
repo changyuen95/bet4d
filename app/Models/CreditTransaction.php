@@ -17,6 +17,11 @@ class CreditTransaction extends Model
         'Increase' => 'increase',
         'Decrease' => 'decrease'
     ];
+    
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
 
     public function targetable()
     {

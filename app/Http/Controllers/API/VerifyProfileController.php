@@ -16,9 +16,16 @@ class VerifyProfileController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $query = Auth::user()->verifyProfile();
+        if($request->status != ''){
+            $query->where('status',$request->status);
+        }
+
+        $verifyProfile = $query->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
+        
+        return response($verifyProfile, 200);
     }
 
     /**
@@ -166,6 +173,14 @@ class VerifyProfileController extends Controller
         $verifyProfiles = VerifyProfile::where('status',VerifyProfile::STATUS['Pending'])->paginate($request->get('limit') ?? 10);
         
         return response($verifyProfiles, 200);
+    }
+
+    public function verifyProfileDetail($id){
+        $verifyProfile = VerifyProfile::find($id);
+        if(!$verifyProfile){
+            return response(['message' => trans('messages.no_ic_verification_request_found')], 422);
+        }
+        return response($verifyProfile, 200);
     }
 
     public function approvedICVerification(Request $request, $id){

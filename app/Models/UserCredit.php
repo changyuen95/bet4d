@@ -13,7 +13,11 @@ class UserCredit extends Model
     protected $guarded = ['id'];
     protected $appends = ['amount'];
 
-
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+    
     public function getAmountAttribute(){
         return $this->credit;
     }
