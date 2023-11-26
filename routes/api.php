@@ -179,7 +179,7 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkUser
         Route::post('{id}/rejected','VerifyProfileController@rejectedICVerification');
     });
 
-    Route::prefix('distribute-prize')->group(function () {
+    Route::prefix('distribute-prizes')->group(function () {
         Route::get('','DistributePrizeController@index');
         Route::get('{id}','DistributePrizeController@show');
         Route::post('{id}','DistributePrizeController@store');
