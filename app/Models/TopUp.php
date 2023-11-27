@@ -21,7 +21,7 @@ class TopUp extends Model
     {
         return $date->format('Y-m-d H:i:s');
     }
-    
+
     protected static function boot()
     {
         parent::boot();
@@ -38,7 +38,7 @@ class TopUp extends Model
 
     public function adminTransaction()
     {
-        return $this->morphOne(CreditTransaction::class, 'targetable');
+        return $this->morphOne(AdminCreditTransaction::class, 'targetable');
     }
 
     public function pointTransaction()

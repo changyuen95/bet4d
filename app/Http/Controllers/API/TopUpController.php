@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\CreditTransaction;
+use App\Models\AdminCreditTransaction;
 use App\Models\PointTransaction;
 use App\Models\TopUp;
 use App\Models\User;
@@ -97,10 +98,11 @@ class TopUpController extends Controller
 
             // admin/staff credit
             $adminTransaction= $topup->adminTransaction()->create([
-                'user_id' => $user->id,
+                'admin_id' => $staff->id,
                 'amount' => $request->amount,
-                'type' => CreditTransaction::TYPE['Increase'],
-                'before_amount' => $userCredit->credit
+                'type' => AdminCreditTransaction::TYPE['Increase'],
+                'before_amount' => $adminCredit->credit,
+                'outlet_id' => $outlet->id,
             ]);
 
             $userCredit->credit = $userCredit->credit + $request->amount;
@@ -108,6 +110,9 @@ class TopUpController extends Controller
 
             $adminCredit->amount = $adminCredit->amount + $request->amount;
             $adminCredit->save();
+
+            $adminTransaction->after_amount = $adminCredit->amount;
+            $adminTransaction->save();
 
             $pointTransaction = $topup->pointTransaction()->create([
                 'user_id' => $user->id,
