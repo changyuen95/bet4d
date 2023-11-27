@@ -40,4 +40,8 @@ class Outlet extends Model
     {
         return $this->hasMany(Admin::class, 'outlet_id');
     }
+
+    public function winnerList(){
+        return $this->hasMany(WinnerList::class, 'outlet_id');
+    }
 }

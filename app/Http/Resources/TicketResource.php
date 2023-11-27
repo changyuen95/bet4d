@@ -36,6 +36,7 @@ class TicketResource extends BaseResource
             'action_by' => $this->action_by,
             'staff' => $this->staff,
             'reject_reason' => $this->reject_reason,
+            'completed_at' => $this->formatDate($this->completed_at),
             'created_at' => $this->formatDate($this->created_at),
             'updated_at' => $this->formatDate($this->updated_at),
             'deleted_at' => $this->formatDate($this->updated_at),

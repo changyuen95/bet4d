@@ -21,7 +21,7 @@ class Ticket extends Model
         'TICKET_REJECTED' => 'rejected',
     ];
 
-    Const ALL_STATUS = array_values($this::STATUS);
+    // Const ALL_STATUS = array_values($this::STATUS);
 
 
     protected function serializeDate(\DateTimeInterface $date)
@@ -44,12 +44,12 @@ class Ticket extends Model
 
     public function staff()
     {
-        return $this->hasOne(Staff::class, 'action_by');
+        return $this->hasOne(Admin::class, 'id','action_by');
     }
 
     public function ticketNumbers()
     {
-        return $this->hasMany(TicketNumber::class, 'order_id','order_id')->where('a.sku_id,b.skuid');
+        return $this->hasMany(TicketNumber::class, 'ticket_id');
     }
 
     public function creditTransaction()

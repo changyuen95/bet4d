@@ -435,6 +435,7 @@ class TicketController extends Controller
                 if($barCodeCount <= 0){
                     return response(['message' => trans('messages.at_least_1_barcode_is_scanned_in_order_to_complete_ticket_request')], 422);
                 }
+                $ticket->completed_at = Carbon::now();
             }
 
             $ticket->status = $request->status;

@@ -68,7 +68,7 @@ class DistributePrizeController extends Controller
             return response(['message' => trans('messages.no_user_found')], 422);
         }
 
-        $winner = $staff->winnerList()->find($id);
+        $winner = $staff->outlet->winnerList()->find($id);
 
         if(!$winner){
             return response(['message' => trans('messages.no_winner_prize_found')], 422);
@@ -98,7 +98,8 @@ class DistributePrizeController extends Controller
                     $distribute_attachment_image_full_path = 'distribute_prize/'.$staff->id.'/attachment/'.$input['imagename'];
                     $winner->update([
                         'is_distribute' => true,
-                        'distribute_attachment' => $distribute_attachment_image_full_path
+                        'distribute_attachment' => $distribute_attachment_image_full_path,
+                        'action_by' => $staff->id
                     ]);
 
                     DB::commit();

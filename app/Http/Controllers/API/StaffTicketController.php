@@ -8,8 +8,10 @@ use Illuminate\Http\Request;
 use App\Models\Ticket;
 use App\Models\WinnerList;
 use Validator;
-
+use Illuminate\Validation\Rule;
 use Auth;
+use Carbon\Carbon;
+
 class StaffTicketController extends Controller
 {
     /**
@@ -18,26 +20,40 @@ class StaffTicketController extends Controller
     public function index(Request $request)
     {
         $staff = Auth::user();
+        // Define the custom validation rule
+        Validator::extend('valid_status', function ($attribute, $value, $parameters, $validator) {
+            // Your status array
+            $statusArray = Ticket::STATUS;
+
+            // Check if each value in $value is in the $statusArray
+            foreach ($value as $status) {
+                if (!in_array($status, $statusArray)) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+
         $validator = Validator::make($request->all(), [
             'game_id' => 'nullable|exists:game,id',
-            'status' => 'array|in:'.Ticket::ALL_STATUS,
+            'status' => ['array','valid_status'],
             // 'duration' => ''
-            'handled_by_me' => 'in:'.[true,false],
+            'handled_by_me' => [Rule::in(array_values([true,false]))],
         ]);
 
         if ($validator->fails()) {
             return response(['message' => $validator->errors()->first()], 422);
         }
 
-        $query = Ticket::where('outlet_id',$staff->id);
-
-        if($request->platfrom_id){
+        $query = Ticket::where('outlet_id',$staff->outlet_id);
+        if($request->game_id){
             $query->where('game_id',$request->game_id);
 
         }
 
         if($request->status != ''){
-            $query->whereIn('ticket_status',$request->status);
+            $query->whereIn('status',$request->status);
         }
 
         if($request->handled_by_me){
@@ -46,8 +62,11 @@ class StaffTicketController extends Controller
 
         $tickets = $query->with(['ticketNumbers', 'draws','platform','game'])->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
 
+        $todayStart = Carbon::today()->startOfDay();
+        $todayEnd = Carbon::today()->endOfDay();
         $completed_today = Ticket::where('action_by',$staff->id)
-                            ->where('status',Ticket::STATUS['TICKET_COMPLETED'])->count();
+                            ->where('status',Ticket::STATUS['TICKET_COMPLETED'])
+                            ->whereBetween('completed_at', [$todayStart, $todayEnd])->count();
 
         $results = [
             'tickets' => $tickets,
