@@ -11,6 +11,8 @@ use File;
 use Image;
 use DB;
 use Validator;
+use Illuminate\Validation\Rule;
+
 class DistributePrizeController extends Controller
 {
     /**
