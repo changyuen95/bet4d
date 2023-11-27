@@ -38,7 +38,7 @@ class DrawCurrentYearSeeder extends Seeder
 
         while ($lastDrawDate->lte($endDate)) {
             // Check if the current day is either Wednesday (3) or Saturday (6)
-            if ($lastDrawDate->dayOfWeek == Carbon::WEDNESDAY || $lastDrawDate->dayOfWeek == Carbon::SATURDAY) {
+            if ($lastDrawDate->dayOfWeek == Carbon::WEDNESDAY || $lastDrawDate->dayOfWeek == Carbon::SATURDAY || $lastDrawDate->dayOfWeek == Carbon::SUNDAY) {
                 // Insert into the drawCalender model
                 $expired_at = $lastDrawDate->copy();
                 $expired_at->setTime(19, 0, 0);
