@@ -131,7 +131,7 @@ class StaffTicketController extends Controller
         //
     }
 
-    public function pending_count(string $id)
+    public function pending_count()
     {
         $staff = Auth::user();
 
@@ -150,6 +150,8 @@ class StaffTicketController extends Controller
             'ticket_request' => $ticket_count,
             'distribute_prize' => $prize_count,
         ];
+
+        return $count;
     }
 
 }
