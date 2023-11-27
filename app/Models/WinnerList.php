@@ -41,7 +41,7 @@ class WinnerList extends Model
 
     public function staff()
     {
-        return $this->hasOne(Staff::class, 'action_by');
+        return $this->belongsTo(Admin::class, 'action_by');
     }
 
     public function getDistributeAttachmentFullPathAttribute(){
