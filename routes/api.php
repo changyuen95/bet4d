@@ -131,6 +131,9 @@ Route::namespace('API')->group(function () {
                 Route::post('','VerifyProfileController@store');
             });
 
+            Route::prefix('topup')->group(function () {
+                Route::post('/qrcode/{id}','TopUpController@topupByQrCode');
+            });
         });
 
         Route::prefix('notifications')->group(function () {

@@ -165,7 +165,7 @@ class TopUpController extends Controller
     {
         $user = Auth::user();
 
-        $qrcode = Qrcode::where('id',$request->qrcode_id)->first();
+        $qrcode = Qrcode::where('id',$id)->first();
 
         if(!$qrcode){
             return response(['message' => trans('messages.invalid_qrcode')], 422);
