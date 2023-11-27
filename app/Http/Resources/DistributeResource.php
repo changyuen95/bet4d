@@ -23,7 +23,6 @@ class DistributeResource extends BaseResource
             'id' => $this->id,
             'draw_result_id' => $this->draw_result_id,
             'ticket_number_id' => $this->ticket_number_id,
-            'user' => $this->user,
             'outlet' => $this->outlet,
             'action_by' => $this->action_by,
             'staff' => $this->staff,
