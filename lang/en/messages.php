@@ -10,6 +10,7 @@ return [
     'send_tac_successfully' => 'Send Tac Successfully !',
     'phone_exists' => 'Phone Existed !',
     'please_try_again_in_2_minutes' => 'Please try again in 2 minutes',
+    'please_try_again' => 'Please try again',
     'verify_successfully' => 'Verify Successfully',
     'invalid_tac' => 'Invalid Tac',
     'reset_password_successfully' => 'Reset Password Successfully !',
@@ -103,4 +104,6 @@ return [
     'failed_to_update_avatar' => 'Failed to update avatar',
     'no_draw_found' => 'No Draw Found',
     'draw_expired' => 'Draw Expired',
+    'qrcode_reached_max_amount' => 'Qrcode has reached limit',
+    'invalid_qrcode' => 'Invalid Qrcode',
 ];

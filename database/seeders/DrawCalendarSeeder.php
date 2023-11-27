@@ -33,7 +33,7 @@ class DrawCalendarSeeder extends Seeder
                         'color' => '#228734'
                     ]);
                 }
-    
+
                 // Move to the next day
                 $currentDate->addDay();
             }

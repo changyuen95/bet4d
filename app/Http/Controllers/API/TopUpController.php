@@ -7,6 +7,8 @@ use App\Models\CreditTransaction;
 use App\Models\PointTransaction;
 use App\Models\TopUp;
 use App\Models\User;
+use App\Models\Qrcode;
+use App\Models\QrcodeTransaction;
 use Illuminate\Http\Request;
 use Auth;
 use Exception;
@@ -158,4 +160,80 @@ class TopUpController extends Controller
     {
         //
     }
+
+    public function topupByQrCode(Request $request,$id)
+    {
+        $user = Auth::user();
+
+        $qrcode = Qrcode::where('id',$request->qrcode_id)->first();
+
+        if(!$qrcode){
+            return response(['message' => trans('messages.invalid_qrcode')], 422);
+        }
+
+        if($qrcode->avaibility > 0){
+            $qrcode->update([
+                'avaibility' => $qrcode->avaibility - 1,
+            ]);
+
+            if($qrcode->avaibility < 0){
+
+                $qrcode->update([
+                    'avaibility' => $qrcode->avaibility + 1,
+                ]);
+                return response(['message' => trans('messages.please_try_again')], 422);
+
+            }
+
+        }else{
+            return response(['message' => trans('messages.qrcode_reached_max_amount')], 422);
+        }
+
+        DB::beginTransaction();
+
+
+        try{
+            $userCredit = $user->credit;
+            if(!$userCredit){
+                $userCredit = $user->credit()->create([
+                    'credit' => 0
+                ]);
+            }
+
+            $topup = $staff->topUpMorph()->create([
+                'user_id' => $user->id,
+                'amount' => $request->amount,
+                'remark' => $request->remark,
+                'top_up_with' => TopUp::TOP_UP_WITH['QR'],
+            ]);
+
+            $creditTransaction = $topup->creditTransaction()->create([
+                'user_id' => $user->id,
+                'amount' => $request->amount,
+                'type' => CreditTransaction::TYPE['Increase'],
+                'before_amount' => $userCredit->credit,
+                'outlet_id' => $user->outlet_id,
+            ]);
+
+            $userCredit->credit = $userCredit->credit + $request->amount;
+            $userCredit->save();
+
+            $qrcode_transaction = QrcodeTransaction::create([
+                'user_id' => $user->id,
+                'qrcode_id' => $qrcode->id,
+                'amount' => $qrcode->amount,
+            ]);
+
+            DB::commit();
+
+            return response(['message' => trans('messages.you_had_successfully_top_up').' '.$qrcode->amount.' '.trans('messages.credit').' '.trans('messages.for').' '.$user->name], 200);
+        }catch (Exception $e) {dd($e);
+            DB::rollback();
+            $qrcode->avaibility = $qrcode->avaibility+1;
+            $qrcode->save();
+
+            return response(['message' =>  trans('messages.top_up_failed') ], 422);
+        }
+    }
+
 }

@@ -3,10 +3,10 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-600 leading-tight bg-gradient">
-                {{ __('Admin List') }}
+                {{ __('QR Code List') }}
             </h2>
             @if(Auth::user()->role == "super_admin")
-                <a href="{{route('admin.admins.create')}}" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-md px-4 py-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Create Admin</a>
+                <a href="{{route('admin.qrcodes.create')}}" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-md px-4 py-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Create QR code</a>
             @endif
         </div>
     </x-slot>
@@ -19,13 +19,16 @@
                         No
                     </th>
                     <th scope="col" class="text-base px-6 py-4">
-                        Name
+                        QR Code Name
                     </th>
                     <th scope="col" class="text-base px-6 py-4">
-                        Email
+                        Scan Limit
                     </th>
                     <th scope="col" class="text-base px-6 py-4">
-                        Role
+                        Credit
+                    </th>
+                    <th scope="col" class="text-base px-6 py-4">
+                        Remark
                     </th>
                     <th scope="col" class="text-base px-6 py-4">
                         Status
@@ -36,37 +39,62 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($admins as $index => $admin)
+                @foreach($qrCodes as $index => $qrCode)
                 <tr class="odd:bg-white odd:dark:bg-gray-100 even:bg-gray-50 even:dark:bg-gray-200 border-b dark:border-gray-700 dark:hover:bg-gray-400">
 
                     <td class="px-6 py-4">
                         {{ $index+1 }}
                     </td>
                     <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-black">
-                        {{ $admin->name }}
+                        {{ $qrCode->name ?? '-' }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $admin->email }}
+                        {{ $qrCode->scan_limit ?? '-' }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $admin->role }}
+                        {{ $qrCode->credit }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $admin->status }}
+                        {{ $qrCode->remark ?? '-' }}
                     </td>
                     <td class="px-6 py-4">
-                        <a href="{{ route('admin.admins.show', $admin->id) }}" class="font-medium btn btn-info mr-2"><i class="fa fa-eye"></i></a>
+                        {{ $qrCode->string_status ?? '-' }}
+                    </td>
+                    <td class="px-6 py-4">
+                        <a href="{{ route('admin.qrcodes.show', $qrCode->id) }}" class="font-medium btn btn-info mr-2"><i class="fa fa-eye"></i></a>
 
 
-                        @if(Auth::user()->role == 'super_admin')
-                            <a href="{{ route('admin.admins.edit', $admin->id) }}" class="font-large btn btn-warning mr-2"><i class="fa fa-edit"></i></a>
-                            <button class="font-large btn btn-danger delete_admin" data-admin_id="{{$admin->id}}"><i class="fa fa-trash"></i></button>
-                        @endif
+                        {{-- @if(Auth::user()->role == 'super_admin') --}}
+                            <a href="{{ route('admin.qrcodes.edit', $qrCode->id) }}" class="font-large btn btn-warning mr-2"><i class="fa fa-edit"></i></a>
+                            <button class="font-large btn btn-danger delete_qrC mr-2" data-admin_id="{{$qrCode->id}}"><i class="fa fa-trash"></i></button>
+                        {{-- @endif --}}
+
+                        
+
+                        <a class="btn btn-success trigger-modal" url="http://api.qrserver.com/v1/create-qr-code/?data={{ $qrCode->id }}&size=1000x1000" title="QR Code"><i
+                            class="fa fa-qrcode text-white" aria-hidden="true"></i></a>
                     </td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
+    </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title modal-title-library"></h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <img id="bigger-image" src="{{asset('images/sample/no_image_available.jpeg')}}"
+                        width="100%" alt="">
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -106,12 +134,23 @@
     $( document ).ready(function() {
         let table = new DataTable('#admin_table');
 
+        $(document).on('click', '.trigger-modal', function(e){
+            e.preventDefault();
+			var source = $(this).attr('url');
+			var title = $(this).attr('title');
 
-        $(document).on('click', '.delete_admin', function(){
+			if (source != 'undefined') {
+				$('#bigger-image').attr('src', source);
+				$('#exampleModal').modal('show');
+				$('.modal-title').text(title);
+			}
+        })
 
-            let adminId = $(this).data('admin_id')
-            let url = "{{ route('admin.admins.destroy', ['admin' => 'placeholder']) }}"
-            url = url.replace('placeholder', adminId);
+        $(document).on('click', '.delete_qrC', function(){
+
+            let qrId = $(this).data('admin_id')
+            let url = "{{ route('admin.qrcodes.destroy', ['qrcode' => 'placeholder']) }}"
+            url = url.replace('placeholder', qrId);
 
             Swal.fire({
                 title: "Are you sure?",
@@ -136,7 +175,7 @@
 
                                 Swal.fire(
                                 'Deleted!',
-                                'The admin has been deleted.',
+                                'The QR Code has been deleted.',
                                 'success'
                                 ).then(function(){
                                     window.location.reload(true);

@@ -10,6 +10,7 @@ return [
     'send_tac_successfully' => 'TAC发送成功！',
     'phone_exists' => '手机号已存在！',
     'please_try_again_in_2_minutes' => '请在2分钟后再试',
+    'please_try_again' => '请再尝试',
     'verify_successfully' => '验证成功',
     'invalid_tac' => '无效的TAC',
     'reset_password_successfully' => '重置密码成功！',
@@ -52,4 +53,6 @@ return [
     'failed_to_remove_transfer_details' => '删除转账详情失败',
     'update_transfer_details_successfully' => '成功更新转账详情',
     'failed_to_update_transfer_details' => '更新转账详情失败',
+    'qrcode_reached_max_amount' => 'Qrcode 次数已到达上限',
+    'invalid_qrcode' => 'Qrcode无效',
 ];
