@@ -318,7 +318,17 @@ class TicketController extends Controller
         // if($request->status != ''){
         //     $query->where('status',$request->status);
         // }
-        $tickets = $query->where('status',Ticket::STATUS['TICKET_REQUESTED'])->with(['ticketNumbers', 'draws','platform','game'])->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
+        $tickets =  $query->where(function($query1) use ($staff) {
+            $query1->where('status',Ticket::STATUS['TICKET_REQUESTED'])
+            ->orwhere(function($query2) use ($staff) {
+            $query2->where('status', Ticket::STATUS['TICKET_IN_PROGRESS'])
+                ->where('action_by',$staff->id);
+            });
+
+        })
+        ->with(['ticketNumbers', 'draws','platform','game'])
+        ->orderBy('created_at','DESC')
+        ->paginate($request->get('limit') ?? 10);
         return response($tickets, 200);
     }
 

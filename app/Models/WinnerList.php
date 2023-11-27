@@ -18,7 +18,7 @@ class WinnerList extends Model
     {
         return $date->format('Y-m-d H:i:s');
     }
-    
+
     public function ticketNumber()
     {
         return $this->belongsTo(TicketNumber::class, 'ticket_number_id');
@@ -29,9 +29,19 @@ class WinnerList extends Model
         return $this->belongsTo(DrawResult::class, 'draw_result_id');
     }
 
+    public function outlet()
+    {
+        return $this->belongsTo(Outlet::class, 'outlet_id');
+    }
+
     public function winner()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function staff()
+    {
+        return $this->hasOne(Staff::class, 'action_by');
     }
 
     public function getDistributeAttachmentFullPathAttribute(){

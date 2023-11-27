@@ -21,11 +21,14 @@ class Ticket extends Model
         'TICKET_REJECTED' => 'rejected',
     ];
 
+    Const ALL_STATUS = array_values($this::STATUS);
+
+
     protected function serializeDate(\DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
     }
-    
+
     protected static function boot()
     {
         parent::boot();

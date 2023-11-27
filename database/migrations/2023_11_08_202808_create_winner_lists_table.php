@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignUlid('draw_result_id')->constrained();
             $table->foreignUlid('ticket_number_id')->constrained();
             $table->foreignUlid('user_id')->constrained();
+            $table->foreignUlid('outlet_id')->constrained();
             $table->decimal('amount',11,2);
             $table->boolean('is_distribute')->default(false);
             $table->timestamps();

@@ -47,6 +47,10 @@ class Admin extends Authenticatable
         'password' => 'hashed',
     ];
 
+    protected $appends = [
+        'role'
+    ];
+
     const STATUS = [
         'Active' => 'active',
         'Inactive' => 'inactive',
@@ -57,7 +61,7 @@ class Admin extends Authenticatable
     {
         return $date->format('Y-m-d H:i:s');
     }
-    
+
     protected static function boot()
     {
         parent::boot();
@@ -81,7 +85,7 @@ class Admin extends Authenticatable
     {
         return $this->hasOne(AdminCredit::class, 'admin_id');
     }
-    
+
     public function notifications()
     {
         return $this->morphMany(Notification::class, 'receivable');
@@ -94,5 +98,10 @@ class Admin extends Authenticatable
 
     public function winnerList(){
         return $this->hasMany(WinnerList::class, 'action_by');
+    }
+
+    public function getRoleAttribute(){
+        $getrole = $this->getRoleNames();
+        return $getrole[0] ?? '' ;
     }
 }

@@ -58,6 +58,13 @@ class TopUpController extends Controller
                 ]);
             }
 
+            $adminCredit = $staff->credit;
+            if(!$adminCredit){
+                $adminCredit = $staff->admin_credit()->create([
+                    'credit' => 0
+                ]);
+            }
+
             $userPoint = $user->point;
             if(!$userPoint){
                 $userPoint = $user->point()->create([
@@ -77,7 +84,7 @@ class TopUpController extends Controller
                 'remark' => $request->remark,
                 'top_up_with' => TopUp::TOP_UP_WITH['Outlet'],
             ]);
-            
+
             $creditTransaction = $topup->creditTransaction()->create([
                 'user_id' => $user->id,
                 'amount' => $request->amount,
@@ -87,7 +94,7 @@ class TopUpController extends Controller
             ]);
 
             // admin/staff credit
-            $adminTransaction->adminTransaction()->create([
+            $adminTransaction= $topup->adminTransaction()->create([
                 'user_id' => $user->id,
                 'amount' => $request->amount,
                 'type' => CreditTransaction::TYPE['Increase'],
@@ -96,6 +103,9 @@ class TopUpController extends Controller
 
             $userCredit->credit = $userCredit->credit + $request->amount;
             $userCredit->save();
+
+            $adminCredit->credit = $adminCredit->credit + $request->amount;
+            $adminCredit->save();
 
             $pointTransaction = $topup->pointTransaction()->create([
                 'user_id' => $user->id,

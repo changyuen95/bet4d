@@ -23,4 +23,16 @@ trait CreditTransactionTrait
 
         return $transactions;
     }
+
+    public function getTodayDistributed($admin_id)
+    {
+        $transactions = AdminCreditTransaction::where('admin_id',$admin_id)
+                        ->where('type',AdminCreditTransaction::TYPE['Increase']);
+
+        $dateFrom = Carbon::now()->format('d-m-Y 00:00:00');
+        $amount = $transactions->where('created_at', '>=', $dateFrom)->sum('amount');
+
+        return $amount ?? 0;
+    }
+
 }

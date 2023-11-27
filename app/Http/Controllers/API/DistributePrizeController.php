@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DistributeResource;
+use App\Models\WinnerList;
 use Illuminate\Http\Request;
 use Auth;
 use File;
@@ -25,11 +26,14 @@ class DistributePrizeController extends Controller
         // $query = $staff->tickets()->whereHas('ticketNumbers.win', function($q){
         //                             $q->where('is_distribute', false);
         //                         })->with('ticketNumbers.win.drawResult');
-        $query = $staff->winnerList()->with('drawResult','ticketNumber','winner');
+        $query = WinnerList::where('outlet_id',$staff->outlet_id)->with('drawResult','ticketNumber','winner');
 
         if($request->is_distribute != ''){
             $booleanValue = filter_var($request->is_distribute, FILTER_VALIDATE_BOOLEAN);
             $query->where('is_distribute',$booleanValue);
+            if($booleanValue){
+                $query->where('action_by',$staff->id);
+            }
         }
 
         $winnerList = $query->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
@@ -69,7 +73,7 @@ class DistributePrizeController extends Controller
         if(!$winner){
             return response(['message' => trans('messages.no_winner_prize_found')], 422);
         }
-        
+
         if($winner->is_distribute){
             return response(['message' => trans('messages.prize_is_already_distributed')], 422);
         }
@@ -78,13 +82,13 @@ class DistributePrizeController extends Controller
         try {
             if($request->hasFile('distribute_attachment')) {
                 $allowedfileExtension=['jpg','png','jpeg'];
-                
+
                 $distributeAttachmentFile = $request->file('distribute_attachment');
                 $distributeAttachmentfilename = $distributeAttachmentFile->getClientOriginalName();
                 $distributeAttachmentextension = $distributeAttachmentFile->extension();
 
                 $check =in_array($distributeAttachmentextension,$allowedfileExtension);
-                
+
                 if($check) {
                     File::makeDirectory(storage_path('app/public/distribute_prize/'.$staff->id.'/attachment/'), $mode = 0777, true, true);
                     $input['imagename'] = 'distribute_attachment_'.time().'.'.$distributeAttachmentFile->getClientOriginalExtension();
@@ -96,7 +100,7 @@ class DistributePrizeController extends Controller
                         'is_distribute' => true,
                         'distribute_attachment' => $distribute_attachment_image_full_path
                     ]);
-                    
+
                     DB::commit();
                     return response([
                         'message' =>  trans('messages.the_payment_receipt_is_submitted'),
@@ -105,17 +109,17 @@ class DistributePrizeController extends Controller
                     DB::rollback();
                     return response(['message' => trans('messages.only_png_jpg_jpeg_is_accepted')], 422);
                 }
-                
+
             }else{
                 DB::rollback();
                 return response(['message' => trans('messages.no_file_detected')], 422);
             }
-            
+
         } catch (\Throwable $th) {
             DB::rollback();
             return response(['message' => trans('messages.failed_to_distribute_prize')], 422);
         }
-        
+
     }
 
     /**
@@ -128,7 +132,7 @@ class DistributePrizeController extends Controller
         if(!$winner){
             return response(['message' => trans('messages.no_winner_prize_found')], 422);
         }
-        
+
         // if($winner->is_distribute){
         //     return response(['message' => trans('messages.prize_is_already_distributed')], 422);
         // }

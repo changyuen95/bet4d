@@ -39,7 +39,7 @@ class GetWinnerList implements ShouldQueue
                         ],[
                             'user_id' => $ticket->user_id,
                             'amount' => mt_rand(1, 9999), //need further calculation for this
-                            'action_by' => $ticket->action_by
+                            'outlet_id' => $ticket->outlet_id
                         ]);
                     }
                 }
