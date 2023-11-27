@@ -29,8 +29,9 @@ trait CreditTransactionTrait
         $transactions = AdminCreditTransaction::where('admin_id',$admin_id)
                         ->where('type',AdminCreditTransaction::TYPE['Increase']);
 
-        $dateFrom = Carbon::now()->format('d-m-Y 00:00:00');
+        $dateFrom = Carbon::now()->format('Y-m-d 00:00:00');
         $amount = $transactions->where('created_at', '>=', $dateFrom)->sum('amount');
+
 
         return $amount ?? 0;
     }

@@ -65,7 +65,7 @@ class AdminCreditTransactionController extends Controller
     public function show(Request $request , string $id)
     {
         $staff = Auth::user();
-        $transaction = AdminCreditTransaction::with('admin_credit.admin', 'outlet.platform', 'targetable')->where('admin_id', $staff->id)->where('id', $id)->first();
+        $transaction = AdminCreditTransaction::with('admin', 'outlet.platform', 'targetable')->where('admin_id', $staff->id)->where('id', $id)->first();
 
         if ($transaction) {
             return $transaction;
@@ -73,6 +73,7 @@ class AdminCreditTransactionController extends Controller
 
         return response(['message' => trans('admin.transaction_detail_not_found')], 422);
     }
+
 
 
     /**

@@ -101,8 +101,9 @@ class TopUpController extends Controller
                 'admin_id' => $staff->id,
                 'amount' => $request->amount,
                 'type' => AdminCreditTransaction::TYPE['Increase'],
-                'before_amount' => $adminCredit->credit,
+                'before_amount' => $adminCredit->amount,
                 'outlet_id' => $outlet->id,
+                'after_amount' => 0,
             ]);
 
             $userCredit->credit = $userCredit->credit + $request->amount;

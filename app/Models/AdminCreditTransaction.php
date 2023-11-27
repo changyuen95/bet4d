@@ -20,7 +20,12 @@ class AdminCreditTransaction extends Model
         'TopUp' => 'topup',
         'Cleared' => 'cleared'
     ];
-    
+
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class, 'admin_id', 'id');
+    }
+
     public function admin_credit()
     {
         return $this->belongsTo(AdminCredit::class, 'admin_id', 'admin_id');
@@ -28,7 +33,7 @@ class AdminCreditTransaction extends Model
 
     public function outlet()
     {
-        return $this->belongsTo(outlet::class, 'outlet_id');
+        return $this->belongsTo(Outlet::class, 'outlet_id','id');
     }
 
     public function targetable()
