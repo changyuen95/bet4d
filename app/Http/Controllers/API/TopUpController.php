@@ -63,7 +63,7 @@ class TopUpController extends Controller
             $adminCredit = $staff->credit;
             if(!$adminCredit){
                 $adminCredit = $staff->admin_credit()->create([
-                    'credit' => 0
+                    'amount' => 0
                 ]);
             }
 
@@ -106,7 +106,7 @@ class TopUpController extends Controller
             $userCredit->credit = $userCredit->credit + $request->amount;
             $userCredit->save();
 
-            $adminCredit->credit = $adminCredit->credit + $request->amount;
+            $adminCredit->amount = $adminCredit->amount + $request->amount;
             $adminCredit->save();
 
             $pointTransaction = $topup->pointTransaction()->create([
