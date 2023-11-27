@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Qrcode extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
+    protected $guarded = ['id'];
 
 
     /******* Attribute *******/

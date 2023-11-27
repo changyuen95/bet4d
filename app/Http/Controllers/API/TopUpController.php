@@ -202,25 +202,25 @@ class TopUpController extends Controller
 
             $topup = Topup::create([
                 'user_id' => $user->id,
-                'amount' => $request->amount,
-                'remark' => $request->remark,
+                'amount' => $qrcode->credit,
+                'remark' => 'Top up by qr code',
                 'top_up_with' => TopUp::TOP_UP_WITH['QR'],
             ]);
 
             $creditTransaction = $topup->creditTransaction()->create([
                 'user_id' => $user->id,
-                'amount' => $request->amount,
+                'amount' => $qrcode->credit,
                 'type' => CreditTransaction::TYPE['Increase'],
                 'before_amount' => $userCredit->credit,
                 'outlet_id' => $user->outlet_id,
             ]);
 
-            $userCredit->credit = $userCredit->credit + $request->amount;
+            $userCredit->credit = $userCredit->credit + $qrcode->credit;
             $userCredit->save();
 
             $qrcode_transaction = QrScannedList::create([
                 'user_id' => $user->id,
-                'qrcode_id' => $qrcode->id,
+                'qr_id' => $qrcode->id,
             ]);
 
             DB::commit();
