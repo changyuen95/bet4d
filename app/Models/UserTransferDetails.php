@@ -12,6 +12,9 @@ class UserTransferDetails extends Model
     use HasFactory, HasUlids, SoftDeletes;
     protected $guarded = ['id'];
 
+    protected $with = ['transferOption'];
+
+
     const PRIMARY = [
         'Yes' => true,
         'No' => false
@@ -21,7 +24,7 @@ class UserTransferDetails extends Model
     {
         return $date->format('Y-m-d H:i:s');
     }
-    
+
     public function transferOption()
     {
         return $this->belongsTo(TransferOption::class, 'transfer_option_id');

@@ -49,6 +49,9 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    protected $with = ['transferDetails'];
+
+
     const STATUS = [
         'Active' => 'active',
         'Inactive' => 'inactive',
