@@ -60,6 +60,10 @@ class StaffTicketController extends Controller
             $query->where('action_by',$staff->id);
         }
 
+        if($request->duration != ''){
+            $query->where('created_at','>=', Carbon::now()->subDays($request->duration));
+        }
+        
         $tickets = $query->with(['ticketNumbers', 'draws','platform','game'])->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
 
         $todayStart = Carbon::today()->startOfDay();
