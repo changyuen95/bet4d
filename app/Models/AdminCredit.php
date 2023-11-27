@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class AdminCredit extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
+    protected $guarded = ['id'];
 
     public function admin()
     {

@@ -123,7 +123,7 @@ class TopUpController extends Controller
             DB::commit();
 
             return response(['message' => trans('messages.you_had_successfully_top_up').' '.$request->amount.' '.trans('messages.credit').' '.trans('messages.for').' '.$user->name], 200);
-        }catch (Exception $e) {dd($e);
+        }catch (Exception $e) {
             DB::rollback();
             return response(['message' =>  trans('messages.top_up_failed') ], 422);
         }

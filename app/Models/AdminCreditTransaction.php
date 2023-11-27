@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class AdminCreditTransaction extends Model
 {
     use HasFactory, HasUlids;
+    protected $guarded = ['id'];
 
     const TYPE = [
         'Increase' => 'increase',
