@@ -54,15 +54,15 @@ class MeController extends Controller
         if(!$user){
             return response(['message' => trans('messages.no_user_found')], 422);
         }
-    
+
 
         $user->tokens->each(function ($token, $key) {
             $token->delete();
         });
-        
+
         $user->delete();
 
-        
+
         return response([
             'message' => trans('messages.successfully_deleted_account'),
         ], 200);
@@ -84,18 +84,18 @@ class MeController extends Controller
         if(!$user){
             return response(['message' => trans('messages.no_user_found')], 422);
         }
-    
+
         DB::beginTransaction();
         try {
             if($request->hasFile('avatar')) {
                 $allowedfileExtension=['jpg','png','jpeg'];
-                
+
                 $avatarAttachmentFile = $request->file('avatar');
                 $avatarAttachmentfilename = $avatarAttachmentFile->getClientOriginalName();
                 $avatarAttachmentextension = $avatarAttachmentFile->extension();
 
                 $check =in_array($avatarAttachmentextension,$allowedfileExtension);
-                
+
                 if($check) {
                     File::makeDirectory(storage_path('app/public/avatar/user/'.$user->id.'/attachment/'), $mode = 0777, true, true);
                     $input['imagename'] = 'avatar_'.time().'.'.$avatarAttachmentFile->getClientOriginalExtension();
@@ -116,12 +116,12 @@ class MeController extends Controller
                     DB::rollback();
                     return response(['message' => trans('messages.only_png_jpg_jpeg_is_accepted')], 422);
                 }
-                
+
             }else{
                 DB::rollback();
                 return response(['message' => trans('messages.no_file_detected')], 422);
             }
-            
+
         } catch (\Throwable $th) {
             DB::rollback();
             return response(['message' => trans('messages.failed_to_update_avatar')], 422);

@@ -8,7 +8,7 @@ use App\Models\PointTransaction;
 use App\Models\TopUp;
 use App\Models\User;
 use App\Models\Qrcode;
-use App\Models\QrcodeTransaction;
+use App\Models\QrScannedList;
 use Illuminate\Http\Request;
 use Auth;
 use Exception;
@@ -200,7 +200,7 @@ class TopUpController extends Controller
                 ]);
             }
 
-            $topup = $staff->topUpMorph()->create([
+            $topup = Topup::create([
                 'user_id' => $user->id,
                 'amount' => $request->amount,
                 'remark' => $request->remark,
@@ -218,10 +218,9 @@ class TopUpController extends Controller
             $userCredit->credit = $userCredit->credit + $request->amount;
             $userCredit->save();
 
-            $qrcode_transaction = QrcodeTransaction::create([
+            $qrcode_transaction = QrScannedList::create([
                 'user_id' => $user->id,
                 'qrcode_id' => $qrcode->id,
-                'amount' => $qrcode->amount,
             ]);
 
             DB::commit();

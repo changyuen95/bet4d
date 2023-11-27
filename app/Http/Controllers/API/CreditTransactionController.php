@@ -38,7 +38,7 @@ class CreditTransactionController extends Controller
         }
 
         $creditTransactions = $query->paginate($request->get('limit') ?? 10);
-        
+
         return response($creditTransactions, 200);
     }
 

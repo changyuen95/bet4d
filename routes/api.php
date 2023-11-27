@@ -159,7 +159,9 @@ Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::MEMB
 Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkUserType:'.Role::OPERATOR])->group(function () {
     // Routes for Operator users
     Route::prefix('topup')->group(function () {
+        Route::post('/qrcode/{id}','TopUpController@topupByQrCode');
         Route::post('{id}','TopUpController@store');
+
     });
     Route::prefix('me')->group(function () {
 
