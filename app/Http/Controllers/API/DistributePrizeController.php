@@ -18,6 +18,11 @@ class DistributePrizeController extends Controller
      */
     public function index(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'game_id' => 'nullable|exists:games,id',
+            'handled_by_me' => [Rule::in(array_values([true,false]))],
+        ]);
+
         $staff = Auth::user();
         if(!$staff){
             return response(['message' => trans('messages.no_user_found')], 422);
@@ -26,7 +31,14 @@ class DistributePrizeController extends Controller
         // $query = $staff->tickets()->whereHas('ticketNumbers.win', function($q){
         //                             $q->where('is_distribute', false);
         //                         })->with('ticketNumbers.win.drawResult');
-        $query = WinnerList::where('outlet_id',$staff->outlet_id)->with('drawResult','ticketNumber','winner');
+        $requestGameId = $request->game_id;
+        $query = WinnerList::whereHas('ticketNumbers', function($q) use($requestGameId){
+                                $q->whereHas('ticket', function($q) use($requestGameId){
+                                    $q->when($requestGameId != '', function ($query) use($requestGameId){
+                                        return $query->where('game_id', $requestGameId);
+                                    });
+                                });
+                            })->where('outlet_id',$staff->outlet_id)->with('drawResult','ticketNumber','winner');
 
         if($request->is_distribute != ''){
             $booleanValue = filter_var($request->is_distribute, FILTER_VALIDATE_BOOLEAN);
@@ -34,6 +46,14 @@ class DistributePrizeController extends Controller
             if($booleanValue){
                 $query->where('action_by',$staff->id);
             }
+        }
+
+        if($request->handled_by_me){
+            $query->where('action_by',$staff->id);
+        }
+
+        if($request->duration != ''){
+            $query->where('created_at','>=', Carbon::now()->subDays($request->duration));
         }
 
         $winnerList = $query->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
