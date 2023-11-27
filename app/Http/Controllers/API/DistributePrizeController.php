@@ -7,6 +7,7 @@ use App\Http\Resources\DistributeResource;
 use App\Models\WinnerList;
 use Illuminate\Http\Request;
 use Auth;
+use Carbon\Carbon;
 use File;
 use Image;
 use DB;
@@ -25,6 +26,10 @@ class DistributePrizeController extends Controller
             'handled_by_me' => [Rule::in(array_values([true,false]))],
         ]);
 
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->first()], 422);
+        }
+        
         $staff = Auth::user();
         if(!$staff){
             return response(['message' => trans('messages.no_user_found')], 422);
@@ -34,7 +39,7 @@ class DistributePrizeController extends Controller
         //                             $q->where('is_distribute', false);
         //                         })->with('ticketNumbers.win.drawResult');
         $requestGameId = $request->game_id;
-        $query = WinnerList::whereHas('ticketNumbers', function($q) use($requestGameId){
+        $query = WinnerList::whereHas('ticketNumber', function($q) use($requestGameId){
                                 $q->whereHas('ticket', function($q) use($requestGameId){
                                     $q->when($requestGameId != '', function ($query) use($requestGameId){
                                         return $query->where('game_id', $requestGameId);
