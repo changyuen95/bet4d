@@ -126,7 +126,7 @@ Route::namespace('API')->group(function () {
                 // Route::get('{id}','WinningHistoryController@show');
             });
 
-            Route::prefix('verify-profile')->group(function () {
+            Route::prefix('verify-profiles')->group(function () {
                 Route::get('','VerifyProfileController@index');
                 Route::post('','VerifyProfileController@store');
             });
@@ -183,7 +183,7 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkUser
         Route::get('{id}','AdminCreditTransactionController@show');
     });
 
-    Route::prefix('verify-user-profile')->group(function () {
+    Route::prefix('verify-user-profiles')->group(function () {
         Route::get('','VerifyProfileController@pendingListing');
         Route::get('{id}','VerifyProfileController@verifyProfileDetail');
         Route::post('{id}/approved','VerifyProfileController@approvedICVerification');

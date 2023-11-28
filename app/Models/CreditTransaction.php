@@ -11,8 +11,8 @@ class CreditTransaction extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
     protected $guarded = ['id'];
-    protected $appends = ['transaction_type','description'];
-
+    protected $appends = ['transaction_type','description','status'];
+    protected $with = ['user'];
     const TYPE = [
         'Increase' => 'increase',
         'Decrease' => 'decrease'
@@ -31,6 +31,16 @@ class CreditTransaction extends Model
     public function getTransactionTypeAttribute()
     {
         return str_replace('App\\Models\\',"",$this->targetable_type);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function getStatusAttribute()
+    {
+        return 'Completed';
     }
 
     public function getDescriptionAttribute()

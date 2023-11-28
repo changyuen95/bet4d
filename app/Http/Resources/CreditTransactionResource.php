@@ -7,6 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class CreditTransactionResource extends BaseResource
 {
+    public static $wrap = null;
     /**
      * Transform the resource into an array.
      *
@@ -32,6 +33,10 @@ class CreditTransactionResource extends BaseResource
             'created_at' => $this->formatDate($this->created_at),
             'updated_at' => $this->formatDate($this->updated_at),
             'deleted_at' => $this->formatDate($this->deleted_at),
+            'transaction_type' => $this->transaction_type,
+            'description' => $this->description,
+            'status' => $this->status,
+            'user' => $this->user
 
         ];
 
