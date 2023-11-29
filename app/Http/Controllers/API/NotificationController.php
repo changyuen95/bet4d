@@ -91,7 +91,7 @@ class NotificationController extends Controller
         if(!$user){
             return response(['message' => trans('messages.no_user_found')], 422);
         }
-        $notificationsCount = $user->notifications()->count();
+        $notificationsCount = $user->notifications()->whereNull('read_at')->count();
 
         $count = [
             'notifications_count' => $notificationsCount,
