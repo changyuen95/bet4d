@@ -85,4 +85,18 @@ class NotificationController extends Controller
         return response(['message' => trans('messages.marked_as_read')], 422);
 
     }
+
+    public function unReadCount(){
+        $user = Auth::user();
+        if(!$user){
+            return response(['message' => trans('messages.no_user_found')], 422);
+        }
+        $notificationsCount = $user->notifications()->count();
+
+        $count = [
+            'notifications_count' => $notificationsCount,
+        ];
+
+        return $count;
+    }
 }
