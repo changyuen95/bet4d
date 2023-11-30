@@ -44,4 +44,9 @@ class Outlet extends Model
     public function winnerList(){
         return $this->hasMany(WinnerList::class, 'outlet_id');
     }
+
+    public function operatingTime()
+    {
+        return $this->hasMany(OutletOperatingTime::class, 'outlet_id');
+    }
 }

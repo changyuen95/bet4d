@@ -32,7 +32,7 @@ class OutletController extends Controller
             });
         }
        
-        $outlets = $query->paginate($request->get('limit') ?? 10);
+        $outlets = $query->with('operatingTime')->paginate($request->get('limit') ?? 10);
         return response($outlets, 200);
     }
 

@@ -21,6 +21,7 @@ class OutletResource extends BaseResource
             'name' => $this->name,
             'address' => $this->address,
             'image' => $this->image,
+            'operating_time' => $this->operatingTime,
             'created_at' => $this->formatDate($this->created_at),
             'updated_at' => $this->formatDate($this->updated_at),
             'deleted_at' => $this->formatDate($this->deleted_at),
