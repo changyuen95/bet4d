@@ -160,54 +160,67 @@ Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::MEMB
     // Routes for Member users
 });
 
-Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkUserType:'.Role::OPERATOR])->group(function () {
-    // Routes for Operator users
-    Route::prefix('topup')->group(function () {
-        Route::post('/qrcode/{id}','TopUpController@topupByQrCode');
-        Route::post('{id}','TopUpController@store');
+Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAdmin'])->group(function () {
+    Route::post('logout', 'LoginController@adminLogout');
 
-    });
     Route::prefix('me')->group(function () {
+        Route::get('','Admin\MeController@me');
+        Route::post('','Admin\MeController@update');
+        Route::post('update-avatar','Admin\MeController@updateAvatar');
+        Route::delete('','Admin\MeController@destroy');
+    }); 
 
+    Route::middleware(['checkUserType:'.Role::OPERATOR])->group(function () {
+        Route::prefix('topup')->group(function () {
+            Route::post('/qrcode/{id}','TopUpController@topupByQrCode');
+            Route::post('{id}','TopUpController@store');
+    
+        });
+                
+        Route::prefix('tickets')->group(function () {
+            Route::get('','StaffTicketController@index');
+            Route::get('requested','TicketController@staffTicketListing');
+            Route::get('pending-count','StaffTicketController@pending_count');
+            Route::get('{id}','StaffTicketController@show');
+            Route::post('update-status/{id}','TicketController@staffUpdateTicketStatus');
+            Route::post('staff-scan-barcode/{id}','TicketController@staffScanBarcode');
+        });
+    
+        Route::prefix('credit-transactions')->group(function () {
+            Route::get('','AdminCreditTransactionController@index');
+            Route::get('{id}','AdminCreditTransactionController@show');
+        });
+    
+        Route::prefix('verify-user-profiles')->group(function () {
+            Route::get('','VerifyProfileController@pendingListing');
+            Route::get('{id}','VerifyProfileController@verifyProfileDetail');
+            Route::post('{id}/approved','VerifyProfileController@approvedICVerification');
+            Route::post('{id}/rejected','VerifyProfileController@rejectedICVerification');
+        });
+    
+        Route::prefix('distribute-prizes')->group(function () {
+            Route::get('','DistributePrizeController@index');
+            Route::get('{id}','DistributePrizeController@show');
+            Route::post('{id}','DistributePrizeController@store');
+        });
     });
-    Route::prefix('tickets')->group(function () {
-        Route::get('','StaffTicketController@index');
-        Route::get('requested','TicketController@staffTicketListing');
-        Route::get('pending-count','StaffTicketController@pending_count');
-        Route::get('{id}','StaffTicketController@show');
-        Route::post('update-status/{id}','TicketController@staffUpdateTicketStatus');
-        Route::post('staff-scan-barcode/{id}','TicketController@staffScanBarcode');
-    });
+    // Routes for Operator users
 
-    Route::prefix('credit-transactions')->group(function () {
-        Route::get('','AdminCreditTransactionController@index');
-        Route::get('{id}','AdminCreditTransactionController@show');
-    });
-
-    Route::prefix('verify-user-profiles')->group(function () {
-        Route::get('','VerifyProfileController@pendingListing');
-        Route::get('{id}','VerifyProfileController@verifyProfileDetail');
-        Route::post('{id}/approved','VerifyProfileController@approvedICVerification');
-        Route::post('{id}/rejected','VerifyProfileController@rejectedICVerification');
-    });
-
-    Route::prefix('distribute-prizes')->group(function () {
-        Route::get('','DistributePrizeController@index');
-        Route::get('{id}','DistributePrizeController@show');
-        Route::post('{id}','DistributePrizeController@store');
+    Route::middleware(['checkUserType:'.Role::SUPER_ADMIN])->group(function () {
+        Route::prefix('downlines')->group(function () {
+            Route::get('','DownlineController@index');
+            Route::get('{id}/credit-transactions','CreditTransactionController@index');
+            Route::get('{admin_id}/credit-transactions/{id}','CreditTransactionController@show');
+    
+            Route::get('{id}/clear-transactions','DownlineController@clearTransactions');
+            Route::get('{id}/clear-transactions/credit-distribute','DownlineController@creditDistribute');
+            Route::get('{admin_id}/clear-transactions/credit-distribute/{id}','DownlineController@creditDistributeDetail');
+            Route::post('{id}/clear-transactions','DownlineController@clearTransactionsProcess');
+        });
     });
 });
 
-Route::namespace('API\Admin')->prefix('admin')->middleware(['auth:sanctum', 'checkUserType:'.Role::SUPER_ADMIN])->group(function () {
-    // Routes for Super Admin users
-    Route::prefix('downlines')->group(function () {
-        Route::get('','DownlineController@index');
-        Route::get('{id}/credit-transactions','CreditTransactionController@index');
-        Route::get('{admin_id}/credit-transactions/{id}','CreditTransactionController@show');
-
-        Route::get('{id}/clear-transactions','DownlineController@clearTransactions');
-        Route::get('{id}/clear-transactions/credit-distribute','DownlineController@creditDistribute');
-        Route::get('{admin_id}/clear-transactions/credit-distribute/{id}','DownlineController@creditDistributeDetail');
-        Route::post('{id}/clear-transactions','DownlineController@clearTransactionsProcess');
-    });
-});
+// Route::namespace('API\Admin')->prefix('admin')->middleware(['auth:sanctum', 'checkUserType:'.Role::SUPER_ADMIN])->group(function () {
+//     // Routes for Super Admin users
+    
+// });

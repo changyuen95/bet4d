@@ -33,6 +33,10 @@ class RoleSeeder extends Seeder
                 'guard_name' => 'api',
             ],
             [
+                'name' => 'admin',
+                'guard_name' => 'api',
+            ],
+            [
                 'name' => 'super_admin',
                 'guard_name' => 'api',
             ],
