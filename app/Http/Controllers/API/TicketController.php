@@ -487,4 +487,42 @@ class TicketController extends Controller
             return response(['message' =>  trans('messages.failed_to_scan_barcode') ], 422);
         }
     }
+
+    public function removeBarcode(Request $request, $id, $barcode_id){
+        $staff = Auth::user();
+        $ticket = $staff->tickets()->find($id);
+        if(!$ticket){
+            return response(['message' =>  trans('messages.invalid_ticket') ], 422);
+        }
+        $barcode = $ticket->barcode()->find($barcode_id);
+        if(!$barcode){
+            return response(['message' =>  trans('messages.invalid_barcode') ], 422);
+        }
+
+        DB::beginTransaction();
+        try{
+
+            $barcode->delete();
+
+            DB::commit();
+            return response(['message' =>  trans('messages.successfully_remove_barcode') ], 200);
+        }catch (Exception $e) {
+            DB::rollback();
+            return response(['message' =>  trans('messages.failed_to_remove_barcode') ], 422);
+        }
+    }
+
+    public function barcodeListing(Request $request, $id){
+        $staff = Auth::user();
+        $ticket = $staff->tickets()->find($id);
+        if(!$ticket){
+            return response(['message' =>  trans('messages.invalid_ticket') ], 422);
+        }
+
+        $barcodeQuery = $ticket->barcode();
+
+        $barcode = $barcodeQuery->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
+
+        return response($barcode, 200);
+    }
 }

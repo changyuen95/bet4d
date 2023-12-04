@@ -183,7 +183,9 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
             Route::get('pending-count','StaffTicketController@pending_count');
             Route::get('{id}','StaffTicketController@show');
             Route::post('update-status/{id}','TicketController@staffUpdateTicketStatus');
-            Route::post('staff-scan-barcode/{id}','TicketController@staffScanBarcode');
+            Route::post('{id}/staff-scan-barcode','TicketController@staffScanBarcode');
+            Route::get('{id}/barcode','TicketController@barcodeListing');
+            Route::post('{id}/remove-barcode/{barcode_id}','TicketController@removeBarcode');
         });
     
         Route::prefix('credit-transactions')->group(function () {
