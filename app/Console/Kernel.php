@@ -20,6 +20,27 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->command('sync:draw-result')
+                //  ->timezone('Your_Timezone') // Replace 'Your_Timezone' with your actual timezone
+                 ->days([Schedule::WEDNESDAY, Schedule::SATURDAY, Schedule::SUNDAY])
+                 ->dailyAt('19:00')
+                 ->everyFiveMinutes()
+                 ->until('21:00');
+
+        $schedule->command('sync:popular-number')
+                //  ->timezone('Your_Timezone') // Replace 'Your_Timezone' with your actual timezone
+                 ->days([Schedule::WEDNESDAY, Schedule::SATURDAY, Schedule::SUNDAY])
+                 ->dailyAt('21:00');
+
+        $schedule->command('sync:number-frequencies')
+                //  ->timezone('Your_Timezone') // Replace 'Your_Timezone' with your actual timezone
+                 ->days([Schedule::WEDNESDAY, Schedule::SATURDAY, Schedule::SUNDAY])
+                 ->dailyAt('21:00');
+
+        $schedule->command('generate:winner-list-display')
+                //  ->timezone('Your_Timezone') // Replace 'Your_Timezone' with your actual timezone
+                 ->days([Schedule::WEDNESDAY, Schedule::SATURDAY, Schedule::SUNDAY])
+                 ->dailyAt('21:00');
     }
 
     /**
