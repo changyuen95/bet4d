@@ -76,11 +76,11 @@ Route::namespace('API')->group(function () {
     });
     Route::prefix('draw')->group(function () {
         Route::get('current-draw','DrawController@getCurrentDraw');
-        Route::get('{id}/winning-list','WinnerListDisplayController@show');
     });
 
     Route::prefix('winning-list')->group(function () {
         Route::get('','WinnerListDisplayController@index');
+        Route::get('draw/{id}','WinnerListDisplayController@show');
     });
 
     Route::prefix('number-frequencies')->group(function () {

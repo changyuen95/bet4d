@@ -18,6 +18,7 @@ class WinnerListDisplayResource extends BaseResource
             'id' => $this->id,
             'reference_id' => $this->reference_id,
             'platform_id' => $this->platform_id,
+            'platform' => $this->platform,
             'draw_no' => $this->draw_no,
             'year' => $this->year,
             'full_draw_no' => $this->full_draw_no,
