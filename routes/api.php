@@ -95,6 +95,7 @@ Route::namespace('API')->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('logout', 'LoginController@logout');
         Route::prefix('me')->group(function () {
+            Route::post('one-signal-test', 'MeController@oneSignalTest');
             Route::get('','MeController@me');
             Route::post('','MeController@update');
             Route::post('update-avatar','MeController@updateAvatar');
