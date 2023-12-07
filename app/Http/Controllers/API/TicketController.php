@@ -290,9 +290,11 @@ class TicketController extends Controller
                 $outlet = $ticket->outlet;
                 if($outlet){
                     $staffs = $outlet->staffs;
-                    $message = 'You have receive new ticket request.';
+                    $notificationData = [];
+                    $notificationData['title'] = 'New ticket request';
+                    $notificationData['message'] = 'You have receive new ticket request.';
                     foreach($staffs as $staff){
-                        $this->sendNotification($staff,$message,$ticket);
+                        $this->sendNotification($staff,$notificationData,$ticket);
                     }
                 }
             }

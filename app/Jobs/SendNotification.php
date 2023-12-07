@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-
+use App\Notifications\Channels\OnesignalChannel;
 class SendNotification implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -32,7 +32,8 @@ class SendNotification implements ShouldQueue
     public function handle(): void
     {
         $notification = $this->recipient->notifications()->create([
-            'message' => $this->message,
+            'title' => $this->message['title'],
+            'message' => $this->message['message'],
         ]);
 
         if($this->module != null){
@@ -41,5 +42,8 @@ class SendNotification implements ShouldQueue
                 'targetable_id' => $this->module->id,
             ]);
         }
+
+        OnesignalChannel::send($this->recipient,$notification);
+
     }
 }

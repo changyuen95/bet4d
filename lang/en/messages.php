@@ -106,4 +106,7 @@ return [
     'draw_expired' => 'Draw Expired',
     'qrcode_reached_max_amount' => 'Qrcode has reached limit',
     'invalid_qrcode' => 'Invalid Qrcode',
+    'invalid_barcode' => 'Invalid Bar code',
+    'successfully_remove_barcode' => 'Successfully remove barcode',
+    'failed_to_remove_barcode' => 'Failed to remove barcode',
 ];
