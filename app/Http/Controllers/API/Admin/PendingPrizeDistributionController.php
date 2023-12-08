@@ -34,7 +34,7 @@ class PendingPrizeDistributionController extends Controller
 
         $game_id = $request->game_id;
 
-        if(!$superadmin->hasRole(Role::SUPER_ADMIN)){
+        if($superadmin->hasRole(Role::SUPER_ADMIN)){
 
             /****** return all the pending prize to be distributed ******/
             // $prizes_to_be_distributed = WinnerList::where('is_distribute', 0)
@@ -79,5 +79,27 @@ class PendingPrizeDistributionController extends Controller
         }
     
         return new PendingPrizeDistributionResource($winner);
+    }
+
+    public function getCount()
+    {
+
+        $superadmin = $request->user();
+
+        if(!$superadmin){
+            return response(['message' => trans('messages.no_user_found')], 422);
+        }
+
+        if(!$superadmin->hasRole(Role::SUPER_ADMIN)){
+
+            $prizes_to_be_distributed = WinnerList::where('is_distribute', 0)
+                                        ->join('ticket_numbers', 'winner_lists.ticket_number_id', '=', 'ticket_numbers.id')
+                                        ->join('tickets', 'ticket_numbers.ticket_id', '=', 'tickets.id')
+                                        ->leftjoin('draw_results', 'winner_lists.draw_result_id', 'draw_result.id')
+                                        ->where('tickets.outlet_id', $superadmin->outlet_id)
+                                        ->where('tickets.status', 'completed')
+                                        ->select('winner_lists.*', 'draw_result.type', 'draw_result.position');
+    
+        }
     }
 }
