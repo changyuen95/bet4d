@@ -223,6 +223,7 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
 
         /****** Pending Prize to distribute ******/
         Route::prefix('pending-prize-distribution')->group(function () {
+            Route::get('count', 'PendingPrizeDistributionController@getCount');
             Route::get('', 'PendingPrizeDistributionController@index');
             Route::get('{id}','PendingPrizeDistributionController@show');
         });
