@@ -135,12 +135,14 @@ Route::namespace('API')->group(function () {
             Route::prefix('topup')->group(function () {
                 Route::post('/qrcode/{id}','TopUpController@topupByQrCode');
             });
+
+            Route::prefix('winner')->group(function () {
+                Route::get('{id}','WinningHistoryController@show');
+                // Route::get('{id}','WinningHistoryController@show');
+            });
         });
 
-        Route::prefix('winner')->group(function () {
-            Route::get('{id}','WinningHistoryController@show');
-            // Route::get('{id}','WinningHistoryController@show');
-        });
+        
 
         Route::prefix('notifications')->group(function () {
             Route::get('','NotificationController@index');
