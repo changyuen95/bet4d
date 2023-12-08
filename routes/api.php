@@ -137,6 +137,11 @@ Route::namespace('API')->group(function () {
             });
         });
 
+        Route::prefix('winner')->group(function () {
+            Route::get('{id}','WinningHistoryController@show');
+            // Route::get('{id}','WinningHistoryController@show');
+        });
+
         Route::prefix('notifications')->group(function () {
             Route::get('','NotificationController@index');
             Route::post('mark-as-read/{id}','NotificationController@markAsRead');

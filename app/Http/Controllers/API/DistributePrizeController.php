@@ -129,6 +129,14 @@ class DistributePrizeController extends Controller
                         'action_by' => $staff->id
                     ]);
 
+                    $winnerUser = $winner->winner;
+                    if($winnerUser){
+                        $notificationData = [];
+                        $notificationData['title'] = 'Prize distribution';
+                        $notificationData['message'] = 'You Prize had distributed by our staff';
+
+                        $this->sendNotification($winnerUser,$notificationData,$winner);
+                    }
                     DB::commit();
                     return response([
                         'message' =>  trans('messages.the_payment_receipt_is_submitted'),
