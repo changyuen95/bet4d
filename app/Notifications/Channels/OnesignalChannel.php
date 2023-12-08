@@ -4,7 +4,7 @@
 namespace App\Notifications\Channels;
 
 use OneSignal;
-
+use Log;
 class OnesignalChannel
 {
     public static function send($notifiable, $notification)
@@ -16,7 +16,7 @@ class OnesignalChannel
             // $notification->toOnesignal($notifiable);
 
         if (env('APP_ENV') === 'production' || env('APP_ENV') === 'staging') {
-            OneSignal::sendNotificationToExternalUser(
+            $response = OneSignal::sendNotificationToExternalUser(
                 $instance['message'],
                 [$notifiable->id],
                 $instance['url'] ?? null,
@@ -25,6 +25,8 @@ class OnesignalChannel
                 $instance['schedule'] ?? null,
                 $instance['title'] ?? null,
             );
+
+            Log::info($response);
         }
     }
 }
