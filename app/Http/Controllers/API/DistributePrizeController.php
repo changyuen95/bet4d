@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DistributeResource;
 use App\Models\WinnerList;
+use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
 use Auth;
 use Carbon\Carbon;
@@ -16,6 +17,7 @@ use Illuminate\Validation\Rule;
 
 class DistributePrizeController extends Controller
 {
+    use NotificationTrait;
     /**
      * Display a listing of the resource.
      */
