@@ -35,6 +35,7 @@ class GetWinnerList implements ShouldQueue
                 $ticketNumbers = $ticket->ticketNumbers;
                 foreach($ticketNumbers as $ticketNumber){
                     if($ticketNumber->number == $result->number){
+                        $existingWinner = $result->winners()->where('ticket_number_id',$ticketNumber->id)->first();
                         $winner = $result->winners()->updateOrCreate([
                             'ticket_number_id' => $ticketNumber->id,
                         ],[
@@ -43,27 +44,29 @@ class GetWinnerList implements ShouldQueue
                             'outlet_id' => $ticket->outlet_id
                         ]);
 
-                        $ticketUser = $ticket->user;
-                        if($ticketUser){
-                            $notificationData = [];
-                            $notificationData['title'] = 'Congratulation! You had win the prize';
-                            $notificationData['message'] = 'You had win the prize, please wait our staff to distribute the prize to you';
-    
-                            $this->sendNotification($ticketUser,$notificationData,$winner);
-                        }
-
-                        $outletStaffs = optional($ticket->outlet)->staffs;
-                        foreach($outletStaffs as $outletStaff){
-                            $notificationData = [];
+                        if(!$existingWinner){
+                            $ticketUser = $ticket->user;
                             if($ticketUser){
-                                $notificationData['title'] = $ticketUser->name.' had win the prize';
-                                $notificationData['message'] = $ticketUser->name.' had win the prize, please distribute the prize to customer';
-                            }else{
-                                $notificationData['title'] = 'Someone had win the prize';
-                                $notificationData['message'] = 'Someone had win the prize, please distribute the prize to customer';
+                                $notificationData = [];
+                                $notificationData['title'] = 'Congratulation! You had win the prize';
+                                $notificationData['message'] = 'You had win the prize, please wait our staff to distribute the prize to you';
+        
+                                $this->sendNotification($ticketUser,$notificationData,$winner);
                             }
     
-                            $this->sendNotification($outletStaff,$notificationData,$winner);
+                            $outletStaffs = optional($ticket->outlet)->staffs;
+                            foreach($outletStaffs as $outletStaff){
+                                $notificationData = [];
+                                if($ticketUser){
+                                    $notificationData['title'] = $ticketUser->name.' had win the prize';
+                                    $notificationData['message'] = $ticketUser->name.' had win the prize, please distribute the prize to customer';
+                                }else{
+                                    $notificationData['title'] = 'Someone had win the prize';
+                                    $notificationData['message'] = 'Someone had win the prize, please distribute the prize to customer';
+                                }
+        
+                                $this->sendNotification($outletStaff,$notificationData,$winner);
+                            }
                         }
                     }
                 }
