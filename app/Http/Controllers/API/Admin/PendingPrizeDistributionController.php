@@ -69,9 +69,9 @@ class PendingPrizeDistributionController extends Controller
         return response(['message' => trans('admin.staff_not_found')], 422);
     }
 
-    public function show(Request $request, string $id)
+    public function show(string $id)
     {
-        $winner = $request->user()->outlet->winnerList()->find($id);
+        $winner = Auth::user()->outlet->winnerList()->find($id);
 
         if(!$winner)
         {
