@@ -25,8 +25,6 @@ class OnesignalChannel
                 $instance['schedule'] ?? null,
                 $instance['title'] ?? null,
             );
-
-            Log::info($response);
         }
     }
 }
