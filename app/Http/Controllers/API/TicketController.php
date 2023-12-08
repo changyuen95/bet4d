@@ -442,6 +442,29 @@ class TicketController extends Controller
 
             $ticket->status = $request->status;
             $ticket->save();
+
+            $ticketUser = $ticket->user;
+            if($ticketUser){
+                if($request->status == Ticket::STATUS['TICKET_IN_PROGRESS']){
+                    $notificationData = [];
+                    $notificationData['title'] = 'Ticket Accepted';
+                    $notificationData['message'] = 'Your ticket is in progress';
+
+                    $this->sendNotification($ticketUser,$notificationData,$ticket);
+                }elseif($request->status == Ticket::STATUS['TICKET_REJECTED']){
+                    $notificationData = [];
+                    $notificationData['title'] = 'Ticket Rejected';
+                    $notificationData['message'] = 'Ticket is rejected';
+
+                    $this->sendNotification($ticketUser,$notificationData,$ticket);
+                }elseif($request->status == Ticket::STATUS['TICKET_COMPLETED']){
+                    $notificationData = [];
+                    $notificationData['title'] = 'Ticket process is completed';
+                    $notificationData['message'] = 'Ticketing process is completed';
+
+                    $this->sendNotification($ticketUser,$notificationData,$ticket);
+                }
+            }
             DB::commit();
 
             return response([
