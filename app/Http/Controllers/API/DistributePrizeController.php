@@ -135,7 +135,7 @@ class DistributePrizeController extends Controller
                     if($winnerUser){
                         $notificationData = [];
                         $notificationData['title'] = 'Prize distribution';
-                        $notificationData['message'] = 'You Prize had distributed by our staff';
+                        $notificationData['message'] = 'Your Prize had distributed by our staff';
 
                         $this->sendNotification($winnerUser,$notificationData,$winner);
                     }
