@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DistributeResource;
 use App\Models\WinnerList;
+use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
 use Auth;
 use Carbon\Carbon;
@@ -16,6 +17,7 @@ use Illuminate\Validation\Rule;
 
 class DistributePrizeController extends Controller
 {
+    use NotificationTrait;
     /**
      * Display a listing of the resource.
      */
@@ -129,6 +131,14 @@ class DistributePrizeController extends Controller
                         'action_by' => $staff->id
                     ]);
 
+                    $winnerUser = $winner->winner;
+                    if($winnerUser){
+                        $notificationData = [];
+                        $notificationData['title'] = 'Prize distribution';
+                        $notificationData['message'] = 'Your Prize had distributed by our staff';
+
+                        $this->sendNotification($winnerUser,$notificationData,$winner);
+                    }
                     DB::commit();
                     return response([
                         'message' =>  trans('messages.the_payment_receipt_is_submitted'),

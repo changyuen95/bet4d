@@ -109,4 +109,5 @@ return [
     'invalid_barcode' => 'Invalid Bar code',
     'successfully_remove_barcode' => 'Successfully remove barcode',
     'failed_to_remove_barcode' => 'Failed to remove barcode',
+    'no_winning_history_found' => 'No winning history found'
 ];

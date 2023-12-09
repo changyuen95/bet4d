@@ -95,6 +95,7 @@ Route::namespace('API')->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('logout', 'LoginController@logout');
         Route::prefix('me')->group(function () {
+            Route::post('one-signal-test', 'MeController@oneSignalTest');
             Route::get('','MeController@me');
             Route::post('','MeController@update');
             Route::post('update-avatar','MeController@updateAvatar');
@@ -134,7 +135,14 @@ Route::namespace('API')->group(function () {
             Route::prefix('topup')->group(function () {
                 Route::post('/qrcode/{id}','TopUpController@topupByQrCode');
             });
+
+            Route::prefix('winner')->group(function () {
+                Route::get('{id}','WinningHistoryController@show');
+                // Route::get('{id}','WinningHistoryController@show');
+            });
         });
+
+        
 
         Route::prefix('notifications')->group(function () {
             Route::get('','NotificationController@index');

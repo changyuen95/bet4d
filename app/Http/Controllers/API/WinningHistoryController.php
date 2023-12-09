@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\WinningHistoryResource;
 use Illuminate\Http\Request;
 use Auth;
 use Carbon\Carbon;
@@ -66,7 +67,18 @@ class WinningHistoryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $user = Auth::user();
+        if(!$user){
+            return response(['message' => trans('messages.no_user_found')], 422);
+        }
+
+        $winningHistory = $user->winningHistory()->find($id);
+        if(!$winningHistory){
+            return response(['message' => trans('messages.no_winning_history_found')], 422);
+        }
+
+        return new WinningHistoryResource($winningHistory);
+
     }
 
     /**
