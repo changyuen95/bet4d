@@ -44,7 +44,7 @@ class PendingPrizeDistributionController extends Controller
             //                             ->where('tickets.outlet_id', $superadmin->outlet_id)
             //                             ->where('tickets.status', 'completed')
             //                             ->select('winner_lists.*', 'draw_result.type', 'draw_result.position');
-            $prizes_to_be_distributed = WinnerList::where('is_distribute', 0)->whereHas('ticketNumber', function($q) use($game_id){
+            $prizes_to_be_distributed = WinnerList::where('is_distribute', 1)->where('is_verified', 0)->whereHas('ticketNumber', function($q) use($game_id){
                                             $q->whereHas('ticket', function($q) use($game_id){
                                                 $q->when($game_id != '', function ($query) use($game_id){
                                                     return $query->where('game_id', $game_id);
@@ -77,7 +77,7 @@ class PendingPrizeDistributionController extends Controller
         {
             return response(['message' => trans('messages.no_winner_prize_found')], 422);
         }
-    
+
         return new PendingPrizeDistributionResource($winner);
     }
 
@@ -92,7 +92,7 @@ class PendingPrizeDistributionController extends Controller
 
         if($superadmin->hasRole(Role::SUPER_ADMIN)){
 
-            $prizes_to_be_distributed_count = WinnerList::where('is_distribute', 0)
+            $prizes_to_be_distributed_count = WinnerList::where('is_distribute', 1)->where('is_verified', 0)
                                                 ->join('ticket_numbers', 'winner_lists.ticket_number_id', '=', 'ticket_numbers.id')
                                                 ->join('tickets', 'ticket_numbers.ticket_id', '=', 'tickets.id')
                                                 ->where('tickets.outlet_id', $superadmin->outlet_id)
@@ -100,7 +100,7 @@ class PendingPrizeDistributionController extends Controller
                                                 ->count();
 
             return $prizes_to_be_distributed_count;
-    
+
         }
     }
 }
