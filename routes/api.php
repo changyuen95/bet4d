@@ -223,6 +223,7 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
 
             /****** Prize Trasaction API for downlines ******/
             Route::get('{id}/prize-transactions','PrizeTransactionController@index');
+            Route::get('{admin_id}/prize-transactions/{id}','PrizeTransactionController@show');
 
         });
 
