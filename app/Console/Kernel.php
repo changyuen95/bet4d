@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
                  ->days([Schedule::WEDNESDAY, Schedule::SATURDAY, Schedule::SUNDAY])
                  ->dailyAt('19:00')
                  ->everyFiveMinutes()
-                 ->until('21:00');
+                 ->between('19:00', '21:00');
 
         $schedule->command('sync:popular-number')
                 //  ->timezone('Your_Timezone') // Replace 'Your_Timezone' with your actual timezone
