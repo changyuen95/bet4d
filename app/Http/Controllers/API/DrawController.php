@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DrawResource;
 use App\Models\Draw;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class DrawController extends Controller
@@ -72,5 +73,30 @@ class DrawController extends Controller
         }
 
         return new DrawResource($draw);
+    }
+
+    public function getCountDownTime(){
+        $nextDraw = Draw::getCurrentDraw();
+        if(!$nextDraw){
+            return response(['message' => trans('messages.no_draw_found')], 422);
+        }
+        $now = Carbon::now();
+
+        $drawDate = Carbon::parse($nextDraw->expired_at);
+        $drawDate->addHour();
+        $difference = $now->diff($drawDate);
+
+        $days = $difference->days;
+        $hours = $difference->h;
+        $minutes = $difference->i;
+        $seconds = $difference->s;
+
+
+        return [
+            'days' => $days,
+            'hours' => $hours,
+            'minutes' => $minutes,
+            'seconds' => $seconds,
+        ];
     }
 }

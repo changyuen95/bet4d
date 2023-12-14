@@ -76,6 +76,7 @@ Route::namespace('API')->group(function () {
     });
     Route::prefix('draw')->group(function () {
         Route::get('current-draw','DrawController@getCurrentDraw');
+        Route::get('count-down-time','DrawController@getCountDownTime');
     });
 
     Route::prefix('winning-list')->group(function () {
