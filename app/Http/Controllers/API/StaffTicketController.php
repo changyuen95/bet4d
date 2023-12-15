@@ -28,23 +28,23 @@ class StaffTicketController extends Controller
     {
         $staff = Auth::user();
         // Define the custom validation rule
-        Validator::extend('valid_status', function ($attribute, $value, $parameters, $validator) {
-            // Your status array
-            $statusArray = Ticket::STATUS;
+        // Validator::extend('valid_status', function ($attribute, $value, $parameters, $validator) {
+        //     // Your status array
+        //     $statusArray = Ticket::STATUS;
 
-            // Check if each value in $value is in the $statusArray
-            foreach ($value as $status) {
-                if (!in_array($status, $statusArray)) {
-                    return false;
-                }
-            }
+        //     // Check if each value in $value is in the $statusArray
+        //     foreach ($value as $status) {
+        //         if (!in_array($status, $statusArray)) {
+        //             return false;
+        //         }
+        //     }
 
-            return true;
-        });
+        //     return true;
+        // });
 
         $validator = Validator::make($request->all(), [
             'game_id' => 'nullable|exists:games,id',
-            'status' => ['array','valid_status'],
+            // 'status' => ['array','valid_status'],
             // 'duration' => ''
             'handled_by_me' => [Rule::in(array_values([true,false]))],
         ]);
