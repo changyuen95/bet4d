@@ -8,6 +8,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class DrawResource extends BaseResource
 {
+    public static $wrap = null;
+
     /**
      * Transform the resource into an array.
      *
@@ -24,10 +26,10 @@ class DrawResource extends BaseResource
                     if(!isset($results[$drawResult->type])){
                         $results[$drawResult->type] = [];
                     }
-                    $results[$drawResult->type][$drawResult->position] = $drawResult->number; 
+                    $results[$drawResult->type][$drawResult->position] = $drawResult->number;
                     ksort($results[$drawResult->type]);
                 }else{
-                    $results[$drawResult->type] = $drawResult->number; 
+                    $results[$drawResult->type] = $drawResult->number;
                 }
             }
         }
@@ -38,7 +40,7 @@ class DrawResource extends BaseResource
             "3rd" => "third_prize",
             // Add more mappings as needed
         ];
-        
+
         // Use array_map to rename the keys
         $results = collect($results)->map(function ($item, $key) use ($keyMapping) {
             return [$keyMapping[$key] ?? $key => $item];

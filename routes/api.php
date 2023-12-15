@@ -224,6 +224,8 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
     Route::middleware(['checkUserType:'.Role::SUPER_ADMIN])->group(function () {
         Route::prefix('downlines')->group(function () {
             Route::get('','DownlineController@index');
+
+            /****** Credit Trasaction API for downlines ******/
             Route::get('{id}/credit-transactions','CreditTransactionController@index');
             Route::get('{admin_id}/credit-transactions/{id}','CreditTransactionController@show');
 
@@ -231,6 +233,11 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
             Route::get('{id}/clear-transactions/credit-distribute','DownlineController@creditDistribute');
             Route::get('{admin_id}/clear-transactions/credit-distribute/{id}','DownlineController@creditDistributeDetail');
             Route::post('{id}/clear-transactions','DownlineController@clearTransactionsProcess');
+
+            /****** Prize Trasaction API for downlines ******/
+            Route::get('{id}/prize-transactions','PrizeTransactionController@index');
+            Route::get('{admin_id}/prize-transactions/{id}','PrizeTransactionController@show');
+
         });
 
 
