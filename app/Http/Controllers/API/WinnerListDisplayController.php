@@ -16,7 +16,7 @@ class WinnerListDisplayController extends Controller
     {
         $query = Draw::whereHas('results')->with('winnerListDisplay');
 
-        $winningListDisplay = $query->paginate($request->get('limit') ?? 10);
+        $winningListDisplay = $query->where('created_at','DESC')->paginate($request->get('limit') ?? 10);
         
         return response($winningListDisplay, 200);
     }
