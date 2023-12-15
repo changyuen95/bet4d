@@ -232,12 +232,12 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
 
     Route::middleware(['checkUserType:'.Role::SUPER_ADMIN])->group(function () {
 
-        Route::prefix('notifications')->group(function () {
-            Route::get('','NotificationController@index');
-            Route::post('mark-all-as-read/{id}','NotificationController@markAsRead');
-            Route::get('unread-count','NotificationController@unReadCount');
+        // Route::prefix('notifications')->group(function () {
+        //     Route::get('','NotificationController@index');
+        //     Route::post('mark-all-as-read/{id}','NotificationController@markAsRead');
+        //     Route::get('unread-count','NotificationController@unReadCount');
 
-        });
+        // });
 
         Route::prefix('downlines')->group(function () {
             Route::get('','DownlineController@index');
