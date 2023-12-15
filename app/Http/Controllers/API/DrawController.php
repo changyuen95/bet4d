@@ -94,7 +94,7 @@ class DrawController extends Controller
 
 
         return (object)[
-            'datetime' => Carbon::parse($nextDraw->expired_at)
+            'datetime' => Carbon::parse($nextDraw->expired_at)->format('Y-m-d H:i:s')
         ];
     }
 }
