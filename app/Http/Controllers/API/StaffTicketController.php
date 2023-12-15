@@ -6,11 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\TicketResource;
 use Illuminate\Http\Request;
 use App\Models\Ticket;
+use App\Models\TicketNumber;
 use App\Models\WinnerList;
 use Validator;
 use Illuminate\Validation\Rule;
 use Auth;
 use Carbon\Carbon;
+use File;
+use Image;
+use Illuminate\Support\Facades\Storage;
+use Exception;
+use DB;
 
 class StaffTicketController extends Controller
 {
@@ -158,4 +164,105 @@ class StaffTicketController extends Controller
         return $count;
     }
 
+    public function permutationImage(Request $request, $ticket_id, $ticket_number_id){
+        $validator = Validator::make($request->all(),
+        [
+            'image' => 'required|image|mimes:jpg,png,jpeg',
+        ]);
+
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->first()], 422);
+        }
+
+        $staff = Auth::user();
+        $ticket = Ticket::find($ticket_id);
+        if(!$ticket || $ticket->action_by != $staff->id){
+            return response(['message' =>  trans('messages.invalid_ticket') ], 422);
+        }
+        
+        $ticketNumber = $ticket->ticketNumbers()->find($ticket_number_id);
+        if(!$ticketNumber){
+            return response(['message' =>  trans('messages.invalid_ticket_number') ], 422);
+        }
+
+        if($ticketNumber->type == TicketNumber::TYPE['Straight']){
+            return response(['message' =>  trans('messages.ticket_number_is_not_permutation') ], 422);
+        }
+
+        if($ticketNumber->permutation_image != null){
+            return response(['message' =>  trans('messages.permutation_image_existed') ], 422);
+        }
+        DB::beginTransaction();
+        try{
+            if($request->hasFile('image')) {
+                $allowedfileExtension=['jpg','png','jpeg'];
+
+                $attachmentFile = $request->file('image');
+                $attachmentfilename = $attachmentFile->getClientOriginalName();
+                $attachmentextension = $attachmentFile->extension();
+
+                $check =in_array($attachmentextension,$allowedfileExtension);
+
+                if($check) {
+                    File::makeDirectory(storage_path('app/public/permutation_image/ticketNumber/'.$ticketNumber->id.'/attachment/'), $mode = 0777, true, true);
+                    $input['imagename'] = 'avatar_'.time().'.'.$attachmentFile->getClientOriginalExtension();
+                    $destination_path = storage_path('app/public/permutation_image/ticketNumber/'.$ticketNumber->id.'/attachment/');
+                    $img = Image::make($attachmentFile->path());
+                    $img->save($destination_path.'/'.$input['imagename']);
+                    $attachment_image_full_path = asset('storage/permutation_image/ticketNumber/'.$ticketNumber->id.'/attachment/'.$input['imagename']);
+                    $oldImage = $ticketNumber->permutation_image;
+                    $ticketNumber->update([
+                        'permutation_image' => $attachment_image_full_path,
+                    ]);
+                    Storage::delete('public/'.str_replace(asset('storage/'),'',$oldImage));
+                    DB::commit();
+                    return response([
+                        'message' =>  trans('messages.successfully_insert_permutation_image'),
+                    ], 200);
+                } else {
+                    DB::rollback();
+                    return response(['message' => trans('messages.only_png_jpg_jpeg_is_accepted')], 422);
+                }
+
+            }else{
+                DB::rollback();
+                return response(['message' => trans('messages.no_file_detected')], 422);
+            }
+        }catch (Exception $e) {
+            DB::rollback();
+            return response(['message' =>  trans('messages.failed_to_insert_permutation_image') ], 422);
+        }
+    }
+
+    public function removePermutationImage(Request $request, $ticket_id, $ticket_number_id){
+        $staff = Auth::user();
+        $ticket = $staff->tickets()->find($ticket_id);
+        if(!$ticket){
+            return response(['message' =>  trans('messages.invalid_ticket') ], 422);
+        }
+
+        $ticketNumber = $ticket->ticketNumbers()->find($ticket_number_id);
+        if(!$ticketNumber){
+            return response(['message' =>  trans('messages.invalid_ticket_number') ], 422);
+        }
+
+        if($ticketNumber->permutation_image == null){
+            return response(['message' =>  trans('messages.permutation_image_not_found') ], 422);
+        }
+
+        DB::beginTransaction();
+        try{
+            $oldImage = $ticketNumber->permutation_image;
+            $ticketNumber->update([
+                'permutation_image' => null
+            ]);
+            Storage::delete('public/'.str_replace(asset('storage/'),'',$oldImage));
+
+            DB::commit();
+            return response(['message' =>  trans('messages.successfully_remove_permutation_image') ], 200);
+        }catch (Exception $e) {
+            DB::rollback();
+            return response(['message' =>  trans('messages.failed_to_remove_permutation_image') ], 422);
+        }
+    }
 }

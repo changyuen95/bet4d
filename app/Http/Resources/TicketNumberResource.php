@@ -22,6 +22,8 @@ class TicketNumberResource extends BaseResource
             'big_amount' => $this->big_amount,
             'small_amount' => $this->small_amount,
             'type' => $this->type,
+            'permutation_image' => $this->permutation_image,
+            'permutation_number' => $this->permutation_number,
             'potential_winning' => $this->potentialWinning,
             'created_at' => $this->formatDate($this->created_at),
             'updated_at' => $this->formatDate($this->updated_at),

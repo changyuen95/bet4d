@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Ticket;
+use App\Models\TicketNumber;
 use App\Traits\NotificationTrait;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -34,7 +35,7 @@ class GetWinnerList implements ShouldQueue
             foreach($tickets as $ticket){
                 $ticketNumbers = $ticket->ticketNumbers;
                 foreach($ticketNumbers as $ticketNumber){
-                    if($ticketNumber->number == $result->number){
+                    if($ticketNumber->number == $result->number && $ticketNumber->type == TicketNumber::TYPE['Straight']){
                         $existingWinner = $result->winners()->where('ticket_number_id',$ticketNumber->id)->first();
                         $winner = $result->winners()->updateOrCreate([
                             'ticket_number_id' => $ticketNumber->id,

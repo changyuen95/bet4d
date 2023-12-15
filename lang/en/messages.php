@@ -109,5 +109,14 @@ return [
     'invalid_barcode' => 'Invalid Bar code',
     'successfully_remove_barcode' => 'Successfully remove barcode',
     'failed_to_remove_barcode' => 'Failed to remove barcode',
-    'no_winning_history_found' => 'No winning history found'
+    'no_winning_history_found' => 'No winning history found',
+    'invalid_ticket_number' => 'Invalid Ticket Number',
+    'failed_to_insert_permutation_image' => 'Failed to insert permutation image',
+    'successfully_insert_permutation_image' => 'Successfully insert permutation image',
+    'permutation_image_existed' => 'Permutation image existed',
+    'permutation_image_not_found' => 'Permutation image not found',
+    'successfully_remove_permutation_image' => 'Successfully remove permutation image',
+    'failed_to_remove_permutation_image' => 'Failed to remove permutation image',
+    'ticket_number_is_not_permutation' => 'Ticket number is not permutation',
+    'permutation_image_cannot_be_empty' => 'Permutation image cannot be empty',
 ];

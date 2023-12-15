@@ -76,6 +76,7 @@ Route::namespace('API')->group(function () {
     });
     Route::prefix('draw')->group(function () {
         Route::get('current-draw','DrawController@getCurrentDraw');
+        Route::get('count-down-time','DrawController@getCountDownTime');
     });
 
     Route::prefix('winning-list')->group(function () {
@@ -194,6 +195,10 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
             Route::post('{id}/staff-scan-barcode','TicketController@staffScanBarcode');
             Route::get('{id}/barcode','TicketController@barcodeListing');
             Route::post('{id}/remove-barcode/{barcode_id}','TicketController@removeBarcode');
+            Route::prefix('{ticket_id}/ticket-number')->group(function () {
+                Route::post('{ticket_number_id}/permutation-image','StaffTicketController@permutationImage');
+                Route::post('{ticket_number_id}/remove-permutation-image','StaffTicketController@removePermutationImage');
+            });
         });
 
         Route::prefix('credit-transactions')->group(function () {
