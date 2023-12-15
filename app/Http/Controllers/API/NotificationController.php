@@ -17,7 +17,8 @@ class NotificationController extends Controller
         $user = Auth::user();
         $query = $user->notifications();
         $notifications = $query->paginate($request->get('limit') ?? 10);
-        return response($notifications, 200);
+        return $notifications;
+
     }
 
     /**
