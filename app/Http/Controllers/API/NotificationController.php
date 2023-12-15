@@ -84,7 +84,7 @@ class NotificationController extends Controller
             ]);
         }
 
-        return response(['message' => trans('messages.marked_as_read')], 422);
+        return response(['message' => trans('messages.marked_as_read')], 200);
 
     }
 
@@ -101,7 +101,7 @@ class NotificationController extends Controller
 
 
 
-        return response(['message' => trans('messages.marked_as_read')], 422);
+        return response(['message' => trans('messages.marked_as_read')], 200);
 
     }
 
