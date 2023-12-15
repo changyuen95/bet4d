@@ -14,10 +14,11 @@ class NotificationController extends Controller
      */
     public function index(Request $request)
     {
-        $user = Auth::user();
-        $query = $user->notifications();
-        $notifications = $query->paginate($request->get('limit') ?? 10);
-        return $notifications;
+        // $user = Auth::user();
+        // $query = $user->notifications();
+        // $notifications = $query->paginate($request->get('limit') ?? 10);
+        // return $notifications;
+        return Auth::user()->notifications()->paginate($request->get('limit') ?? 10);
 
     }
 

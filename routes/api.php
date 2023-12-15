@@ -143,14 +143,15 @@ Route::namespace('API')->group(function () {
             });
         });
 
-        
+
 
         Route::prefix('notifications')->group(function () {
             Route::get('','NotificationController@index');
-            Route::post('mark-as-read/{id}','NotificationController@markAsRead');
+            Route::post('mark-all-as-read/{id}','NotificationController@markAsRead');
             Route::get('unread-count','NotificationController@unReadCount');
 
         });
+
 
         Route::prefix('tickets')->group(function () {
             Route::post('','TicketController@store');
@@ -180,6 +181,14 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
     });
 
     Route::middleware(['checkUserType:'.Role::OPERATOR])->group(function () {
+
+        Route::prefix('notifications')->group(function () {
+            Route::get('','NotificationController@index');
+            Route::post('mark-all-as-read/{id}','NotificationController@markAsRead');
+            Route::get('unread-count','NotificationController@unReadCount');
+
+        });
+
         Route::prefix('topup')->group(function () {
             Route::post('/qrcode/{id}','TopUpController@topupByQrCode');
             Route::post('{id}','TopUpController@store');
@@ -222,6 +231,14 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
     // Routes for Operator users
 
     Route::middleware(['checkUserType:'.Role::SUPER_ADMIN])->group(function () {
+
+        Route::prefix('notifications')->group(function () {
+            Route::get('','NotificationController@index');
+            Route::post('mark-all-as-read/{id}','NotificationController@markAsRead');
+            Route::get('unread-count','NotificationController@unReadCount');
+
+        });
+
         Route::prefix('downlines')->group(function () {
             Route::get('','DownlineController@index');
 
