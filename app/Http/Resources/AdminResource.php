@@ -7,7 +7,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class AdminResource extends BaseResource
 {
+    public static $wrap = null;
+
     /**
+     *
      * Transform the resource into an array.
      *
      * @return array<string, mixed>
