@@ -7,6 +7,7 @@ use App\Http\Resources\TicketResource;
 use Illuminate\Http\Request;
 use App\Models\Ticket;
 use App\Models\TicketNumber;
+use App\Models\VerifyProfile;
 use App\Models\WinnerList;
 use Validator;
 use Illuminate\Validation\Rule;
@@ -155,10 +156,11 @@ class StaffTicketController extends Controller
         })->count();
 
         $prize_count =WinnerList::where('action_by')->where('is_distribute',false)->count();
-
+        $verify_profile = VerifyProfile::where('status','pending')->count();
         $count = [
             'ticket_request' => $ticket_count,
             'distribute_prize' => $prize_count,
+            'profile_verification' => $verify_profile,
         ];
 
         return $count;
@@ -179,7 +181,7 @@ class StaffTicketController extends Controller
         if(!$ticket || $ticket->action_by != $staff->id){
             return response(['message' =>  trans('messages.invalid_ticket') ], 422);
         }
-        
+
         $ticketNumber = $ticket->ticketNumbers()->find($ticket_number_id);
         if(!$ticketNumber){
             return response(['message' =>  trans('messages.invalid_ticket_number') ], 422);
