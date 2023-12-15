@@ -78,11 +78,14 @@ class StaffTicketController extends Controller
         $completed_today = Ticket::where('action_by',$staff->id)
                             ->where('status',Ticket::STATUS['TICKET_COMPLETED'])
                             ->whereBetween('completed_at', [$todayStart, $todayEnd])->count();
+        // $results = [
+        //     'tickets' => $tickets,
+        //     'completed_today' => $completed_today,
+        // ];
+        $completed = collect(['completed_today' => $completed_today]);
 
-        $results = [
-            'tickets' => $tickets,
-            'completed_today' => $completed_today,
-        ];
+        $results = $completed->merge($tickets);
+
 
         return $results;
     }
