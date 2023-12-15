@@ -45,7 +45,7 @@ class StaffTicketController extends Controller
         $validator = Validator::make($request->all(), [
             'game_id' => 'nullable|exists:games,id',
             // 'status' => ['array','valid_status'],
-            // 'duration' => ''
+            'duration' => 'nullable|integer',
             'handled_by_me' => [Rule::in(array_values([true,false]))],
         ]);
 
@@ -67,8 +67,8 @@ class StaffTicketController extends Controller
             $query->where('action_by',$staff->id);
         }
 
-        if($request->duration != ''){
-            $query->where('created_at','>=', Carbon::now()->subDays($request->duration));
+        if($request->duration != null){
+            $query->where('created_at','>=', Carbon::now()->subDays($request->duration)->format('Y:m:d 23:59:59'));
         }
 
         $tickets = $query->with(['ticketNumbers', 'draws','platform','game'])->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);

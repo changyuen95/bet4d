@@ -99,6 +99,6 @@ class NotificationController extends Controller
             'notifications_count' => $notificationsCount,
         ];
 
-        return $count;
+        return $notificationsCount;
     }
 }
