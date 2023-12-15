@@ -88,6 +88,23 @@ class NotificationController extends Controller
 
     }
 
+    public function markAllAsRead(Request $request)
+    {
+        $user = Auth::user();
+        $notification = $user->notifications()->whereNull('read_at');
+
+
+        $notification->update([
+            'read_at' => Carbon::now()
+        ]);
+
+
+
+
+        return response(['message' => trans('messages.marked_as_read')], 422);
+
+    }
+
     public function unReadCount(){
         $user = Auth::user();
         if(!$user){

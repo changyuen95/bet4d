@@ -147,7 +147,8 @@ Route::namespace('API')->group(function () {
 
         Route::prefix('notifications')->group(function () {
             Route::get('','NotificationController@index');
-            Route::post('mark-all-as-read/{id}','NotificationController@markAsRead');
+            Route::post('mark-as-read/{id}','NotificationController@markAsRead');
+            Route::post('mark-all-as-read/{id}','NotificationController@markAllAsRead');
             Route::get('unread-count','NotificationController@unReadCount');
 
         });
