@@ -18,7 +18,7 @@ class DrawResultController extends Controller
         $query = Draw::query();
 
         $drawResults = $query->with('results')->where('is_open_result',true)->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
-        return response($drawResults, 200);
+        return $drawResults;
     }
 
     /**

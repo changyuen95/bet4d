@@ -18,7 +18,7 @@ class Draw extends Model
     {
         return $date->format('Y-m-d H:i:s');
     }
-    
+
     protected static function boot()
     {
         parent::boot();
@@ -27,7 +27,7 @@ class Draw extends Model
             $model->reference_id = uniqid();
         });
     }
-    
+
     public static function getDrawData($platformId){
         $platform = Platform::find($platformId);
         // $todayDateString = "04/11/2023 19:00:00";
@@ -74,10 +74,10 @@ class Draw extends Model
             }
 
             return $draw;
-            
+
         }
 
-        
+
     }
 
     public function getFullDrawNoAttribute()
@@ -128,7 +128,7 @@ class Draw extends Model
     public static function checkIsExpired($draw){
         if (Carbon::parse($draw->expired_at)->isPast()) {
             return true;
-        } 
+        }
         return false;
     }
 }
