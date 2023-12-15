@@ -83,6 +83,7 @@ class DrawController extends Controller
         $now = Carbon::now();
 
         $drawDate = Carbon::parse($nextDraw->expired_at);
+
         $drawDate->addHour();
         $difference = $now->diff($drawDate);
 
@@ -92,11 +93,8 @@ class DrawController extends Controller
         $seconds = $difference->s;
 
 
-        return [
-            'days' => $days,
-            'hours' => $hours,
-            'minutes' => $minutes,
-            'seconds' => $seconds,
+        return (object)[
+            'datetime' => Carbon::parse($nextDraw->expired_at)
         ];
     }
 }
