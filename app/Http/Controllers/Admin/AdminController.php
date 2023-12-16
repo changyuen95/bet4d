@@ -19,7 +19,10 @@ use Illuminate\Support\Facades\Mail;
 
 class AdminController extends Controller
 {
-
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     /**
      * Display a listing of the resource.
@@ -63,7 +66,7 @@ class AdminController extends Controller
         ]);
 
         if($validator->fails()){
-            Session::flash('success', 'Fail to add admin!');
+            Session::flash('fail', 'Fail to add admin!');
             return redirect()->back()->withErrors($validator)->withInput();
         }
 

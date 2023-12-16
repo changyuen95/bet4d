@@ -18,6 +18,10 @@ use DataTables;
 
 class DrawController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -50,7 +54,7 @@ class DrawController extends Controller
 
         if($validator->fails())
         {
-            Session::flash('success', 'Fail to add special draw!');
+            Session::flash('fail', 'Fail to add special draw!');
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
@@ -61,14 +65,16 @@ class DrawController extends Controller
             $formated_date = Carbon::parse($request->draw_date)->format('Y-m-d');
 
             /****** To get the previous draw with same year ******/
-            $year = Carbon::now($request->draw_date)->format('Y');
+            $year = Carbon::parse($request->draw_date)->format('Y');
             $previous_draw = Draw::where('platform_id', $request->platform)->whereYear('created_at', $year)->orderBy('created_at', 'desc')->first();
 
+
             /****** To get the next draw from the request date ******/
-            $next_draw = Draw::where('platform_id', $request->platform)->whereDate('expired_at', '>', $formated_date)->orderBy('expired_at', 'asc')->get();
+            $next_draw = Draw::where('platform_id', $request->platform)->where('is_special_draw', false)->whereDate('expired_at', '>', $formated_date)->orderBy('expired_at', 'asc')->first();
 
             if($next_draw)
             {
+                Session::flash('fail', 'Cannot create a special draw before an ordinary draw');
                 return redirect()->back()->withErrors($validator)->withInput();
             }
 
@@ -86,6 +92,7 @@ class DrawController extends Controller
                 $new_special_draw->draw_no = 1;
             }
 
+            $new_special_draw->is_special_draw = true;
             $new_special_draw->year = Carbon::parse($request->draw_date)->format('y');
             $new_special_draw->save();
 
