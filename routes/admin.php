@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\DrawController;
 use App\Http\Controllers\Admin\QrcodeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
@@ -63,6 +64,13 @@ use App\Http\Controllers\ProfileController;
         });
         Route::resource("qrcodes", QrcodeController::class);
 
+
+        Route::group(['prefix' => 'draws', 'as' => 'draws'], function() {
+            Route::get('draw-calendar-list', [DrawController::class, 'getCalendarList'])->name('.calendar_list');
+            Route::get('special-draw-tickets/{date}', [DrawController::class, 'showDrawTicketList'])->name('.special_draw_ticket_list');
+            Route::get('ticket-list-datatable', [DrawController::class, 'ticketListDatatable'])->name('.ticket_list_datatable');
+        });
+        Route::resource("draws", DrawController::class);
 
         require __DIR__.'/auth.php';
 

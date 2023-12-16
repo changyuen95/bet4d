@@ -63,7 +63,7 @@ class AdminController extends Controller
         ]);
 
         if($validator->fails()){
-            Session::flash('success', 'New admin added!');
+            Session::flash('success', 'Fail to add admin!');
             return redirect()->back()->withErrors($validator)->withInput();
         }
 

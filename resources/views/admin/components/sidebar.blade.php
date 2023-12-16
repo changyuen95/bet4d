@@ -43,6 +43,13 @@
                     <li><a href="{{ route('admin.qrcodes.scanned_list') }}">Scanned List</a></li>
                 </ul>
             </li>
+
+            <li>
+                <a href="{{ route('admin.draws.index') }}">
+                    <i class="fa fa-user"></i>
+                    <span class="link_name">Draw</span>
+                </a>
+            </li>
             {{-- <li>
                 <a href="#">
                 <i class='bx bx-compass' ></i>
