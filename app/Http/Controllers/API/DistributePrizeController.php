@@ -31,7 +31,7 @@ class DistributePrizeController extends Controller
         if ($validator->fails()) {
             return response(['message' => $validator->errors()->first()], 422);
         }
-        
+
         $staff = Auth::user();
         if(!$staff){
             return response(['message' => trans('messages.no_user_found')], 422);
@@ -49,13 +49,16 @@ class DistributePrizeController extends Controller
                                 });
                             })->where('outlet_id',$staff->outlet_id)->with('drawResult','ticketNumber','winner');
 
-        if($request->is_distribute != ''){
-            $booleanValue = filter_var($request->is_distribute, FILTER_VALIDATE_BOOLEAN);
-            $query->where('is_distribute',$booleanValue);
-            if($booleanValue){
-                $query->where('action_by',$staff->id);
-            }
-        }
+        // if($request->is_distribute != ''){
+        //     $booleanValue = filter_var($request->is_distribute, FILTER_VALIDATE_BOOLEAN);
+            // $query->where('is_distribute',$booleanValue);
+            // if($booleanValue){
+            //     $query->where('action_by',$staff->id);
+            // }
+        // }
+
+            $query->where('is_distribute',false);
+
 
         if($request->handled_by_me){
             $query->where('action_by',$staff->id);
