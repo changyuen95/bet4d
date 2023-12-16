@@ -57,7 +57,7 @@ class DistributePrizeController extends Controller
             // }
         // }
 
-            $query->where('is_distribute',false);
+            $query->where('is_distribute',0);
 
 
         if($request->handled_by_me){

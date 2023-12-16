@@ -51,4 +51,14 @@ class WinnerList extends Model
             return $this->distribute_attachment;
         }
     }
+
+    public function getIsDistributeAttribute($value){
+
+        if($value){
+            return $value == 1 ? true : false ;
+        }
+
+        return false;
+
+    }
 }
