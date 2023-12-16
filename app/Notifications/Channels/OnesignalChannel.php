@@ -15,7 +15,7 @@ class OnesignalChannel
         //$instance['url'] = 'titanium://token';
             // $notification->toOnesignal($notifiable);
 
-        if (env('APP_ENV') === 'production' || env('APP_ENV') === 'staging') {
+        if (env('APP_ENV') === 'production' || env('APP_ENV') === 'staging' || env('APP_ENV') === 'local') {
             $response = OneSignal::sendNotificationToExternalUser(
                 $instance['message'],
                 [$notifiable->id],
