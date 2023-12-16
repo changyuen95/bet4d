@@ -9,7 +9,7 @@
     <form class="w-full mb-8" action="{{route('admin.draws.store')}}" class="form-horizontal" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="flex flex-wrap -mx-3 mb-2">
-            <div class="w-full px-3">
+            <div class="w-full md:w-1/2 px-3">
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-scan_limit">
                     Special Draw Date <strong class="text-danger">*</strong>
                 </label>
