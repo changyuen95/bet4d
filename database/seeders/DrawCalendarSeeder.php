@@ -15,7 +15,7 @@ class DrawCalendarSeeder extends Seeder
      */
     public function run(): void
     {
-        $startDate = Carbon::now();
+        $startDate = Carbon::now()->firstOfMonth();
         $endDate = Carbon::createFromDate(2030, 12, 31);
 
         $currentDate = $startDate->copy();
