@@ -9,6 +9,26 @@
     </x-slot>
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mb-5">
+        <div style="float:right; margin-bottom:15px">
+            @if (Auth::user()->role == 'super_admin')
+                <div style="display: inline-flex; margin-top: 10px; margin-right:5px">
+                    <select name="platform_id" id="platform_id" class="rounded">
+                        @foreach ($platforms as $platform)
+                            <option value={{ $platform->id }}
+                                {{ old('platform_id') == $platform->id ? 'selected' : '' }}>
+                                {{ $platform->name }}</option>
+                        @endforeach
+                        </option>
+                    </select>
+                    @error('platform_id')
+                        <span class="invalid-feedback d-block" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+            @endif
+        </div>
+        
         <table id="ticket_table" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-800 table-responsive pt-4">
             <input type="hidden" value="{{$date}}" name="calendar_date" id="calendar_date">
             <thead class="text-xs text-gray-700 uppercase bg-cyan-100 dark:bg-cyan-100 dark:text-gray-900 py-10">
@@ -20,7 +40,13 @@
                         Buyer
                     </th>
                     <th scope="col" class="text-base px-6 py-4">
+                        Number
+                    </th>
+                    <th scope="col" class="text-base px-6 py-4">
                         Game
+                    </th>
+                    <th scope="col" class="text-base px-6 py-4">
+                        Outlet
                     </th>
                     <th scope="col" class="text-base px-6 py-4">
                         Purhace Time
@@ -93,33 +119,49 @@
 <script>
     $( document ).ready(function() {
 
-        var calendarDate = $('#calendar_date').val();
-console.log(calendarDate);
-        var table= new DataTable('#ticket_table', {
-            processing: true,
-                serverSide: true,
-                pageLength:10,
-                stateSave: true,
-                dom: 'Bfrtip',
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf','print'
-                ],
-                ajax: ({
-                    url:"{{ route('admin.draws.ticket_list_datatable') }}",
-                    data: function(d){
-                        d.calendarDate = calendarDate;
-                        $('#search').val(d.search.value);
+        function calltable(){
+            var calendarDate = $('#calendar_date').val();
+            var platform = $('#platform_id').val();
 
-                    },
-                }),
-                columns: [
-                        {data: 'DT_RowIndex',searchable:false,orderable:false},
-                        {data: 'users.name',searchable:true,orderable:true},
-                        {data: 'games.name',searchable:true,orderable:true},
-                        {data: 'tickets.created_at',searchable:true,orderable:true},
+            var table= new DataTable('#ticket_table', {
+                processing: true,
+                    serverSide: true,
+                    pageLength:10,
+                    stateSave: true,
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copy', 'csv', 'excel', 'pdf','print'
                     ],
-                    order: [[3, "desc"]]
+                    ajax: ({
+                        url:"{{ route('admin.draws.ticket_list_datatable') }}",
+                        data: function(d){
+                            d.calendarDate = calendarDate;
+                            d.platform = platform;
+                            $('#search').val(d.search.value);
+
+                        },
+                    }),
+                    columns: [
+                            {data: 'DT_RowIndex',searchable:false,orderable:false},
+                            {data: 'users.name',searchable:true,orderable:true},
+                            {data: 'ticketNumbers',searchable:true,orderable:true},
+                            {data: 'games.name',searchable:true,orderable:true},
+                            {data: 'outlets.name',searchable:true,orderable:true},
+                            {data: 'tickets.created_at',searchable:false,orderable:true},
+                        ],
+                        order: [[3, "desc"]]
+            })
+        }
+
+
+        calltable();
+
+
+        $(document).on('change', '#platform_id', function(e) {
+            $('#ticket_table').DataTable().destroy();
+            calltable();
         })
+        
     })
 </script>
 

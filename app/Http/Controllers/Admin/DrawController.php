@@ -151,9 +151,10 @@ class DrawController extends Controller
 
     public function showDrawTicketList($date)
     {
-
+        $platforms = Platform::where('status', 'active')->get();
         return view('admin.draw.draw-ticket-list', [
-            'date' => $date
+            'date' => $date,
+            'platforms' => $platforms,
         ]);
     }
 
@@ -161,25 +162,31 @@ class DrawController extends Controller
     {
         $param = $request->toArray();
         $search = $request['search']['value'];
+        $platform_id = $request['platform']??null;
 
         $user = Auth::user();
         $admin_platform = $user->outlet->platform->id;
 
         $nearest_draw = Draw::where('expired_at', '>=' ,$request['calendarDate'])->orderBy('expired_at', 'asc')->first();
 
-        $tickets = Ticket::leftjoin('users', 'users.id', 'tickets.user_id')
+        $tickets = Ticket::with('ticketNumbers')
+                    ->leftjoin('users', 'users.id', 'tickets.user_id')
                     ->leftjoin('games', 'games.id', 'tickets.game_id')
+                    ->leftjoin('outlets', 'outlets.id', 'tickets.outlet_id')
                     ->where('tickets.status', 'completed')
                     ->where('tickets.draw_id', $nearest_draw->id)
+                    ->where('tickets.platform_id', $platform_id)
                     ->when($request->search['value'], function ($query) use ($request) {
                         foreach(explode(' ',$request->search['value']) as $search){
 
                             $query->where(function($query) use ($request,$search) {
-                                $query->where('users.name', 'REGEXP', $search);
+                                $query->where('users.name', 'REGEXP', $search)
+                                    ->orWhere('games.name', 'REGEXP', $search)
+                                    ->orWhere('');
                             });
                         }
                     })
-                    ->select('users.name as username', 'games.name as game_name', 'tickets.created_at as purchased_at');
+                    ->select('users.name as username', 'games.name as game_name', 'tickets.created_at as purchased_at', 'outlets.name as outlet_name');
 
 
         if($request->ajax()) {
@@ -189,8 +196,16 @@ class DrawController extends Controller
                     return $ticket->username ?? '-';
                 })
 
+                ->editColumn('ticketNumbers', function ($ticket) {
+                    return $ticket->ticketNumbers->first() ?? '-';
+                })
+
                 ->editColumn('games.name', function ($ticket) {
                     return $ticket->game_name ?? '-';
+                })
+
+                ->editColumn('outlets.name', function ($ticket) {
+                    return $ticket->outlet_name ?? '-';
                 })
 
                 ->editColumn('tickets.created_at', function ($ticket) {

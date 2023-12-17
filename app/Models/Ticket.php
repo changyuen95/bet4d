@@ -29,7 +29,7 @@ class Ticket extends Model
             $model->reference_id = uniqid();
         });
     }
-    
+
     public function ticketNumbers()
     {
         return $this->hasMany(TicketNumber::class, 'ticket_id');
@@ -73,7 +73,7 @@ class Ticket extends Model
         }
         return number_format((float)$totalAmount, 2, '.', '');
     }
-    
+
     public function notifications()
     {
         return $this->morphMany(Notification::class, 'targetable');

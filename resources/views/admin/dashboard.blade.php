@@ -4,6 +4,8 @@
         $user = Auth::user();
         $adminCount = App\Models\Admin::where('outlet_id', $user->outlet_id)->count();
         $activeAdminCount = App\Models\Admin::where('outlet_id', $user->outlet_id)->where('status', 'active')->count();
+        $today_date = Carbon\Carbon::now()->format('Y-m-d');
+        $nextDraw = App\Models\Draw::where('platform_id', $user->outlet->platform->id)->whereDate('expired_at', '>', $today_date)->orderBy('expired_at', 'asc')->first();
 
     @endphp
 
@@ -91,7 +93,17 @@
                         </div>
                     </div>
                 </div>
-              </div>
+                <div class="d-block bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-4">
+                    <div class="d-flex p-6 font-semibold text-md text-gray-800 dark:text-gray-600 leading-tight bg-gradient">
+                        <i class="fa fa-calendar" style="font-size: 60px" aria-hidden="true"></i>
+                        <div class="pl-8 font-semibold text-md text-gray-800 dark:text-gray-600 leading-tight bg-gradient">
+                            <u>Next Draw Date</u> <br/>
+                            <span class="h5">{{ $nextDraw->expired_at }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
           </div>
         </div>
     </div>
