@@ -34,7 +34,7 @@ class SendNotification implements ShouldQueue
         $notification = $this->recipient->notifications()->create([
             'title' => $this->message['title'],
             'message' => $this->message['message'],
-            'deep_link' => $this->message['deepLink']
+            'deeplink' => $this->message['deepLink']
         ]);
 
         if($this->module != null){
