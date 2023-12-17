@@ -139,7 +139,7 @@ class DistributePrizeController extends Controller
                         $notificationData = [];
                         $notificationData['title'] = 'Prize distribution';
                         $notificationData['message'] = 'Your Prize had distributed by our staff';
-
+                        $notificationData['deepLink'] = env('APP_URL').'/api/me/winner/'.$winner->id;
                         $this->sendNotification($winnerUser,$notificationData,$winner);
                     }
                     DB::commit();

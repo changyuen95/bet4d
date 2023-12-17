@@ -135,7 +135,8 @@ class MeController extends Controller
         $notificationData = [];
         $notificationData['title'] = 'One Signal Test';
         $notificationData['message'] = 'Testing';
-        
+        $notificationData['deepLink'] = env('APP_URL').'/api/me/one-signal-test/test';
+
         $this->sendNotification(Auth::user(),$notificationData);
        
     }

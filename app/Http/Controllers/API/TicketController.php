@@ -293,6 +293,8 @@ class TicketController extends Controller
                     $notificationData = [];
                     $notificationData['title'] = 'New ticket request';
                     $notificationData['message'] = 'You have receive new ticket request.';
+                    $notificationData['deepLink'] = env('APP_URL').'/api/admin/tickets/'.$ticket->id;
+
                     foreach($staffs as $staff){
                         $this->sendNotification($staff,$notificationData,$ticket);
                     }
@@ -455,18 +457,21 @@ class TicketController extends Controller
                     $notificationData = [];
                     $notificationData['title'] = 'Ticket Accepted';
                     $notificationData['message'] = 'Your ticket is in progress';
+                    $notificationData['deepLink'] = env('APP_URL').'/api/me/tickets/'.$ticket->id;
 
                     $this->sendNotification($ticketUser,$notificationData,$ticket);
                 }elseif($request->status == Ticket::STATUS['TICKET_REJECTED']){
                     $notificationData = [];
                     $notificationData['title'] = 'Ticket Rejected';
                     $notificationData['message'] = 'Ticket is rejected';
+                    $notificationData['deepLink'] = env('APP_URL').'/api/me/tickets/'.$ticket->id;
 
                     $this->sendNotification($ticketUser,$notificationData,$ticket);
                 }elseif($request->status == Ticket::STATUS['TICKET_COMPLETED']){
                     $notificationData = [];
                     $notificationData['title'] = 'Ticket process is completed';
                     $notificationData['message'] = 'Ticketing process is completed';
+                    $notificationData['deepLink'] = env('APP_URL').'/api/me/tickets/'.$ticket->id;
 
                     $this->sendNotification($ticketUser,$notificationData,$ticket);
                 }
