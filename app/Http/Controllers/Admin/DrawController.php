@@ -169,10 +169,10 @@ class DrawController extends Controller
 
         $nearest_draw = Draw::where('expired_at', '>=' ,$request['calendarDate'])->orderBy('expired_at', 'asc')->first();
 
-        $tickets = Ticket::with('ticketNumbers')
-                    ->leftjoin('users', 'users.id', 'tickets.user_id')
+        $tickets = Ticket::leftjoin('users', 'users.id', 'tickets.user_id')
                     ->leftjoin('games', 'games.id', 'tickets.game_id')
                     ->leftjoin('outlets', 'outlets.id', 'tickets.outlet_id')
+                    ->leftJoin('ticket_numbers', 'ticket_numbers.ticket_id', '=', 'tickets.id')
                     ->where('tickets.status', 'completed')
                     ->where('tickets.draw_id', $nearest_draw->id)
                     ->where('tickets.platform_id', $platform_id)
@@ -182,12 +182,12 @@ class DrawController extends Controller
                             $query->where(function($query) use ($request,$search) {
                                 $query->where('users.name', 'REGEXP', $search)
                                     ->orWhere('games.name', 'REGEXP', $search)
-                                    ->orWhere('');
+                                    ->orWhere('ticket_numbers.number', 'REGEXP', $search);
                             });
                         }
                     })
-                    ->select('users.name as username', 'games.name as game_name', 'tickets.created_at as purchased_at', 'outlets.name as outlet_name');
-
+                    ->select('users.name as username', 'games.name as game_name', 'tickets.created_at as purchased_at', 'outlets.name as outlet_name', 'ticket_numbers.number as ticket_num', 'ticket_numbers.small_amount as small', 'ticket_numbers.big_amount as big')
+                    ->orderBy('tickets.created_at', 'desc');
 
         if($request->ajax()) {
             $table = Datatables::of($tickets)
@@ -196,8 +196,16 @@ class DrawController extends Controller
                     return $ticket->username ?? '-';
                 })
 
-                ->editColumn('ticketNumbers', function ($ticket) {
-                    return $ticket->ticketNumbers->first() ?? '-';
+                ->editColumn('ticket_numbers.number', function ($ticket) {
+                    return $ticket->ticket_num ?? '-';
+                })
+
+                ->editColumn('ticket_numbers.small_amount', function ($ticket) {
+                    return $ticket->small ?? '-';
+                })
+
+                ->editColumn('ticket_numbers.big_amount', function ($ticket) {
+                    return $ticket->big ?? '-';
                 })
 
                 ->editColumn('games.name', function ($ticket) {

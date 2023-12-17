@@ -43,6 +43,12 @@
                         Number
                     </th>
                     <th scope="col" class="text-base px-6 py-4">
+                        Small Amount
+                    </th>
+                    <th scope="col" class="text-base px-6 py-4">
+                        Big Amount
+                    </th>
+                    <th scope="col" class="text-base px-6 py-4">
                         Game
                     </th>
                     <th scope="col" class="text-base px-6 py-4">
@@ -144,12 +150,14 @@
                     columns: [
                             {data: 'DT_RowIndex',searchable:false,orderable:false},
                             {data: 'users.name',searchable:true,orderable:true},
-                            {data: 'ticketNumbers',searchable:true,orderable:true},
+                            {data: 'ticket_numbers.number',searchable:true,orderable:true},
+                            {data: 'ticket_numbers.small_amount',searchable:true,orderable:true},
+                            {data: 'ticket_numbers.big_amount',searchable:true,orderable:true},
                             {data: 'games.name',searchable:true,orderable:true},
                             {data: 'outlets.name',searchable:true,orderable:true},
                             {data: 'tickets.created_at',searchable:false,orderable:true},
                         ],
-                        order: [[3, "desc"]]
+                        order: [[7, "desc"]]
             })
         }
 
