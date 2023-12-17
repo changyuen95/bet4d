@@ -501,7 +501,7 @@ class TicketController extends Controller
 
         $staff = Auth::user();
         $ticket = Ticket::find($id);
-        if(!$ticket || !$ticket->action_by != $staff->id){
+        if(!$ticket || $ticket->action_by != $staff->id){
             return response(['message' =>  trans('messages.invalid_ticket') ], 422);
         }
         $checkDuplicateBarcode = $ticket->barcode()->where('barcode',$request->barcode)->count();
