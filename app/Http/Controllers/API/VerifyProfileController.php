@@ -130,7 +130,7 @@ class VerifyProfileController extends Controller
                         $notificationData = [];
                         $notificationData['title'] = 'ic verification pending approval.';
                         $notificationData['message'] = 'There is an ic verification is pending approval.';
-                        $notificationData['deepLink'] = env('APP_URL').'/api/admin/verify-user-profiles/'.$verifyProfile->id;
+                        $notificationData['deepLink'] = 'fortknox-admin://verify-user-profiles/'.$verifyProfile->id;
         
                         $this->sendNotification($operator,$notificationData,$verifyProfile);
                     }
