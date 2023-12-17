@@ -164,7 +164,7 @@ class SyncDrawResult implements ShouldQueue
                                 $notificationData = [];
                                 $notificationData['title'] = 'Draw result is released!';
                                 $notificationData['message'] = 'Draw result for '.$drawNo.' is released!';
-                                $notificationData['deepLink'] = 'fortknox-admin://draw-results/'.$draw->id;
+                                $notificationData['deepLink'] = 'fortknox://draw-results/'.$draw->id;
                 
                                 $this->sendNotification($notifyUser,$notificationData);
                             }
