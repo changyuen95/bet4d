@@ -53,7 +53,7 @@
                                 title: title,
                                 date: date,
                                 backgroundColor: (data.is_special_draw == 0) ? '#435585' : '#FF5B22',
-                                borderColor: 'blue',
+                                borderColor: (data.is_special_draw == 0) ? '#435585' : '#FF5B22',
                                 classNames: 'tag_style',
                                 url: 'draws/special-draw-tickets/'+date
                             };

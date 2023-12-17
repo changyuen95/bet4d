@@ -18,7 +18,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="max-w-7xl ml-auto sm:px-6 lg:px-8">
         <div class="row">
             <div class="col-4">
@@ -75,13 +75,13 @@
                     <div class="d-flex p-6 font-semibold text-md text-gray-800 dark:text-gray-600 leading-tight bg-gradient">
                         <i class="fa fa-user-circle" style="font-size: 60px" aria-hidden="true"></i>
                         <div class="pl-8 font-semibold text-md text-gray-800 dark:text-gray-600 leading-tight bg-gradient">
-                            <u>Number of Active Admin</u> <br/>
+                            <u>Active Admin</u> <br/>
                             <span class="h1">{{ $activeAdminCount }}</span>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-4">
                 {{-- Column --}}
                 <div class="d-block bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-4">
@@ -103,10 +103,10 @@
                     </div>
                 </div>
             </div>
-            
+
           </div>
         </div>
     </div>
-    
+
 
 </x-app-layout>

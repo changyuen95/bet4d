@@ -46,7 +46,7 @@
 
             <li>
                 <a href="{{ route('admin.draws.index') }}">
-                    <i class="fa fa-user"></i>
+                    <i class="fa fa-magic"></i>
                     <span class="link_name">Draw</span>
                 </a>
             </li>

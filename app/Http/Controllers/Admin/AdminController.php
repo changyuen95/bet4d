@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
@@ -249,7 +250,7 @@ class AdminController extends Controller
 
         return response()->json(['success' => true, 200]);
     }
-    
+
 
     public function resendEmail($id){
 
@@ -299,5 +300,52 @@ class AdminController extends Controller
         Mail::send(new NewAdminAddedEmail($sender, $receiver, $info, $subject));
     }
 
+    public function updateProfileImg(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'admin_avatar' => 'required'
+        ]);
+
+        if($validator->fails())
+        {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        if($request->hasFile('admin_avatar')){
+
+            $profile_img = $request->file('admin_avatar');
+            $original_file_name = $profile_img->getClientOriginalName();
+            $original_without_extension = pathinfo($original_file_name, PATHINFO_FILENAME);
+            $random_hex = rand(11,99);
+            $extension = strtolower($profile_img->getClientOriginalExtension());
+            $random_name = "admin_profile_image_" .$random_hex. date("Ymdhis");
+            $new_file_name_with_path = "storage/admin_profile_img/" . $random_name . '.' . $extension;
+            $destinationPath = storage_path('web/public/admin_profile_img');
+
+            $name = "/storage/admin_profile_img/" . $random_name . '.' . $extension;  // Name path to store in DB
+
+            $move = $profile_img->move($destinationPath, $new_file_name_with_path);
+
+            $self = $request->user();
+
+            if($self->profile_image){
+
+                $previous_img = $self->profile_image;
+
+                $filtering_path = str_replace('storage/', '', "web/public".$previous_img);
+                $delete_path = storage_path($filtering_path);
+                if (file_exists($delete_path)) {
+                    unlink($delete_path);
+                }
+            }
+
+            $self->profile_image = $name;
+            $self->save();
+
+        }
+
+        return redirect()->back();
+
+    }
 
 }
