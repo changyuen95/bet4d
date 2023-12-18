@@ -25,6 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::namespace('API')->group(function () {
     Route::post("login", LoginController::class);
     Route::post("admin/login", 'LoginController@adminLogin');
+    Route::get('locales', LocaleController::class);
 
     Route::prefix('tac')->group(function () {
         Route::post('verify', VerifyTacController::class);
