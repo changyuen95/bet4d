@@ -520,7 +520,7 @@ class TicketController extends Controller
             ]);
 
             DB::commit();
-            return $ticket->barcode();
+            return $ticket->barcode;
             // return response(['message' =>  trans('messages.successfully_scanned_barcode') ], 200);
 
 
