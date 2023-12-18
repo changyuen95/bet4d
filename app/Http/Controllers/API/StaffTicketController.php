@@ -270,4 +270,22 @@ class StaffTicketController extends Controller
             return response(['message' =>  trans('messages.failed_to_remove_permutation_image') ], 422);
         }
     }
+
+    public function ticketNumberImage (Request $request , $ticket_id , $ticket_number_id){
+        $staff = Auth::user();
+        $ticket = $staff->tickets()->find($ticket_id);
+        if(!$ticket){
+            return response(['message' =>  trans('messages.invalid_ticket') ], 422);
+        }
+
+        $ticketNumber = $ticket->ticketNumbers()->find($ticket_number_id);
+        if(!$ticketNumber){
+            return response(['message' =>  trans('messages.invalid_ticket_number') ], 422);
+        }
+
+        return $ticketNumber->permutation_image ?? null;
+
+
+    }
+
 }

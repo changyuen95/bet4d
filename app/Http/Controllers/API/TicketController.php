@@ -8,6 +8,7 @@ use App\Models\CreditTransaction;
 use App\Models\Draw;
 use App\Models\Game;
 use App\Models\Platform;
+use App\Models\Barcode as Barcode_table;
 use App\Models\Ticket;
 use App\Models\TicketNumber;
 use App\Models\User;
@@ -19,6 +20,8 @@ use Illuminate\Validation\Rule;
 use Exception;
 use Auth;
 use App\Traits\NotificationTrait;
+use Faker\Core\Barcode;
+
 class TicketController extends Controller
 {
     use NotificationTrait;
@@ -517,7 +520,11 @@ class TicketController extends Controller
             ]);
 
             DB::commit();
-            return response(['message' =>  trans('messages.successfully_scanned_barcode') ], 200);
+            return $ticket->barcode;
+            // return response(['message' =>  trans('messages.successfully_scanned_barcode') ], 200);
+
+
+
         }catch (Exception $e) {
             DB::rollback();
             return response(['message' =>  trans('messages.failed_to_scan_barcode') ], 422);
