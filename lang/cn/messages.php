@@ -55,4 +55,5 @@ return [
     'failed_to_update_transfer_details' => '更新转账详情失败',
     'qrcode_reached_max_amount' => 'Qrcode 次数已到达上限',
     'invalid_qrcode' => 'Qrcode无效',
+    'Credit Transactions' => '试试',
 ];

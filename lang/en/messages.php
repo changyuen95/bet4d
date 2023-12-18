@@ -119,4 +119,5 @@ return [
     'failed_to_remove_permutation_image' => 'Failed to remove permutation image',
     'ticket_number_is_not_permutation' => 'Ticket number is not permutation',
     'permutation_image_cannot_be_empty' => 'Permutation image cannot be empty',
+    'Credit Transactions' => 'Credit Transactions',
 ];
