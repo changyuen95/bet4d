@@ -271,7 +271,7 @@ class StaffTicketController extends Controller
         }
     }
 
-    public function ticketNumberImage ($request , $ticket_id , $ticket_number_id){
+    public function ticketNumberImage (Request $request , $ticket_id , $ticket_number_id){
         $staff = Auth::user();
         $ticket = $staff->tickets()->find($ticket_id);
         if(!$ticket){
