@@ -283,7 +283,7 @@ class StaffTicketController extends Controller
             return response(['message' =>  trans('messages.invalid_ticket_number') ], 422);
         }
 
-        return $ticketNumber->permutation_image;
+        return $ticketNumber->permutation_image ?? null;
 
 
     }
