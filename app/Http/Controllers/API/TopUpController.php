@@ -131,6 +131,8 @@ class TopUpController extends Controller
             $notificationData = [];
             $notificationData['title'] = 'Top up successfully!';
             $notificationData['message'] = 'Top up successfully! '.$request->amount.' has added into your wallet.';
+            $notificationData['deepLink'] = '';
+
             $this->sendNotification($user,$notificationData,$userCredit);
 
             DB::commit();

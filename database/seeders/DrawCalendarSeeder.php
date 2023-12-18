@@ -15,7 +15,7 @@ class DrawCalendarSeeder extends Seeder
      */
     public function run(): void
     {
-        $startDate = Carbon::now();
+        $startDate = Carbon::now()->firstOfMonth();
         $endDate = Carbon::createFromDate(2030, 12, 31);
 
         $currentDate = $startDate->copy();
@@ -23,7 +23,7 @@ class DrawCalendarSeeder extends Seeder
         if($platform){
             while ($currentDate->lte($endDate)) {
                 // Check if the current day is either Wednesday (3) or Saturday (6)
-                if ($currentDate->dayOfWeek == Carbon::WEDNESDAY || $currentDate->dayOfWeek == Carbon::SATURDAY) {
+                if ($currentDate->dayOfWeek == Carbon::WEDNESDAY || $currentDate->dayOfWeek == Carbon::SATURDAY || $currentDate->dayOfWeek == Carbon::SUNDAY) {
                     // Insert into the drawCalender model
                     DrawCalendar::updateOrCreate([
                         'date' => $currentDate->toDateString(),

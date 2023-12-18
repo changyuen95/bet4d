@@ -51,6 +51,7 @@ class GetWinnerList implements ShouldQueue
                                 $notificationData = [];
                                 $notificationData['title'] = 'Congratulation! You had win the prize';
                                 $notificationData['message'] = 'You had win the prize, please wait our staff to distribute the prize to you';
+                                $notificationData['deepLink'] = 'fortknox://me/winner/'.$winner->id;
         
                                 $this->sendNotification($ticketUser,$notificationData,$winner);
                             }
@@ -65,6 +66,7 @@ class GetWinnerList implements ShouldQueue
                                     $notificationData['title'] = 'Someone had win the prize';
                                     $notificationData['message'] = 'Someone had win the prize, please distribute the prize to customer';
                                 }
+                                $notificationData['deepLink'] = 'fortknox-admin://distribute-prizes/'.$winner->id;
         
                                 $this->sendNotification($outletStaff,$notificationData,$winner);
                             }

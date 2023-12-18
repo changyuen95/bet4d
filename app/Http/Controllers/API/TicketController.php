@@ -296,6 +296,8 @@ class TicketController extends Controller
                     $notificationData = [];
                     $notificationData['title'] = 'New ticket request';
                     $notificationData['message'] = 'You have receive new ticket request.';
+                    $notificationData['deepLink'] = 'fortknox-admin://tickets/'.$ticket->id;
+
                     foreach($staffs as $staff){
                         $this->sendNotification($staff,$notificationData,$ticket);
                     }
@@ -458,18 +460,21 @@ class TicketController extends Controller
                     $notificationData = [];
                     $notificationData['title'] = 'Ticket Accepted';
                     $notificationData['message'] = 'Your ticket is in progress';
+                    $notificationData['deepLink'] = 'fortknox://me/tickets/'.$ticket->id;
 
                     $this->sendNotification($ticketUser,$notificationData,$ticket);
                 }elseif($request->status == Ticket::STATUS['TICKET_REJECTED']){
                     $notificationData = [];
                     $notificationData['title'] = 'Ticket Rejected';
                     $notificationData['message'] = 'Ticket is rejected';
+                    $notificationData['deepLink'] = 'fortknox://me/tickets/'.$ticket->id;
 
                     $this->sendNotification($ticketUser,$notificationData,$ticket);
                 }elseif($request->status == Ticket::STATUS['TICKET_COMPLETED']){
                     $notificationData = [];
                     $notificationData['title'] = 'Ticket process is completed';
                     $notificationData['message'] = 'Ticketing process is completed';
+                    $notificationData['deepLink'] = 'fortknox://me/tickets/'.$ticket->id;
 
                     $this->sendNotification($ticketUser,$notificationData,$ticket);
                 }
@@ -499,7 +504,7 @@ class TicketController extends Controller
 
         $staff = Auth::user();
         $ticket = Ticket::find($id);
-        if(!$ticket || !$ticket->action_by != $staff->id){
+        if(!$ticket || $ticket->action_by != $staff->id){
             return response(['message' =>  trans('messages.invalid_ticket') ], 422);
         }
         $checkDuplicateBarcode = $ticket->barcode()->where('barcode',$request->barcode)->count();
