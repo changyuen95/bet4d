@@ -190,9 +190,9 @@ class StaffTicketController extends Controller
             return response(['message' =>  trans('messages.invalid_ticket_number') ], 422);
         }
 
-        if($ticketNumber->type == TicketNumber::TYPE['Straight']){
-            return response(['message' =>  trans('messages.ticket_number_is_not_permutation') ], 422);
-        }
+        // if($ticketNumber->type == TicketNumber::TYPE['Straight']){
+        //     return response(['message' =>  trans('messages.ticket_number_is_not_permutation') ], 422);
+        // }
 
         if($ticketNumber->permutation_image != null){
             return response(['message' =>  trans('messages.permutation_image_existed') ], 422);
