@@ -16,6 +16,9 @@ class LocaleController extends Controller
             'zh' => [
                 'translation' => Lang::get('messages', [], 'cn')
             ],
+            'ms' => [
+                'translation' => Lang::get('app', [], 'ms')
+            ]
         ];
     }
     /**
