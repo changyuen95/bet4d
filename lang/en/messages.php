@@ -273,4 +273,5 @@ return [
     'Email' => 'Email',
     'Save Changes' => 'Save Changes',
     'Terms of Use' => 'Terms of Use',
+    'Profile Verification' => 'Profile Verification',
 ];

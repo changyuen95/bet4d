@@ -273,4 +273,5 @@ return [
     'Email' => '电子邮件',
     'Save Changes' => '保存更改',
     'Terms of Use' => '使用条款',
+    'Profile Verification' => '资料验证',
 ];
