@@ -272,4 +272,5 @@ return [
     'Phone No.' => '电话号码',
     'Email' => '电子邮件',
     'Save Changes' => '保存更改',
+    'Terms of Use' => '使用条款',
 ];

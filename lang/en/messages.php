@@ -272,4 +272,5 @@ return [
     'Phone No.' => 'Phone No.',
     'Email' => 'Email',
     'Save Changes' => 'Save Changes',
+    'Terms of Use' => 'Terms of Use',
 ];
