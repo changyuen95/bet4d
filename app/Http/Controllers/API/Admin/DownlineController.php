@@ -37,7 +37,7 @@ class DownlineController extends Controller
                 return $admin;
             }
         }
-        
+
         return response(['message' => trans('admin.staff_not_found')], 422);
     }
 
@@ -103,7 +103,7 @@ class DownlineController extends Controller
     // }
 
     // Show Admin Credit Transactions Detail
-    
+
 
     // List Clear Credit Transactions
     public function clearTransactions(Request $request, string $id)
@@ -134,7 +134,7 @@ class DownlineController extends Controller
         if ($transactions) {
             return $transactions;
         }
-        
+
         return response(['message' => trans('admin.no_transaction_records')], 422);
     }
 
@@ -186,7 +186,7 @@ class DownlineController extends Controller
             $imagePathExtension = $imagePathFile->extension();
 
             $verifyImage = in_array($imagePathExtension, $allowedfileExtension);
-            
+
             if($verifyImage)
             {
                 File::makeDirectory(storage_path('app/public/clear_credit/'.auth()->user()->id.'/attachment/'), $mode = 0777, true, true);
@@ -227,7 +227,7 @@ class DownlineController extends Controller
         //     'targetable_type' => $adminClearCredit->id,
         //     'admin_clear_credit_transactions_id' => $adminClearCredit->id,
         // ]);
-        
+
 
         return $transactions;
     }

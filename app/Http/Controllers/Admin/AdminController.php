@@ -246,7 +246,7 @@ class AdminController extends Controller
 
         return response()->json(['success' => true, 200]);
     }
-    
+
 
     public function resendEmail($id){
 
