@@ -31,21 +31,21 @@
                         <div class="font-semibold text-md px-6">
                             Platform
                         </div>
-                        <span class="px-6">{{ Auth::user()->outlet->platform->name }}</span>
+                        <span class="px-6">{{ Auth::user()->outlet->platform->name ?? '-' }}</span>
                     </div>
 
                     <div class="mb-3">
                         <div class="font-semibold text-md px-6">
                             Name
                         </div>
-                        <span class="px-6">{{ Auth::user()->outlet->name }}</span>
+                        <span class="px-6">{{ Auth::user()->outlet->name  ?? '-'}}</span>
                     </div>
 
                     <div class="mb-3">
                         <div class="font-semibold text-md px-6">
                             Address
                         </div>
-                        <span class="px-6">{{ Auth::user()->outlet->address }}</span>
+                        <span class="px-6">{{ Auth::user()->outlet->address  ?? '-'}}</span>
                     </div>
 
                     <div class="mb-3">
@@ -67,7 +67,7 @@
                         <i class="fa fa-users" style="font-size: 60px" aria-hidden="true"></i>
                         <div class="pl-8 font-semibold text-md text-gray-800 dark:text-gray-600 leading-tight bg-gradient">
                             <u>Number of Admin</u> <br/>
-                            <span class="h1">{{ $adminCount }}</span>
+                            <span class="h1">{{ $adminCount ?? '-'}}</span>
                         </div>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
                         <i class="fa fa-user-circle" style="font-size: 60px" aria-hidden="true"></i>
                         <div class="pl-8 font-semibold text-md text-gray-800 dark:text-gray-600 leading-tight bg-gradient">
                             <u>Active Admin</u> <br/>
-                            <span class="h1">{{ $activeAdminCount }}</span>
+                            <span class="h1">{{ $activeAdminCount ?? '-' }}</span>
                         </div>
                     </div>
                 </div>
@@ -98,7 +98,7 @@
                         <i class="fa fa-calendar" style="font-size: 60px" aria-hidden="true"></i>
                         <div class="pl-8 font-semibold text-md text-gray-800 dark:text-gray-600 leading-tight bg-gradient">
                             <u>Next Draw Date</u> <br/>
-                            <span class="h5">{{ $nextDraw->expired_at }}</span>
+                            <span class="h5">{{ $nextDraw->expired_at ?? '-' }}</span>
                         </div>
                     </div>
                 </div>

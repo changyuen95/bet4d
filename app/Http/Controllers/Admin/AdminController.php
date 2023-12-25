@@ -45,7 +45,7 @@ class AdminController extends Controller
     {
         //
         $outlets = Outlet::all();
-        return view('admin.admin.create2', compact('outlets'));
+        return view('admin.admin.create', compact('outlets'));
     }
 
     /**
