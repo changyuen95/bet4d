@@ -19,7 +19,8 @@ class OnesignalChannel
             $response = OneSignal::sendNotificationToExternalUser(
                 $instance['message'],
                 [$notifiable->id],
-                $instance['url'] ?? null,
+                // $instance['url'] ?? null,
+                $notification->deeplink ?? null,
                 $instance['data'] ?? null,
                 $instance['buttons'] ?? null,
                 $instance['schedule'] ?? null,
