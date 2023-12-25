@@ -54,6 +54,7 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         //
+    
         $validator = Validator::make($request->all(),[
 
             'name' => 'required',
@@ -92,7 +93,7 @@ class AdminController extends Controller
                 $extension = strtolower($profile_img->getClientOriginalExtension());
                 $random_name = "admin_profile_image_" .$random_hex. date("Ymdhis");
                 $new_file_name_with_path = "storage/admin_profile_img/" . $random_name . '.' . $extension;
-                $destinationPath = storage_path('web/public/admin_profile_img');
+                $destinationPath = public_path('storage/admin_profile_img');
 
                 $name = "/storage/admin_profile_img/" . $random_name . '.' . $extension;  // Name path to store in DB
 
@@ -162,9 +163,10 @@ class AdminController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Admin $admin)
+    public function edit($id)
     {
-        //
+
+        $admin = Admin::find($id);
 
         return view('admin.admin.edit', compact('admin'));
     }
@@ -173,9 +175,10 @@ class AdminController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Admin $admin, Request $request)
+    public function update($id, Request $request)
     {
         //
+        $admin = Admin::find($id);
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -205,7 +208,7 @@ class AdminController extends Controller
             $extension = strtolower($profile_img->getClientOriginalExtension());
             $random_name = "admin_profile_image_" .$random_hex. date("Ymdhis");
             $new_file_name_with_path = "storage/admin_profile_img/" . $random_name . '.' . $extension;
-            $destinationPath = storage_path('web/public/admin_profile_img');
+            $destinationPath = public_path('storage/admin_profile_img');
 
             $name = "/storage/admin_profile_img/" . $random_name . '.' . $extension;  // Name path to store in DB
 
@@ -215,8 +218,8 @@ class AdminController extends Controller
 
                 $previous_img = $admin->profile_image;
 
-                $filtering_path = str_replace('storage/', '', "web/public".$previous_img);
-                $delete_path = storage_path($filtering_path);
+                $filtering_path = $previous_img;
+                $delete_path = public_path($filtering_path);
                 if (file_exists($delete_path)) {
                     unlink($delete_path);
                 }
@@ -320,7 +323,7 @@ class AdminController extends Controller
             $extension = strtolower($profile_img->getClientOriginalExtension());
             $random_name = "admin_profile_image_" .$random_hex. date("Ymdhis");
             $new_file_name_with_path = "storage/admin_profile_img/" . $random_name . '.' . $extension;
-            $destinationPath = storage_path('web/public/admin_profile_img');
+            $destinationPath = public_path('storage/admin_profile_img');
 
             $name = "/storage/admin_profile_img/" . $random_name . '.' . $extension;  // Name path to store in DB
 
@@ -332,8 +335,8 @@ class AdminController extends Controller
 
                 $previous_img = $self->profile_image;
 
-                $filtering_path = str_replace('storage/', '', "web/public".$previous_img);
-                $delete_path = storage_path($filtering_path);
+                $filtering_path = $previous_img;
+                $delete_path = public_path($filtering_path);
                 if (file_exists($delete_path)) {
                     unlink($delete_path);
                 }

@@ -74,7 +74,7 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
-            return redirect()->route('admin.customers.index');
+            return redirect()->route('admin.admins.index');
     }
 
     public function username()

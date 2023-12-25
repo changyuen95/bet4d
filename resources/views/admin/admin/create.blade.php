@@ -6,7 +6,7 @@
         </h2>
     </x-slot>
 
-    <form class="w-full mb-8" action="{{route('admin.qrcodes.store')}}" class="form-horizontal" method="POST"  enctype="multipart/form-data">
+    <form class="w-full mb-8" action="{{route('admin.admins.store')}}" class="form-horizontal" method="POST"  enctype="multipart/form-data">
         @csrf
         <div class="flex flex-wrap -mx-3 mb-6">
           <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
