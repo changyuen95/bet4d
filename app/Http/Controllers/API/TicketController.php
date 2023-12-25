@@ -61,7 +61,7 @@ class TicketController extends Controller
                 'outlet_id' => ['required'],
                 'game_id' => ['required'],
                 'draw_id' => ['required'],
-                'ticket.*.ticket_number' => ['required', 'numeric', 'integer','digits:4'],
+                'ticket.*.ticket_number' => ['required', 'numeric', 'digits:4'],
                 'ticket.*.small_amount' => ['required', 'numeric', 'integer'],
                 'ticket.*.big_amount' => ['required', 'numeric', 'integer'],
                 'ticket.*.type' => ['required',Rule::in(array_values(TicketNumber::TYPE))],
