@@ -9,6 +9,7 @@ use App\Models\Draw;
 use App\Models\Game;
 use App\Models\Platform;
 use App\Models\Barcode as Barcode_table;
+use App\Models\Role;
 use App\Models\Ticket;
 use App\Models\TicketNumber;
 use App\Models\User;
@@ -292,7 +293,9 @@ class TicketController extends Controller
             if($ticket->status == Ticket::STATUS['TICKET_REQUESTED']){
                 $outlet = $ticket->outlet;
                 if($outlet){
-                    $staffs = $outlet->staffs;
+                    $staffs = $outlet->staffs()->whereHas('roles', function($q) {
+                        return $q->where('name', Role::OPERATOR);
+                    })->get();
                     $notificationData = [];
                     $notificationData['title'] = 'New ticket request';
                     $notificationData['message'] = 'You have receive new ticket request.';

@@ -10,6 +10,7 @@ class Role extends Base
     const NORMAL_USER = 'normal_user';
     const MEMBER = 'member';
     const OPERATOR = 'operator';
+    const HQ = 'hq';
     const SUPER_ADMIN = 'super_admin';
     protected $appends = [
         "editable","deletable"

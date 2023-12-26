@@ -2,6 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Models\DrawResult;
+use App\Models\PotentialWinningPriceList;
+use App\Models\Role;
 use App\Models\Ticket;
 use App\Models\TicketNumber;
 use App\Traits\NotificationTrait;
@@ -37,11 +40,12 @@ class GetWinnerList implements ShouldQueue
                 foreach($ticketNumbers as $ticketNumber){
                     if($ticketNumber->number == $result->number && $ticketNumber->type == TicketNumber::TYPE['Straight']){
                         $existingWinner = $result->winners()->where('ticket_number_id',$ticketNumber->id)->first();
+                        $prizeAmount = $this->calculatePrize($result,$ticketNumber);
                         $winner = $result->winners()->updateOrCreate([
                             'ticket_number_id' => $ticketNumber->id,
                         ],[
                             'user_id' => $ticket->user_id,
-                            'amount' => mt_rand(1, 9999), //need further calculation for this
+                            'amount' => $prizeAmount, //need further calculation for this
                             'outlet_id' => $ticket->outlet_id
                         ]);
 
@@ -56,7 +60,9 @@ class GetWinnerList implements ShouldQueue
                                 $this->sendNotification($ticketUser,$notificationData,$winner);
                             }
     
-                            $outletStaffs = optional($ticket->outlet)->staffs;
+                            $outletStaffs = optional(optional($ticket->outlet)->staffs())->whereHas('roles', function($q) {
+                                return $q->where('name', Role::OPERATOR);
+                            })->get();
                             foreach($outletStaffs as $outletStaff){
                                 $notificationData = [];
                                 if($ticketUser){
@@ -75,5 +81,26 @@ class GetWinnerList implements ShouldQueue
                 }
             }
         }
+    }
+
+    public function calculatePrize($result,$ticketNumber){
+        $amount = 0;
+        $potentialWinningData = PotentialWinningPriceList::where('type',$ticketNumber->type)->first();
+        $bigAmount = $ticketNumber->big_amount;
+        $smallAmount = $ticketNumber->small_amount;
+
+        if($result->type == DrawResult::TYPE['1st']){
+            $amount = ($bigAmount * $potentialWinningData->big1st) + ($smallAmount * $potentialWinningData->small1st);
+        }elseif($result->type == DrawResult::TYPE['2nd']){
+            $amount = ($bigAmount * $potentialWinningData->big2nd) + ($smallAmount * $potentialWinningData->small2nd);
+        }elseif($result->type == DrawResult::TYPE['3rd']){
+            $amount = ($bigAmount * $potentialWinningData->big3rd) + ($smallAmount * $potentialWinningData->small3rd);
+        }elseif($result->type == DrawResult::TYPE['special']){
+            $amount = ($bigAmount * $potentialWinningData->big_special);
+        }elseif($result->type == DrawResult::TYPE['consolation']){
+            $amount = ($bigAmount * $potentialWinningData->big_consolation);
+        }
+
+        return $amount;
     }
 }

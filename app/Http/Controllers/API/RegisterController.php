@@ -24,7 +24,7 @@ class RegisterController extends Controller
                 'name' => ['required'],
                 'username' => ['required', Rule::unique('users')->whereNull('deleted_at')],
                 'phone_e164' => ['required','phone',Rule::unique('users')->whereNull('deleted_at')],
-                'email' => ['required','email',Rule::unique('users')->whereNull('deleted_at')],
+                'email' => ['nullable','email',Rule::unique('users')->whereNull('deleted_at')],
                 'password' => 'required|min:6|confirmed',
                 'password_confirmation' => 'min:6'
             ]);
