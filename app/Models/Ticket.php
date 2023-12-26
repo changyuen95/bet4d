@@ -11,7 +11,7 @@ class Ticket extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
     protected $guarded = ['id'];
-    protected $appends = ['total_amount'];
+    protected $appends = ['total_amount','creatable_type','creatable_id'];
     const STATUS = [
         'TICKET_IMCOMPLETED' => 'incompleted',
         'TICKET_COMPLETED' => 'completed',
@@ -94,5 +94,13 @@ class Ticket extends Model
     public function notifications()
     {
         return $this->morphMany(Notification::class, 'targetable');
+    }
+
+    public function getCreatableIdAttribute(){
+        return $this->action_by;
+    }
+
+    public function getCreatableTypeAttribute(){
+        return 'App\\Models\\Admin';
     }
 }
