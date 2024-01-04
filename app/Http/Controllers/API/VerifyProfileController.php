@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\VerifyProfile;
+use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
 use DB;
 use Validator;
@@ -13,6 +16,7 @@ use Image;
 use Auth;
 class VerifyProfileController extends Controller
 {
+    use NotificationTrait;
     /**
      * Display a listing of the resource.
      */
@@ -117,6 +121,19 @@ class VerifyProfileController extends Controller
                         'status' => VerifyProfile::STATUS['Pending']
 
                     ]);
+
+                    $operators = Admin::whereHas('roles', function($q) {
+                        return $q->where('name', Role::OPERATOR);
+                    })->get();
+
+                    foreach($operators as $operator){
+                        $notificationData = [];
+                        $notificationData['title'] = 'ic verification pending approval.';
+                        $notificationData['message'] = 'There is an ic verification is pending approval.';
+        
+                        $this->sendNotification($operator,$notificationData,$verifyProfile);
+                    }
+
                     DB::commit();
                     return response([
                         'message' =>  trans('messages.profile_verification_pending_we_will_review_your_document_and_update_within_10_working_days'),

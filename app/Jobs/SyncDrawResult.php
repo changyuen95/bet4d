@@ -4,6 +4,8 @@ namespace App\Jobs;
 
 use App\Models\Draw;
 use App\Models\DrawResult;
+use App\Models\User;
+use App\Traits\NotificationTrait;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -15,7 +17,7 @@ use Goutte\Client;
 
 class SyncDrawResult implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, NotificationTrait;
 
     /**
      * Create a new job instance.
@@ -43,6 +45,7 @@ class SyncDrawResult implements ShouldQueue
         $drawNo = str_replace(" ","",$contentArray[1]);
         $drawNoArray = explode('/', $drawNo );
         $draw = Draw::where('draw_no',$drawNoArray[0])->where('year',$drawNoArray[1])->first();
+        $allUser = User::all();
         $results = [
             DrawResult::TYPE['1st'] => [
                 [
@@ -156,6 +159,15 @@ class SyncDrawResult implements ShouldQueue
 
                 if($updatedFirstPrice){
                     if($updatedFirstPrice->number != '-' && $updatedFirstPrice->number != ''){
+                        if(!$draw->is_open_result){
+                            foreach($allUser as $notifyUser){
+                                $notificationData = [];
+                                $notificationData['title'] = 'Draw result is released!';
+                                $notificationData['message'] = 'Draw result for '.$drawNo.' is released!';
+                
+                                $this->sendNotification($notifyUser,$notificationData);
+                            }
+                        }
                         $draw->update([
                             'is_open_result' => true
                         ]);

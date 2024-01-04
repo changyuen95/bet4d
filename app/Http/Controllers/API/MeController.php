@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\Bank;
+use App\Traits\NotificationTrait;
 use Auth;
 use Hash;
 use Illuminate\Http\Request;
@@ -16,6 +17,8 @@ use DB;
 use Illuminate\Support\Facades\Storage;
 class MeController extends Controller
 {
+    use NotificationTrait;
+    
     public function me()
     {
         return new UserResource(Auth::user());
@@ -128,4 +131,12 @@ class MeController extends Controller
         }
     }
 
+    public function oneSignalTest(){
+        $notificationData = [];
+        $notificationData['title'] = 'One Signal Test';
+        $notificationData['message'] = 'Testing';
+        
+        $this->sendNotification(Auth::user(),$notificationData);
+       
+    }
 }

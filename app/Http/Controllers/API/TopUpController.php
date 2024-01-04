@@ -10,6 +10,7 @@ use App\Models\TopUp;
 use App\Models\User;
 use App\Models\Qrcode;
 use App\Models\QrScannedList;
+use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
 use Auth;
 use Exception;
@@ -17,6 +18,7 @@ use DB;
 use Validator;
 class TopUpController extends Controller
 {
+    use NotificationTrait;
     /**
      * Display a listing of the resource.
      */
@@ -125,6 +127,11 @@ class TopUpController extends Controller
 
             $userPoint->point = $userPoint->point + $request->amount;
             $userPoint->save();
+
+            $notificationData = [];
+            $notificationData['title'] = 'Top up successfully!';
+            $notificationData['message'] = 'Top up successfully! '.$request->amount.' has added into your wallet.';
+            $this->sendNotification($user,$notificationData,$userCredit);
 
             DB::commit();
 
