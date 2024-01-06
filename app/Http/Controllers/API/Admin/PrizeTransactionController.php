@@ -27,7 +27,7 @@ class PrizeTransactionController extends Controller
                                     })
                                     ->with('drawResult', 'ticketNumber', 'winner');
 
-        if($request->duration != ''){
+        if($duration != ''){
             $distributed_winner_list->where('created_at','>=', Carbon::now()->subDays($request->duration));
         }
 
@@ -53,8 +53,9 @@ class PrizeTransactionController extends Controller
 
     public function show(string $admin_id, string $id)
     {
-        $winner= WinnerList::where('action_by', '01hqwgalqwgqtew9vj12w00')
-                            ->where('id', '01hevst6g0xt7cc003ssx1t6vs')
+
+        $winner= WinnerList::where('action_by', $admin_id)
+                            ->where('id', $id)
                             ->with('drawResult', 'ticketNumber', 'winner')
                             ->first();
                             // $winner = Auth::user()->outlet->winnerList()->find($id);

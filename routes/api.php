@@ -244,6 +244,13 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
         });
 
 
+        /****** Records ******/
+        Route::prefix('records')->group(function () {
+            Route::get('profile', 'RecordController@indexProfile');
+            Route::get('cleared-credit', 'RecordController@indexClearedCredit');
+            Route::get('verified-prize','RecordController@indexVerifiedPrize');
+        });
+
     });
 });
 
