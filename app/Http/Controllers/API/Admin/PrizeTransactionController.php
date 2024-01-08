@@ -21,11 +21,12 @@ class PrizeTransactionController extends Controller
         $type_of_distribution = $request->transaction_type ?? 'all_types';
         $duration = $request->duration;
 
-        $distributed_winner_list = WinnerList::where('is_distribute', true)
+        $distributed_winner_list = WinnerList::where('is_distribute', true)->where('action_by', $id)
                                     ->whereHas('ticketNumber.ticket.outlet', function($q) use($superadmin){
                                         $q->where('outlets.id', $superadmin->outlet_id);
                                     })
                                     ->with('drawResult', 'ticketNumber', 'winner');
+
 
         if($duration != ''){
             $distributed_winner_list->where('created_at','>=', Carbon::now()->subDays($request->duration));

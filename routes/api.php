@@ -218,37 +218,37 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
 
     Route::middleware(['checkUserType:'.Role::SUPER_ADMIN])->group(function () {
         Route::prefix('downlines')->group(function () {
-            Route::get('','DownlineController@index');
+            Route::get('','Admin\DownlineController@index');
 
             /****** Credit Trasaction API for downlines ******/
             Route::get('{id}/credit-transactions','CreditTransactionController@index');
             Route::get('{admin_id}/credit-transactions/{id}','CreditTransactionController@show');
 
-            Route::get('{id}/clear-transactions','DownlineController@clearTransactions');
-            Route::get('{id}/clear-transactions/credit-distribute','DownlineController@creditDistribute');
-            Route::get('{admin_id}/clear-transactions/credit-distribute/{id}','DownlineController@creditDistributeDetail');
-            Route::post('{id}/clear-transactions','DownlineController@clearTransactionsProcess');
+            Route::get('{id}/clear-transactions','Admin\DownlineController@clearTransactions');
+            Route::get('{id}/clear-transactions/credit-distribute','Admin\DownlineController@creditDistribute');
+            Route::get('{admin_id}/clear-transactions/credit-distribute/{id}','Admin\DownlineController@creditDistributeDetail');
+            Route::post('{id}/clear-transactions','Admin\DownlineController@clearTransactionsProcess');
 
             /****** Prize Trasaction API for downlines ******/
-            Route::get('{id}/prize-transactions','PrizeTransactionController@index');
-            Route::get('{admin_id}/prize-transactions/{id}','PrizeTransactionController@show');
+            Route::get('{id}/prize-transactions','Admin\PrizeTransactionController@index');
+            Route::get('{admin_id}/prize-transactions/{id}','Admin\PrizeTransactionController@show');
 
         });
 
 
         /****** Pending Prize to distribute ******/
         Route::prefix('pending-prize-distribution')->group(function () {
-            Route::get('pending-count', 'PendingPrizeDistributionController@getCount');
-            Route::get('', 'PendingPrizeDistributionController@index');
-            Route::get('{id}','PendingPrizeDistributionController@show');
+            Route::get('pending-count', 'Admin\PendingPrizeDistributionController@getCount');
+            Route::get('', 'Admin\PendingPrizeDistributionController@index');
+            Route::get('{id}','Admin\PendingPrizeDistributionController@show');
         });
 
 
         /****** Records ******/
         Route::prefix('records')->group(function () {
-            Route::get('profile', 'RecordController@indexProfile');
-            Route::get('cleared-credit', 'RecordController@indexClearedCredit');
-            Route::get('verified-prize','RecordController@indexVerifiedPrize');
+            Route::get('profile', 'Admin\RecordController@indexProfile');
+            Route::get('cleared-credit', 'Admin\RecordController@indexClearedCredit');
+            Route::get('verified-prize','Admin\RecordController@indexVerifiedPrize');
         });
 
     });

@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Carbon\Carbon;
 
 class PendingPrizeDistributionResource extends JsonResource
 {
@@ -15,8 +16,9 @@ class PendingPrizeDistributionResource extends JsonResource
     public function toArray(Request $request): array
     {
         $winner = $this->winner;
-        $winner->transfer_details = $this->winner->transferDetails()->orderBy('primary', 'asc')->get();
 
+        $winner->transfer_details = $this->winner->transferDetails()->orderBy('primary', 'asc')->get();
+  
         return [
             'id' => $this->id,
             'draw_result_id' => $this->draw_result_id,
@@ -26,9 +28,9 @@ class PendingPrizeDistributionResource extends JsonResource
             'amount' => $this->amount,
             'is_distribute' => $this->is_distribute,
             'distribute_attachment' => $this->distribute_attachment,
-            'created_at' => $this->formatDate($this->created_at),
-            'updated_at' => $this->formatDate($this->updated_at),
-            'deleted_at' => $this->formatDate($this->deleted_at) ?? null,
+            'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:i:s'),
+            'deleted_at' => Carbon::parse($this->deleted_at)->format('Y-m-d H:i:s'),
             'draw_result' => $this->drawResult,
             'ticket_number' => $this->ticketNumber,
             'winner' => $winner,
