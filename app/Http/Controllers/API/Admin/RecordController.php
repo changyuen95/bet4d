@@ -23,7 +23,7 @@ class RecordController extends Controller
         $type = $request->get('type');
 
         if($type == "failed"){
-            $verifiedProfiles = VerifyProfile::where('status', '!=' ,VerifyProfile::STATUS['Failed']);
+            $verifiedProfiles = VerifyProfile::where('status',VerifyProfile::STATUS['Failed']);
 
         }else if($type == "success"){
             $verifiedProfiles = VerifyProfile::where('status', VerifyProfile::STATUS['Success']);
@@ -68,18 +68,16 @@ class RecordController extends Controller
     {
         $admin = $request->user();
 
-        $verifiedPrizes = WinnerList::leftJoin('admins', 'admins.id', 'winner_lists.action_by')
-                        ->where('winner_lists.is_verified', true)
-                        ->where('admins.outlet_id', $admin->outlet_id);
+        $verifiedPrizes = WinnerList::where('is_verified', true)->where('outlet_id', $admin->outlet_id);
 
 
         $duration = $request->duration ?? '';
 
         if($duration != ''){
-            $verifiedPrizes->where('winner_lists.created_at','>=', Carbon::now()->subDays($request->duration));
+            $verifiedPrizes->where('created_at','>=', Carbon::now()->subDays($request->duration));
         }
 
-        $verifiedPrizesList = $verifiedPrizes->orderBy('winner_lists.created_at', 'desc')->paginate($request->get('limit') ?? 10);
+        $verifiedPrizesList = $verifiedPrizes->orderBy('created_at', 'desc')->paginate($request->get('limit') ?? 10);
 
         return response($verifiedPrizesList, 200);
     }
