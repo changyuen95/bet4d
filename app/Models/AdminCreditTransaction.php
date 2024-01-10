@@ -41,4 +41,9 @@ class AdminCreditTransaction extends Model
         return $this->morphTo();
     }
 
+    public function clear_credit_transaction()
+    {
+        return $this->belongsTo(AdminClearCreditTransaction::class, 'admin_clear_credit_transactions_id', 'id');
+    }
+
 }
