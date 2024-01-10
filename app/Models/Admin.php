@@ -51,7 +51,7 @@ class Admin extends Authenticatable
     ];
 
     protected $appends = [
-        'role'
+        'role' , 'credit' , 'distributed_prize'
     ];
 
     const STATUS = [
@@ -143,6 +143,18 @@ class Admin extends Authenticatable
     public function getRoleAttribute(){
         $getrole = $this->getRoleNames();
         return $getrole[0] ?? '' ;
+    }
+
+    public function getCreditAttribute(){
+
+        return $this->admin_credit->amount ?? 0;
+
+    }
+
+    public function getDistributedPrizeAttribute(){
+
+        return $this->winnerList()->where('is_verified',0)->where('is_distribute',1)->sum('amount');
+
     }
 
 
