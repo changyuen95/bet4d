@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Auth;
 use Carbon\Carbon;
 use Validator;
+use Illuminate\Validation\Rule;
+
 class WinningHistoryController extends Controller
 {
     /**
@@ -17,6 +19,8 @@ class WinningHistoryController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'duration' => ['nullable','numeric'],
+            'games' => 'nullable|array|exists:games,id',
+            'prize_distribution' => [Rule::in(array_values(['pending','completed']))]
         ]);
 
         if ($validator->fails()) {
@@ -33,14 +37,23 @@ class WinningHistoryController extends Controller
             $query->where('platform_id', $request->platform_id);
         }
 
-        if($request->game_id != ''){
-            $query->where('game_id', $request->game_id);
+        if($request->games != ''){
+            $query->whereIn('game_id', $request->games);
         }
 
         if($request->duration != ''){
             $query->where('created_at','>=', Carbon::now()->subDays($request->duration));
         }
 
+        if($request->prize_distribution == 'pending'){
+            $query->whereHas('ticketNumbers.win', function ($query) {
+                $query->where('is_distribute', false);
+            });
+        }elseif($request->prize_distribution == 'completed'){
+            $query->whereHas('ticketNumbers.win', function ($query) {
+                $query->where('is_distribute', true);
+            });
+        }
         $tickets = $query->paginate($request->get('limit') ?? 10);
         
         return response($tickets, 200);

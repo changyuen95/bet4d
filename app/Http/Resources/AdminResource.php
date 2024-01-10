@@ -34,6 +34,7 @@ class AdminResource extends BaseResource
             'status' => $this->status,
             'admin_credit' => $adminCredit,
             'outlet' => $this->outlet,
+            'games' => optional(optional($this->outlet)->platform)->games,
             'roles' => $this->roles,
             'created_at' => $this->formatDate($this->created_at),
             'updated_at' => $this->formatDate($this->updated_at),

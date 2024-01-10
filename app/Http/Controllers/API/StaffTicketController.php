@@ -29,10 +29,13 @@ class StaffTicketController extends Controller
         $staff = Auth::user();
 
         $validator = Validator::make($request->all(), [
-            'game_id' => 'nullable|exists:games,id',
-            'status' => ['nullable','array','valid_status'],
+            'games' => 'nullable|array|exists:games,id',
+            'status' => ['nullable','array'],
             'duration' => 'nullable|integer',
             'handled_by_me' => [Rule::in(array_values([true,false]))],
+            'opened' => [Rule::in(array_values([true,false]))],
+            'win' => [Rule::in(array_values([true,false]))],
+            'prize_distribution' => [Rule::in(array_values(['pending','completed']))]
         ]);
 
         if ($validator->fails()) {
@@ -40,8 +43,8 @@ class StaffTicketController extends Controller
         }
 
         $query = Ticket::where('outlet_id',$staff->outlet_id);
-        if($request->game_id){
-            $query->where('game_id',$request->game_id);
+        if($request->games){
+            $query->whereIn('game_id',$request->games);
 
         }
 
@@ -57,7 +60,33 @@ class StaffTicketController extends Controller
             $query->where('created_at','>=', Carbon::now()->subDays($request->duration)->format('Y:m:d 23:59:59'));
         }
 
-        $tickets = $query->with(['ticketNumbers', 'draws','platform','game'])->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
+        if($request->opened === true){
+            $query->whereHas('draws', function ($query) {
+                $query->where('is_open_result', true);
+            });
+
+            if($request->win === true){
+                $query->has('ticketNumbers.win');
+    
+                if($request->prize_distribution == 'pending'){
+                    $query->whereHas('ticketNumbers.win', function ($query) {
+                        $query->where('is_distribute', false);
+                    });
+                }elseif($request->prize_distribution == 'completed'){
+                    $query->whereHas('ticketNumbers.win', function ($query) {
+                        $query->where('is_distribute', true);
+                    });
+                }
+            }elseif($request->win === false){
+                $query->doesntHave('ticketNumbers.win');
+            }
+        }else{
+            $query->whereHas('draws', function ($query) {
+                $query->where('is_open_result', false);
+            });
+        }
+
+        $tickets = $query->with(['ticketNumbers.win', 'draws','platform','game'])->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
 
         $todayStart = Carbon::today()->startOfDay();
         $todayEnd = Carbon::today()->endOfDay();

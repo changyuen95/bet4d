@@ -123,7 +123,7 @@ class VerifyProfileController extends Controller
                     ]);
 
                     $operators = Admin::whereHas('roles', function($q) {
-                        return $q->where('name', Role::OPERATOR);
+                        return $q->where('name', Role::HQ);
                     })->get();
 
                     foreach($operators as $operator){

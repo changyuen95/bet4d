@@ -182,6 +182,15 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
         Route::delete('','Admin\MeController@destroy');
     });
 
+    Route::middleware(['checkUserType:'.Role::HQ])->group(function () {
+        Route::prefix('verify-user-profiles')->group(function () {
+            Route::get('','VerifyProfileController@pendingListing');
+            Route::get('{id}','VerifyProfileController@verifyProfileDetail');
+            Route::post('{id}/approved','VerifyProfileController@approvedICVerification');
+            Route::post('{id}/rejected','VerifyProfileController@rejectedICVerification');
+        });
+    });
+
     Route::middleware(['checkUserType:'.Role::OPERATOR])->group(function () {
 
         Route::prefix('notifications')->group(function () {
@@ -219,13 +228,6 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
         Route::prefix('credit-transactions')->group(function () {
             Route::get('','AdminCreditTransactionController@index');
             Route::get('{id}','AdminCreditTransactionController@show');
-        });
-
-        Route::prefix('verify-user-profiles')->group(function () {
-            Route::get('','VerifyProfileController@pendingListing');
-            Route::get('{id}','VerifyProfileController@verifyProfileDetail');
-            Route::post('{id}/approved','VerifyProfileController@approvedICVerification');
-            Route::post('{id}/rejected','VerifyProfileController@rejectedICVerification');
         });
 
         Route::prefix('distribute-prizes')->group(function () {

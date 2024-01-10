@@ -9,6 +9,7 @@ use App\Models\Draw;
 use App\Models\Game;
 use App\Models\Platform;
 use App\Models\Barcode as Barcode_table;
+use App\Models\Role;
 use App\Models\Ticket;
 use App\Models\TicketNumber;
 use App\Models\User;
@@ -30,12 +31,55 @@ class TicketController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Auth::user()->tickets();
-        if($request->status != ''){
-            $query->where('status',$request->status);
+        $validator = Validator::make($request->all(), [
+            'games' => 'nullable|array|exists:games,id',
+            'status' => ['nullable','array'],
+            'duration' => 'nullable|integer',
+            'win' => [Rule::in(array_values([true,false]))],
+            'prize_distribution' => [Rule::in(array_values(['pending','completed']))]
+        ]);
+
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->first()], 422);
         }
 
-        $tickets = $query->with(['ticketNumbers', 'draws','platform','game'])->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
+        $query = Auth::user()->tickets();
+
+        if($request->platform_id){
+            $query->where('platform_id',$request->platform_id);
+        }
+
+        if($request->games){
+            $query->whereIn('game_id',$request->games);
+
+        }
+
+        if($request->status != ''){
+            $query->whereIn('status',$request->status);
+        }
+
+        if($request->duration != null){
+            $query->where('created_at','>=', Carbon::now()->subDays($request->duration)->format('Y:m:d 23:59:59'));
+        }
+
+        if($request->win === true){
+            $query->has('ticketNumbers.win');
+
+            if($request->prize_distribution == 'pending'){
+                $query->whereHas('ticketNumbers.win', function ($query) {
+                    $query->where('is_distribute', false);
+                });
+            }elseif($request->prize_distribution == 'completed'){
+                $query->whereHas('ticketNumbers.win', function ($query) {
+                    $query->where('is_distribute', true);
+                });
+            }
+        }elseif($request->win === false){
+            $query->doesntHave('ticketNumbers.win');
+        }
+
+       
+        $tickets = $query->with(['ticketNumbers.win', 'draws','platform','game'])->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
 
         return response($tickets, 200);
     }
@@ -292,7 +336,9 @@ class TicketController extends Controller
             if($ticket->status == Ticket::STATUS['TICKET_REQUESTED']){
                 $outlet = $ticket->outlet;
                 if($outlet){
-                    $staffs = $outlet->staffs;
+                    $staffs = $outlet->staffs()->whereHas('roles', function($q) {
+                        return $q->where('name', Role::OPERATOR);
+                    })->get();
                     $notificationData = [];
                     $notificationData['title'] = 'New ticket request';
                     $notificationData['message'] = 'You have receive new ticket request.';
@@ -375,16 +421,16 @@ class TicketController extends Controller
 
         if($request->status == Ticket::STATUS['TICKET_IN_PROGRESS']){
             if($ticket->status != Ticket::STATUS['TICKET_REQUESTED']){
-                $ticket->action_by = null;
-                $ticket->save();
+                // $ticket->action_by = null;
+                // $ticket->save();
                 return response(['message' =>  trans('messages.unable_to_accept_ticket_request_when_ticket_status_is_not_requested') ], 422);
             }
         }
 
         if($request->status == Ticket::STATUS['TICKET_REJECTED']){
             if($ticket->status != Ticket::STATUS['TICKET_IN_PROGRESS']){
-                $ticket->action_by = null;
-                $ticket->save();
+                // $ticket->action_by = null;
+                // $ticket->save();
                 return response(['message' =>  trans('messages.unable_to_reject_ticket_request_when_ticket_status_is_not_requested') ], 422);
             }
 
@@ -419,8 +465,8 @@ class TicketController extends Controller
 
             $userCredit = $user->credit;
             if(!$userCredit){
-                $ticket->action_by = null;
-                $ticket->save();
+                // $ticket->action_by = null;
+                // $ticket->save();
                 return response(['message' => trans('messages.no_user_credit_found')], 422);
             }
             if($request->status != Ticket::STATUS['TICKET_COMPLETED']){
@@ -487,8 +533,8 @@ class TicketController extends Controller
             ], 200);
         }catch (Exception $e) {
             DB::rollback();
-            $ticket->action_by = null;
-            $ticket->save();
+            // $ticket->action_by = null;
+            // $ticket->save();
             return response(['message' =>  trans('messages.failed_to_update_status') ], 422);
         }
     }
