@@ -335,5 +335,6 @@ return [
     '3rd Prize' => '三等奖',
     'Special' => '特别奖',
     'Consolation' => '安慰奖',
-
+    'credit_clear_by_admin' => '管理员清除信用',
+    'credit_distributed_to_customer' => '信用分发给客户'
 ];

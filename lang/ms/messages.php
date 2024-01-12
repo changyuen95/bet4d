@@ -335,4 +335,6 @@ return [
     'Hadiah Ketiga' => 'Hadiah Ketiga' ,
     'Khas' => 'Khas' ,
     'Tambahan' => 'Tambahan' ,
+    'credit_clear_by_admin' => 'Kredit Dikemaskan Oleh Pentadbir',
+    'credit_distributed_to_customer' => 'Kredit Diedarkan Kepada Pelanggan'
 ];

@@ -335,6 +335,7 @@ return [
     '3rd Prize' => '3rd Prize' ,
     'Special' => 'Special' ,
     'Consolation' => 'Consolation' ,
-
+    'credit_clear_by_admin' => 'Credit Clear By Admin',
+    'credit_distributed_to_customer' => 'Credit Distributed To Customer'
 
 ];

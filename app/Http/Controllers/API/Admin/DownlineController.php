@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AdminCreditTransactionResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Traits\CreditTransactionTrait;
@@ -106,6 +107,50 @@ class DownlineController extends Controller
     
 
     // List Clear Credit Transactions
+    public function adminCreditTransaction(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'duration' => ['nullable','numeric'],
+        ]);
+
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->first()], 422);
+        }
+
+        $admin = Admin::find($id);
+        if(!$admin){
+            return response(['message' => trans('messages.no_user_found')], 422);
+        }
+
+        $query = $admin->creditTransaction();
+        if($request->type != ''){
+            $query->where('type', $request->type);
+        }
+
+        if($request->duration != ''){
+            $query->where('created_at','>=', Carbon::now()->subDays($request->duration));
+        }
+
+        $creditTransactions = $query->paginate($request->get('limit') ?? 10);
+
+        return response($creditTransactions, 200);
+    }
+
+    public function showAdminCreditTransaction($admin_id, $id)
+    {
+        $admin = Admin::find($admin_id);
+        if(!$admin){
+            return response(['message' => trans('messages.no_user_found')], 422);
+        }
+
+        $creditTransaction = $admin->creditTransaction()->find($id);
+        if(!$creditTransaction){
+            return response(['message' => trans('messages.no_credit_transaction_found')], 422);
+        }
+
+        return response(new AdminCreditTransactionResource($creditTransaction), 200);
+    }
+
     public function clearTransactions(Request $request, string $id)
     {
         $dateFrom = Carbon::parse($request->date_from);
@@ -169,6 +214,12 @@ class DownlineController extends Controller
 
         $dateFrom = Carbon::parse($request->date_from);
         $dateTo = Carbon::parse($request->date_to);
+        $staff = Admin::find($id);
+        if(!$staff){
+            return response(['message' => trans('messages.no_user_found')], 422);
+        }
+        
+        $staffCredit = $staff->admin_credit;
 
         $transactions = AdminCreditTransaction::where('admin_id', $id)
                     ->where('transaction_type', AdminCreditTransaction::TRANSACTION_TYPE['TopUp'])
@@ -201,33 +252,43 @@ class DownlineController extends Controller
             }
         }
 
-        // $adminClearCredit = AdminClearCreditTransaction::create([
-        //     'admin_id' => $id,
-        //     'amount' => $transactions->sum('amount'),
-        //     'reference_id' => Str::uuid(),
-        //     'image_path' => $request->image_path,
-        //     'date_clear_from' => $dateFrom,
-        //     'date_clear_to' => $dateTo,
-        // ]);
+        $adminClearCredit = AdminClearCreditTransaction::create([
+            'admin_id' => $id,
+            'amount' => $transactions->sum('amount'),
+            'reference_id' => Str::uuid(), 
+            'image_path' => $request->image_path,
+            'date_clear_from' => $dateFrom,
+            'date_clear_to' => $dateTo,
+        ]);
 
-
-        // $transactions->update(['is_verified' => true]);
-
-        // AdminCreditTransaction::create([
-        //     'admin_id' => $id,
-        //     'outlet_id' => '',
-        //     'amount' => $transactions->sum('amount'),
-        //     'before_amount' => '',
-        //     'after_amount' => '',
-        //     'type' => AdminCreditTransaction::TYPE['Decrease'],
-        //     'transaction_type' => AdminCreditTransaction::TRANSACTION_TYPE['Cleared'],
-        //     'reference_id' => Str::uuid(),
-        //     'is_verified' => true,
-        //     'targetable_type' => 'App\Models\AdminClearCreditTransaction',
-        //     'targetable_type' => $adminClearCredit->id,
-        //     'admin_clear_credit_transactions_id' => $adminClearCredit->id,
-        // ]);
+        foreach($transactions as $transaction){
+            $transaction->update([
+                'is_verified' => true,
+                'admin_clear_credit_transactions_id' => $adminClearCredit->id
+            ]);
+        }
         
+        
+        $outlet = $staff->outlet;
+
+        $adminClearTransaction = $adminClearCredit->adminTransaction()->create([
+            'admin_id' => $id,
+            'outlet_id' => optional($outlet)->id,
+            'amount' => $transactions->sum('amount'),
+            'before_amount' => $staffCredit->amount,
+            'after_amount' => 0,
+            'type' => AdminCreditTransaction::TYPE['Decrease'],
+            'transaction_type' => AdminCreditTransaction::TRANSACTION_TYPE['Cleared'],
+            'reference_id' => Str::uuid(),
+            'is_verified' => true,
+            'admin_clear_credit_transactions_id' => $adminClearCredit->id,
+        ]);
+        
+        $staffCredit->amount = $staffCredit->amount - $transactions->sum('amount');
+        $staffCredit->save();
+
+        $adminClearTransaction->after_amount = $staffCredit->amount;
+        $adminClearTransaction->save();
 
         return $transactions;
     }

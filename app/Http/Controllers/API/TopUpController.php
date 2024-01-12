@@ -63,7 +63,7 @@ class TopUpController extends Controller
                 ]);
             }
 
-            $adminCredit = $staff->credit;
+            $adminCredit = $staff->admin_credit;
             if(!$adminCredit){
                 $adminCredit = $staff->admin_credit()->create([
                     'amount' => 0

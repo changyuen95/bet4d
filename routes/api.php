@@ -251,8 +251,8 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
             Route::get('','Admin\DownlineController@index');
 
             /****** Credit Trasaction API for downlines ******/
-            Route::get('{id}/credit-transactions','CreditTransactionController@index');
-            Route::get('{admin_id}/credit-transactions/{id}','CreditTransactionController@show');
+            Route::get('{admin_id}/credit-transactions','Admin\DownlineController@adminCreditTransaction');
+            Route::get('{admin_id}/credit-transactions/{id}','Admin\DownlineController@showAdminCreditTransaction');
 
             Route::get('{id}/clear-transactions','Admin\DownlineController@clearTransactions');
             Route::get('{id}/clear-transactions/credit-distribute','Admin\DownlineController@creditDistribute');
