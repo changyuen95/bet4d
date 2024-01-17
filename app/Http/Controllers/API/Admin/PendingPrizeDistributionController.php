@@ -7,6 +7,7 @@ use App\Http\Resources\PendingPrizeDistributionResource;
 use App\Models\Admin;
 use App\Models\Role;
 use App\Models\WinnerList;
+use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
 use Validator;
 use Illuminate\Validation\Rule;
@@ -14,6 +15,7 @@ use Carbon\Carbon;
 
 class PendingPrizeDistributionController extends Controller
 {
+    use NotificationTrait;
     //
     public function index(Request $request)
     {
@@ -50,7 +52,7 @@ class PendingPrizeDistributionController extends Controller
                                                     return $query->where('game_id', $game_id);
                                                 });
                                             });
-                                        })->where('outlet_id',$superadmin->outlet_id)->with('drawResult','ticketNumber','winner');
+                                        })->with('drawResult','ticketNumber','winner');
 
             // if($request->handled_by_me){
             //     $prizes_to_be_distributed->where('action_by',$superadmin->id);
@@ -71,8 +73,8 @@ class PendingPrizeDistributionController extends Controller
 
     public function show(string $id, Request $request)
     {
-        $winner = $request->user()->outlet->winnerList()->find($id);
-
+        // $winner = $request->user()->outlet->winnerList()->find($id);
+        $winner = WinnerList::where('is_distribute', 0)->where('id',$id)->with('drawResult','ticketNumber','winner')->first();
         if(!$winner)
         {
             return response(['message' => trans('messages.no_winner_prize_found')], 422);
@@ -95,12 +97,46 @@ class PendingPrizeDistributionController extends Controller
             $prizes_to_be_distributed_count = WinnerList::where('is_distribute', 0)
                                                 ->join('ticket_numbers', 'winner_lists.ticket_number_id', '=', 'ticket_numbers.id')
                                                 ->join('tickets', 'ticket_numbers.ticket_id', '=', 'tickets.id')
-                                                ->where('tickets.outlet_id', $superadmin->outlet_id)
                                                 ->where('tickets.status', 'completed')
                                                 ->count();
 
             return $prizes_to_be_distributed_count;
 
         }
+    }
+
+    public function resendNotification(Request $request, $id)
+    {
+        $winner = WinnerList::find($id);
+        if(!$winner){
+            return response(['message' => trans('messages.no_winner_prize_found')], 422);
+        }
+        $ticketNumber = $winner->ticketNumber;
+        $ticket = optional($ticketNumber)->ticket;
+        if(!$ticket){
+            return response(['message' => trans('messages.no_ticket_found')], 422);
+        }
+        $ticketUser = $ticket->user;
+
+        $outletStaffs = optional(optional($ticket->outlet)->staffs())->whereHas('roles', function($q) {
+            return $q->where('name', Role::OPERATOR);
+        })->get();
+
+        foreach($outletStaffs as $outletStaff){
+            $notificationData = [];
+            if($ticketUser){
+                $notificationData['title'] = $ticketUser->name.' had win the prize';
+                $notificationData['message'] = $ticketUser->name.' had win the prize, please distribute the prize to customer';
+            }else{
+                $notificationData['title'] = 'Someone had win the prize';
+                $notificationData['message'] = 'Someone had win the prize, please distribute the prize to customer';
+            }
+            $notificationData['deepLink'] = 'fortknox-admin://distribute-prizes/'.$winner->id;
+
+            $this->sendNotification($outletStaff,$notificationData,$winner);
+        }
+
+        return response(['message' => trans('messages.resend_notification_successfully')], 200);
+
     }
 }

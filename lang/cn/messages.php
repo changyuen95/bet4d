@@ -336,5 +336,7 @@ return [
     'Special' => '特别奖',
     'Consolation' => '安慰奖',
     'credit_clear_by_admin' => '管理员清除信用',
-    'credit_distributed_to_customer' => '信用分发给客户'
+    'credit_distributed_to_customer' => '信用分发给客户',
+    'resend_notification_successfully' => '成功重新发送通知',
+    'no_pending_verify_prize_found' => '未找到待验证奖品',
 ];

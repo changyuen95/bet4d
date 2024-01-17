@@ -336,5 +336,7 @@ return [
     'Khas' => 'Khas' ,
     'Tambahan' => 'Tambahan' ,
     'credit_clear_by_admin' => 'Kredit Dikemaskan Oleh Pentadbir',
-    'credit_distributed_to_customer' => 'Kredit Diedarkan Kepada Pelanggan'
+    'credit_distributed_to_customer' => 'Kredit Diedarkan Kepada Pelanggan',
+    'resend_notification_successfully' => 'Berjaya menghantar semula pemberitahuan',
+    'no_pending_verify_prize_found' => 'Tiada hadiah menunggu pengesahan ditemui'
 ];

@@ -271,8 +271,14 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
             Route::get('pending-count', 'Admin\PendingPrizeDistributionController@getCount');
             Route::get('', 'Admin\PendingPrizeDistributionController@index');
             Route::get('{id}','Admin\PendingPrizeDistributionController@show');
+            Route::get('{id}/resend-notification', 'Admin\PendingPrizeDistributionController@resendNotification');
         });
 
+        Route::prefix('pending-verify-distributed-prize')->group(function () {
+            Route::get('', 'Admin\VerifyPrizeController@index');
+            Route::get('{id}', 'Admin\VerifyPrizeController@show');
+            Route::post('{id}', 'Admin\VerifyPrizeController@verifyDistributePrize');
+        });
 
         /****** Records ******/
         Route::prefix('records')->group(function () {

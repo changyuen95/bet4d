@@ -336,6 +336,7 @@ return [
     'Special' => 'Special' ,
     'Consolation' => 'Consolation' ,
     'credit_clear_by_admin' => 'Credit Clear By Admin',
-    'credit_distributed_to_customer' => 'Credit Distributed To Customer'
-
+    'credit_distributed_to_customer' => 'Credit Distributed To Customer',
+    'resend_notification_successfully' => 'Resend notification successfully',
+    'no_pending_verify_prize_found' => 'No pending verify prize found',
 ];

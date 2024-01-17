@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Carbon\Carbon;
 
-class PendingPrizeDistributionResource extends JsonResource
+class VerifyPrizeResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
