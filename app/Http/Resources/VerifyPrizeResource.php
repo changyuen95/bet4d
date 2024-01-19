@@ -8,6 +8,7 @@ use Carbon\Carbon;
 
 class VerifyPrizeResource extends JsonResource
 {
+    public static $wrap = null;
     /**
      * Transform the resource into an array.
      *
