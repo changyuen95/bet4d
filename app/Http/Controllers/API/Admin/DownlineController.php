@@ -38,7 +38,7 @@ class DownlineController extends Controller
                 return $admin;
             }
         }
-        
+
         return response(['message' => trans('admin.staff_not_found')], 422);
     }
 
@@ -104,7 +104,7 @@ class DownlineController extends Controller
     // }
 
     // Show Admin Credit Transactions Detail
-    
+
 
     // List Clear Credit Transactions
     public function adminCreditTransaction(Request $request, $id)
@@ -131,9 +131,14 @@ class DownlineController extends Controller
             $query->where('created_at','>=', Carbon::now()->subDays($request->duration));
         }
 
+
+        $credit_distributed = collect(['credit_distributed' => $query->sum('amount') ]);
         $creditTransactions = $query->paginate($request->get('limit') ?? 10);
 
-        return response($creditTransactions, 200);
+
+        $results = $credit_distributed->merge($creditTransactions);
+
+        return $results;
     }
 
     public function showAdminCreditTransaction($admin_id, $id)
@@ -179,7 +184,7 @@ class DownlineController extends Controller
         if ($transactions) {
             return $transactions;
         }
-        
+
         return response(['message' => trans('admin.no_transaction_records')], 422);
     }
 
@@ -218,7 +223,7 @@ class DownlineController extends Controller
         if(!$staff){
             return response(['message' => trans('messages.no_user_found')], 422);
         }
-        
+
         $staffCredit = $staff->admin_credit;
 
         $transactions = AdminCreditTransaction::where('admin_id', $id)
@@ -237,7 +242,7 @@ class DownlineController extends Controller
             $imagePathExtension = $imagePathFile->extension();
 
             $verifyImage = in_array($imagePathExtension, $allowedfileExtension);
-            
+
             if($verifyImage)
             {
                 File::makeDirectory(storage_path('app/public/clear_credit/'.auth()->user()->id.'/attachment/'), $mode = 0777, true, true);
@@ -255,7 +260,7 @@ class DownlineController extends Controller
         $adminClearCredit = AdminClearCreditTransaction::create([
             'admin_id' => $id,
             'amount' => $transactions->sum('amount'),
-            'reference_id' => Str::uuid(), 
+            'reference_id' => Str::uuid(),
             'image_path' => $request->image_path,
             'date_clear_from' => $dateFrom,
             'date_clear_to' => $dateTo,
@@ -267,8 +272,8 @@ class DownlineController extends Controller
                 'admin_clear_credit_transactions_id' => $adminClearCredit->id
             ]);
         }
-        
-        
+
+
         $outlet = $staff->outlet;
 
         $adminClearTransaction = $adminClearCredit->adminTransaction()->create([
@@ -283,7 +288,7 @@ class DownlineController extends Controller
             'is_verified' => true,
             'admin_clear_credit_transactions_id' => $adminClearCredit->id,
         ]);
-        
+
         $staffCredit->amount = $staffCredit->amount - $transactions->sum('amount');
         $staffCredit->save();
 

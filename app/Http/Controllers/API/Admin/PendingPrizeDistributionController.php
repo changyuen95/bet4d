@@ -64,7 +64,11 @@ class PendingPrizeDistributionController extends Controller
 
             $pending_prizes_distribution_list = $prizes_to_be_distributed->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
 
-            return response($pending_prizes_distribution_list, 200);
+            $to_distribute = collect(['to_distribute' => $prizes_to_be_distributed->count()]);
+
+            $results = $to_distribute->merge($pending_prizes_distribution_list);
+
+            return $results;
 
         }
 

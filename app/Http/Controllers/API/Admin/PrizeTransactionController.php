@@ -34,22 +34,26 @@ class PrizeTransactionController extends Controller
 
         switch ($type_of_distribution){
             case 'all_types':
-                $winner_list = $distributed_winner_list->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
+                $winner_list = $distributed_winner_list->orderBy('created_at','DESC');
                 break;
 
             case 'verified':
-                $winner_list = $distributed_winner_list->where('is_verified', true)->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
+                $winner_list = $distributed_winner_list->where('is_verified', true)->orderBy('created_at','DESC');
                 break;
 
             case 'distributed':
-                $winner_list = $distributed_winner_list->where('is_verified', false)->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
+                $winner_list = $distributed_winner_list->where('is_verified', false)->orderBy('created_at','DESC');
                 break;
 
             default:
                 $winner_list = $distributed_winner_list;
         }
 
-        return response($winner_list, 200);
+        $to_verify = collect(['to_verify' => $winner_list->count()]);
+
+        $results = $to_verify->merge($winner_list);
+
+        return $results;
     }
 
     public function show(string $admin_id, string $id)
