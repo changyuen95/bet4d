@@ -195,7 +195,8 @@ class DownlineController extends Controller
         $transactionsQuery = AdminCreditTransaction::where('admin_id', $id)
                                                 ->whereDate('created_at', $request->date)
                                                 ->where('is_verified',false)
-                                                ->where('transaction_type', AdminCreditTransaction::TRANSACTION_TYPE['TopUp']);
+                                                ->where('transaction_type', AdminCreditTransaction::TRANSACTION_TYPE['TopUp'])
+                                                ->where('type', AdminCreditTransaction::TYPE['Increase']);
 
         $result = [
             'credit_distributed' => $transactionsQuery->sum('amount'),
