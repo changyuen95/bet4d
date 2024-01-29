@@ -192,9 +192,13 @@ class DownlineController extends Controller
     // List Credit Distribute
     public function creditDistribute(Request $request, string $id)
     {
-        $transactions = AdminCreditTransaction::where('admin_id', $id)->whereDate('created_at', $request->date)->paginate($request->get('limit') ?? 10);
+        $transactionsQuery = AdminCreditTransaction::where('admin_id', $id)->whereDate('created_at', $request->date)->where('is_verified',false);
 
-        return $transactions;
+        $result = [
+            'credit_distributed' => $transactionsQuery->sum('amount'),
+            'transactions' => $transactionsQuery->paginate($request->get('limit') ?? 10)
+        ];
+        return $result;
     }
 
     // List Credit Distribute Detail
