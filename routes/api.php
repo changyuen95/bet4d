@@ -235,6 +235,10 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
             Route::get('{id}','DistributePrizeController@show');
             Route::post('{id}','DistributePrizeController@store');
         });
+
+        Route::get('cleared-transactions/credit-distribute','Admin\DownlineController@creditDistribute');
+        Route::get('{admin_id}/clear-transactions/credit-distribute/{id}','Admin\DownlineController@creditDistributeDetail');
+
     });
     // Routes for Operator users
 
@@ -263,6 +267,12 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
             Route::get('{id}/prize-transactions','Admin\PrizeTransactionController@index');
             Route::get('{admin_id}/prize-transactions/{id}','Admin\PrizeTransactionController@show');
 
+            Route::prefix('{admin_id}/verify-pending-prize')->group(function () {
+                Route::get('', 'Admin\PrizeTransactionController@pendingList');
+                Route::get('{id}', 'Admin\PrizeTransactionController@pendingDetail');
+                Route::post('{id}', 'Admin\PrizeTransactionController@verifyPendingprize');
+            });
+
         });
 
 
@@ -279,6 +289,8 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
             Route::get('{id}', 'Admin\VerifyPrizeController@show');
             Route::post('{id}', 'Admin\VerifyPrizeController@verifyDistributePrize');
         });
+
+
 
         /****** Records ******/
         Route::prefix('records')->group(function () {

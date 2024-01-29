@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\WinnerList;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Http\Resources\VerifyPrizeResource;
+use App\Http\Resources\WinnerListDisplayResource;
+
 
 class PrizeTransactionController extends Controller
 {
@@ -70,6 +73,66 @@ class PrizeTransactionController extends Controller
         }
 
         return response(['message' => trans('admin.transaction_detail_not_found')], 422);
+
+    }
+
+
+    public function pendingList(Request $request,$admin_id )
+    {
+        $pending_verify_prize = WinnerList::where('is_distribute', 1)
+                            ->where('is_verified', 0)
+                            ->where('action_by',$admin_id)
+                            ->with('drawResult','ticketNumber.ticket','winner');
+
+        if($request->duration != ''){
+            $pending_verify_prize->where('created_at','>=', Carbon::now()->subDays($request->duration));
+        }
+
+        $pending_verify_prize_list = $pending_verify_prize->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
+
+        return response($pending_verify_prize_list, 200);
+
+    }
+
+    public function pendingDetail(Request $request,$admin_id  , $id)
+    {
+
+        $pending_verify_prize = WinnerList::where('is_distribute', 1)
+                        ->where('action_by',$admin_id)
+                        ->where('is_verified', 0)
+                        ->where('id',$id)
+                        ->with('drawResult','ticketNumber.ticket','winner')
+                        ->first();
+
+        if(!$pending_verify_prize)
+        {
+            return response(['message' => trans('messages.no_pending_verify_prize_found')], 422);
+        }
+
+        return new VerifyPrizeResource($pending_verify_prize);
+
+    }
+
+    public function verifyPendingprize(Request $request,$admin_id  , $id)
+    {
+
+        $pending_verify_prize = WinnerList::where('is_distribute', 1)
+                        ->where('is_verified', 0)
+                        ->where('id',$id)
+                        ->where('action_by',$admin_id)
+                        ->with('drawResult','ticketNumber.ticket','winner')
+                        ->first();
+
+        if(!$pending_verify_prize)
+        {
+            return response(['message' => trans('messages.no_pending_verify_prize_found')], 422);
+        }
+
+        $pending_verify_prize->update([
+            'is_verified' => true
+        ]);
+
+        return response($pending_verify_prize);
 
     }
 }
