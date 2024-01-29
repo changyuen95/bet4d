@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AdminCreditTransactionResource;
 use App\Models\AdminClearCreditTransaction;
 use App\Models\AdminCreditTransaction;
 use App\Models\VerifyProfile;
@@ -41,14 +42,20 @@ class RecordController extends Controller
         return response($verifiedProfilesList, 200);
     }
 
+    public function showProfile($id)
+    {
+        $verifyProfile = VerifyProfile::find($id);
+        if(!$verifyProfile){
+            return response(['message' => trans('messages.no_ic_verification_request_found')], 422);
+        }
+        return response($verifyProfile, 200);
+    }
+
     public function indexClearedCredit(Request $request)
     {
-        $admin = $request->user();
-
         $clearedTransactions = AdminClearCreditTransaction::select('admin_clear_credit_transactions.*', 'admin_credit_transactions.*')
                                 ->leftJoin('admins', 'admins.id', 'admin_clear_credit_transactions.admin_id')
                                 ->leftJoin('admin_credit_transactions', 'admin_credit_transactions.admin_clear_credit_transactions_id', 'admin_clear_credit_transactions.id')
-                                ->where('admins.outlet_id', $admin->outlet_id)
                                 ->where('admin_credit_transactions.transaction_type', AdminCreditTransaction::TRANSACTION_TYPE['Cleared'])
                                 ->where('admin_credit_transactions.is_verified', true);
 
@@ -64,12 +71,19 @@ class RecordController extends Controller
         return response($clearedTransactionsList, 200);
     }
 
+    public function showClearedCredit($id)
+    {
+        $creditTransaction = AdminCreditTransaction::find($id);
+        if(!$creditTransaction){
+            return response(['message' => trans('messages.no_credit_transaction_found')], 422);
+        }
+
+        return response(new AdminCreditTransactionResource($creditTransaction), 200);
+    }
+
     public function indexVerifiedPrize(Request $request)
     {
-        $admin = $request->user();
-
-        $verifiedPrizes = WinnerList::where('is_verified', true)->where('outlet_id', $admin->outlet_id);
-
+        $verifiedPrizes = WinnerList::where('is_verified', true);
 
         $duration = $request->duration ?? '';
 
@@ -80,5 +94,16 @@ class RecordController extends Controller
         $verifiedPrizesList = $verifiedPrizes->orderBy('created_at', 'desc')->paginate($request->get('limit') ?? 10);
 
         return response($verifiedPrizesList, 200);
+    }
+
+    public function showVerifiedPrize($id)
+    {
+        $verifiedPrize = WinnerList::where('is_verified', true)->where('id',$id)->with('drawResult', 'ticketNumber', 'winner')->first();
+
+        if(!$verifiedPrize){
+            return response(['message' => trans('messages.no_verified_prize_found')], 422);
+        }
+
+        return response($verifiedPrize, 200);
     }
 }

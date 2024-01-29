@@ -295,8 +295,11 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
         /****** Records ******/
         Route::prefix('records')->group(function () {
             Route::get('profile', 'Admin\RecordController@indexProfile');
+            Route::get('profile/{id}', 'Admin\RecordController@showProfile');
             Route::get('cleared-credit', 'Admin\RecordController@indexClearedCredit');
+            Route::get('cleared-credit/{id}', 'Admin\RecordController@showClearedCredit');
             Route::get('verified-prize','Admin\RecordController@indexVerifiedPrize');
+            Route::get('verified-prize/{id}','Admin\RecordController@showVerifiedPrize');
         });
 
     });

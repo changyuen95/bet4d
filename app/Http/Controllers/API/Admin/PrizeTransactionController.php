@@ -54,7 +54,7 @@ class PrizeTransactionController extends Controller
 
         $to_verify = collect(['to_verify' => $winner_list->count()]);
 
-        $results = $to_verify->merge($winner_list);
+        $results = $to_verify->merge($winner_list->paginate($request->get('limit') ?? 10));
 
         return $results;
     }
