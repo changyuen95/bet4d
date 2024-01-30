@@ -139,7 +139,8 @@ class PrizeTransactionController extends Controller
         }
 
         $pending_verify_prize->update([
-            'is_verified' => true
+            'is_verified' => true,
+            'verified_at' => Carbon::now()
         ]);
 
         return response($pending_verify_prize);
