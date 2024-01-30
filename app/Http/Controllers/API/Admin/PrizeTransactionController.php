@@ -79,9 +79,13 @@ class PrizeTransactionController extends Controller
 
     public function pendingList(Request $request,$admin_id )
     {
+        $superadmin = $request->user();
         $pending_verify_prize = WinnerList::where('is_distribute', 1)
                             ->where('is_verified', 0)
                             ->where('action_by',$admin_id)
+                            ->whereHas('ticketNumber.ticket.outlet', function($q) use($superadmin){
+                                $q->where('outlets.id', $superadmin->outlet_id);
+                            })
                             ->with('drawResult','ticketNumber.ticket','winner');
 
         if($request->duration != ''){
@@ -96,11 +100,14 @@ class PrizeTransactionController extends Controller
 
     public function pendingDetail(Request $request,$admin_id  , $id)
     {
-
+        $superadmin = $request->user();
         $pending_verify_prize = WinnerList::where('is_distribute', 1)
                         ->where('action_by',$admin_id)
                         ->where('is_verified', 0)
                         ->where('id',$id)
+                        ->whereHas('ticketNumber.ticket.outlet', function($q) use($superadmin){
+                            $q->where('outlets.id', $superadmin->outlet_id);
+                        })
                         ->with('drawResult','ticketNumber.ticket','winner')
                         ->first();
 
@@ -115,11 +122,14 @@ class PrizeTransactionController extends Controller
 
     public function verifyPendingprize(Request $request,$admin_id  , $id)
     {
-
+        $superadmin = $request->user();
         $pending_verify_prize = WinnerList::where('is_distribute', 1)
                         ->where('is_verified', 0)
                         ->where('id',$id)
                         ->where('action_by',$admin_id)
+                        ->whereHas('ticketNumber.ticket.outlet', function($q) use($superadmin){
+                            $q->where('outlets.id', $superadmin->outlet_id);
+                        })
                         ->with('drawResult','ticketNumber.ticket','winner')
                         ->first();
 
