@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('winner_lists', function (Blueprint $table) {
-            $table->dateTime('verified_at')->nullable()->after('is_verified');
+            $table->timestamp('verified_at')->nullable()->after('is_verified');
         });
     }
 

@@ -23,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('admin_credit_transactions', function (Blueprint $table) {
-            //
+            $table->dropColumn('verify_at');
         });
     }
 };
