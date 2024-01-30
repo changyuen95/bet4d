@@ -72,7 +72,7 @@ class PrizeTransactionController extends Controller
             return $winner;
         }
 
-        return response(['message' => trans('admin.transaction_detail_not_found')], 422);
+        return response(['message' => trans('messages.transaction_detail_not_found')], 422);
 
     }
 

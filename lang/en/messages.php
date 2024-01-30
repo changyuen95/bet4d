@@ -340,4 +340,5 @@ return [
     'resend_notification_successfully' => 'Resend notification successfully',
     'no_pending_verify_prize_found' => 'No pending verify prize found',
     'no_verified_prize_found' => 'No verified prize found',
+    'transaction_detail_not_found' => 'Transaction detail not found',
 ];
