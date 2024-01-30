@@ -13,7 +13,7 @@ class WinnerList extends Model
 
     protected $guarded = ['id'];
     protected $appends = ['distribute_attachment_full_path'];
-    protected $dateFormat = 'Y-m-d H:i:s';
+
     protected function serializeDate(\DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
@@ -60,5 +60,9 @@ class WinnerList extends Model
 
         return false;
 
+    }
+
+    public function getVerifiedAtAttribute($value){
+        return $value;
     }
 }
