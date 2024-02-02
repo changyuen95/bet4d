@@ -182,10 +182,13 @@ class DownlineController extends Controller
         $totalSum = $query->sum('amount');
 
         // Add the total sum to the result
+        $result = [
+            'data' => $transactions
+        ];
         $transactions['total_amount'] = $totalSum;
 
-        if ($transactions) {
-            return $transactions;
+        if ($result) {
+            return $result;
         }
 
         return response(['message' => trans('admin.no_transaction_records')], 422);
