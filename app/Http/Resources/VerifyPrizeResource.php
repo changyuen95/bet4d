@@ -29,6 +29,7 @@ class VerifyPrizeResource extends JsonResource
             'amount' => $this->amount,
             'is_distribute' => $this->is_distribute,
             'is_verified' => $this->is_verified,
+            'verified_at' => Carbon::parse($this->verified_at)->format('Y-m-d H:i:s'),
             'distribute_attachment' => $this->distribute_attachment,
             'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:i:s'),

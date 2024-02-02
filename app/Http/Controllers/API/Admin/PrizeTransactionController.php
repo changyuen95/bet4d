@@ -52,7 +52,7 @@ class PrizeTransactionController extends Controller
                 $winner_list = $distributed_winner_list;
         }
 
-        $to_verify = collect(['to_verify' => $winner_list->count()]);
+        $to_verify = collect(['to_verify' => $winner_list->sum('amount')]);
 
         $results = $to_verify->merge($winner_list->paginate($request->get('limit') ?? 10));
 
@@ -72,16 +72,20 @@ class PrizeTransactionController extends Controller
             return $winner;
         }
 
-        return response(['message' => trans('admin.transaction_detail_not_found')], 422);
+        return response(['message' => trans('messages.transaction_detail_not_found')], 422);
 
     }
 
 
     public function pendingList(Request $request,$admin_id )
     {
+        $superadmin = $request->user();
         $pending_verify_prize = WinnerList::where('is_distribute', 1)
                             ->where('is_verified', 0)
                             ->where('action_by',$admin_id)
+                            ->whereHas('ticketNumber.ticket.outlet', function($q) use($superadmin){
+                                $q->where('outlets.id', $superadmin->outlet_id);
+                            })
                             ->with('drawResult','ticketNumber.ticket','winner');
 
         if($request->duration != ''){
@@ -96,11 +100,14 @@ class PrizeTransactionController extends Controller
 
     public function pendingDetail(Request $request,$admin_id  , $id)
     {
-
+        $superadmin = $request->user();
         $pending_verify_prize = WinnerList::where('is_distribute', 1)
                         ->where('action_by',$admin_id)
                         ->where('is_verified', 0)
                         ->where('id',$id)
+                        ->whereHas('ticketNumber.ticket.outlet', function($q) use($superadmin){
+                            $q->where('outlets.id', $superadmin->outlet_id);
+                        })
                         ->with('drawResult','ticketNumber.ticket','winner')
                         ->first();
 
@@ -115,11 +122,14 @@ class PrizeTransactionController extends Controller
 
     public function verifyPendingprize(Request $request,$admin_id  , $id)
     {
-
+        $superadmin = $request->user();
         $pending_verify_prize = WinnerList::where('is_distribute', 1)
                         ->where('is_verified', 0)
                         ->where('id',$id)
                         ->where('action_by',$admin_id)
+                        ->whereHas('ticketNumber.ticket.outlet', function($q) use($superadmin){
+                            $q->where('outlets.id', $superadmin->outlet_id);
+                        })
                         ->with('drawResult','ticketNumber.ticket','winner')
                         ->first();
 
@@ -129,7 +139,8 @@ class PrizeTransactionController extends Controller
         }
 
         $pending_verify_prize->update([
-            'is_verified' => true
+            'is_verified' => true,
+            'verified_at' => Carbon::now()
         ]);
 
         return response($pending_verify_prize);

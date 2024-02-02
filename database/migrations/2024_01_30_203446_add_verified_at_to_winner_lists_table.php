@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('admin_credit_transactions', function (Blueprint $table) {
-            //
-            $table->timestamp('verify_at')->nullable()->after('is_verified');
+        Schema::table('winner_lists', function (Blueprint $table) {
+            $table->timestamp('verified_at')->nullable()->after('is_verified');
         });
     }
 
@@ -22,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('admin_credit_transactions', function (Blueprint $table) {
-            $table->dropColumn('verify_at');
+        Schema::table('winner_lists', function (Blueprint $table) {
+            $table->dropColumn('verified_at');
         });
     }
 };

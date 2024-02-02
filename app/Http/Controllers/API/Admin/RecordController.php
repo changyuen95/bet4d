@@ -53,11 +53,13 @@ class RecordController extends Controller
 
     public function indexClearedCredit(Request $request)
     {
+        $admin = $request->user();
         $clearedTransactions = AdminClearCreditTransaction::select('admin_clear_credit_transactions.*', 'admin_credit_transactions.*')
                                 ->leftJoin('admins', 'admins.id', 'admin_clear_credit_transactions.admin_id')
                                 ->leftJoin('admin_credit_transactions', 'admin_credit_transactions.admin_clear_credit_transactions_id', 'admin_clear_credit_transactions.id')
                                 ->where('admin_credit_transactions.transaction_type', AdminCreditTransaction::TRANSACTION_TYPE['Cleared'])
-                                ->where('admin_credit_transactions.is_verified', true);
+                                ->where('admin_credit_transactions.is_verified', true)
+                                ->where('admins.outlet_id', $admin->outlet_id);
 
         $duration = $request->duration ?? '';
 
@@ -83,7 +85,8 @@ class RecordController extends Controller
 
     public function indexVerifiedPrize(Request $request)
     {
-        $verifiedPrizes = WinnerList::where('is_verified', true);
+        $admin = $request->user();
+        $verifiedPrizes = WinnerList::where('is_verified', true)->where('outlet_id', $admin->outlet_id);
 
         $duration = $request->duration ?? '';
 
