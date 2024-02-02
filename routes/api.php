@@ -251,6 +251,16 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
 
         // });
 
+        Route::prefix('cleared-credit')->group(function () {
+            Route::get('', 'Admin\RecordController@indexClearedCredit');
+            Route::get('{id}', 'Admin\RecordController@showClearedCredit');
+        });
+
+        Route::prefix('verified-prize')->group(function () {
+            Route::get('','Admin\RecordController@indexVerifiedPrize');
+            Route::get('{id}','Admin\RecordController@showVerifiedPrize');
+        });
+
         Route::prefix('downlines')->group(function () {
             Route::get('','Admin\DownlineController@index');
 
