@@ -177,18 +177,18 @@ class DownlineController extends Controller
                                         'date' => $date,
                                         'amount' => $transactions->sum('amount')
                                     ];
-                                });
+                                })->values()->toArray();
+                                
         // Calculate the total sum for all dates
         $totalSum = $query->sum('amount');
+        // $transactions['total_amount'] = $totalSum;
+        
 
-        // Add the total sum to the result
-        $result = [
-            'data' => $transactions
-        ];
-        $transactions['total_amount'] = $totalSum;
-
-        if ($result) {
-            return $result;
+        if ($transactions) {
+            return response([
+                'data' => array_values($transactions),
+                'total_amount' => $totalSum
+            ]);
         }
 
         return response(['message' => trans('admin.no_transaction_records')], 422);
