@@ -161,22 +161,25 @@ class DownlineController extends Controller
         $dateFrom = Carbon::parse($request->date_from);
         $dateTo = Carbon::parse($request->date_to);
 
-        $transactions = AdminCreditTransaction::where('admin_id', $id)
+        $query = AdminCreditTransaction::where('admin_id', $id)
                     ->where('type', AdminCreditTransaction::TYPE['Increase'])
                     ->where('transaction_type', AdminCreditTransaction::TRANSACTION_TYPE['TopUp'])
                     ->whereDate('created_at', '>=', $dateFrom)
                     ->whereDate('created_at', '<=', $dateTo)
                     ->where('is_verified', false)
                     ->orderBy('created_at', 'asc')
-                    ->get()
-                    ->groupBy(function($date) {
-                        return Carbon::parse($date->created_at)->format('Y-m-d'); // grouping by date part only
-                    })->map(function ($transactions) {
-                        return $transactions->sum('amount');
-                    });
-
+                    ->get();
+                    
+        $transactions =  $query->groupBy(function($date) {
+                                    return Carbon::parse($date->created_at)->format('Y-m-d'); // grouping by date part only
+                                })->map(function ($transactions, $date) {
+                                    return [
+                                        'date' => $date,
+                                        'amount' => $transactions->sum('amount')
+                                    ];
+                                });
         // Calculate the total sum for all dates
-        $totalSum = $transactions->sum();
+        $totalSum = $query->sum('amount');
 
         // Add the total sum to the result
         $transactions['total_amount'] = $totalSum;
