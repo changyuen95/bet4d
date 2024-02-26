@@ -41,6 +41,10 @@ class Kernel extends ConsoleKernel
                 //  ->timezone('Your_Timezone') // Replace 'Your_Timezone' with your actual timezone
                  ->days([Schedule::WEDNESDAY, Schedule::SATURDAY, Schedule::SUNDAY])
                  ->dailyAt('21:00');
+
+        $schedule->call(function () {
+                    \Artisan::call('db:seed', ['--class' => 'DrawNextYearSeeder']);
+                })->yearly(); // Change the frequency as needed
     }
 
     /**
