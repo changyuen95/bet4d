@@ -23,6 +23,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::namespace('API')->group(function () {
+
+    Route::get('webview-links', 'SettingController@index');
+
+
     Route::post("login", LoginController::class);
     Route::post("admin/login", 'LoginController@adminLogin');
     Route::get('locales', LocaleController::class);
@@ -291,7 +295,7 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
             Route::get('pending-count', 'Admin\PendingPrizeDistributionController@getCount');
             Route::get('', 'Admin\PendingPrizeDistributionController@index');
             Route::get('{id}','Admin\PendingPrizeDistributionController@show');
-            Route::get('{id}/resend-notification', 'Admin\PendingPrizeDistributionController@resendNotification');
+            Route::post('{id}/resend-notification', 'Admin\PendingPrizeDistributionController@resendNotification');
         });
 
         Route::prefix('pending-verify-distributed-prize')->group(function () {

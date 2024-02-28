@@ -20,6 +20,8 @@ class AdminCreditTransactionResource extends BaseResource
             'id' => $this->id,
             'admin_id' => $this->admin_id,
             'outlet_id' => $this->outlet_id,
+            'outlet' => $this->outlet,
+            'platform' => $this->outlet->platform,
             'amount' => $this->amount,
             'before_amount' => $this->before_amount,
             'after_amount' => $this->after_amount,
