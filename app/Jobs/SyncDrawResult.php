@@ -44,7 +44,7 @@ class SyncDrawResult implements ShouldQueue
         $contentArray = explode(':',$content);
         $drawNo = str_replace(" ","",$contentArray[1]);
         $drawNoArray = explode('/', $drawNo );
-        $draw = Draw::where('draw_no',$drawNoArray[0])->where('year',$drawNoArray[1])->first();
+        $draw = Draw::where('draw_no',ltrim((int)$drawNoArray[0], '0'))->where('year',$drawNoArray[1])->first();
         $allUser = User::all();
         $results = [
             DrawResult::TYPE['1st'] => [
