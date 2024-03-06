@@ -29,4 +29,9 @@ class UserTransferDetails extends Model
     {
         return $this->belongsTo(TransferOption::class, 'transfer_option_id');
     }
+
+    public function getPrimaryAttribute($primary)
+    {
+        return (boolean) $primary;
+    }
 }
