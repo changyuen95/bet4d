@@ -204,7 +204,9 @@ class DownlineController extends Controller
                                                 ->where('transaction_type', AdminCreditTransaction::TRANSACTION_TYPE['TopUp'])
                                                 ->where('type', AdminCreditTransaction::TYPE['Increase']);
 
-        $credit_distributed = $transactionsQuery->sum('amount');
+
+        $credit_distributed = collect(['credit_distributed' => $transactionsQuery->sum('amount') ]);
+
         $transaction = $transactionsQuery->paginate($request->get('limit') ?? 10);
 
         $results = $credit_distributed->merge($transaction);
