@@ -169,7 +169,7 @@ class DownlineController extends Controller
                     ->where('is_verified', false)
                     ->orderBy('created_at', 'asc')
                     ->get();
-                    
+
         $transactions =  $query->groupBy(function($date) {
                                     return Carbon::parse($date->created_at)->format('Y-m-d'); // grouping by date part only
                                 })->map(function ($transactions, $date) {
@@ -178,11 +178,11 @@ class DownlineController extends Controller
                                         'amount' => $transactions->sum('amount')
                                     ];
                                 })->values()->toArray();
-                                
+
         // Calculate the total sum for all dates
         $totalSum = $query->sum('amount');
         // $transactions['total_amount'] = $totalSum;
-        
+
 
         if ($transactions) {
             return response([
@@ -204,11 +204,13 @@ class DownlineController extends Controller
                                                 ->where('transaction_type', AdminCreditTransaction::TRANSACTION_TYPE['TopUp'])
                                                 ->where('type', AdminCreditTransaction::TYPE['Increase']);
 
-        $result = [
-            'credit_distributed' => $transactionsQuery->sum('amount'),
-            'transactions' => $transactionsQuery->paginate($request->get('limit') ?? 10)
-        ];
-        return $result;
+        $credit_distributed = $transactionsQuery->sum('amount');
+        $transaction = $transactionsQuery->paginate($request->get('limit') ?? 10);
+
+        $results = $credit_distributed->merge($transaction);
+
+
+        return $results;
     }
 
     // List Credit Distribute Detail
