@@ -24,7 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::namespace('API')->group(function () {
 
-    Route::get('webview-links', 'SettingController@index');
+    Route::get('webviews', 'SettingController@index');
 
 
     Route::post("login", LoginController::class);
