@@ -7,7 +7,7 @@ use OneSignal;
 use Log;
 class OnesignalChannel
 {
-    public static function send($notifiable, $notification, $appId, $apiKey)
+    public static function send($appId, $apiKey, $notifiable, $notification)
     {
         $instance = array();
         $instance['title'] = $notification->title;
@@ -26,7 +26,7 @@ class OnesignalChannel
             //     $instance['schedule'] ?? null,
             //     $instance['title'] ?? null,
             // );
-            
+
             $response = OneSignal::sendNotificationCustom(
                 $appId,
                 $apiKey,
