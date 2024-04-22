@@ -27,39 +27,30 @@ class OnesignalChannel
             //     $instance['title'] ?? null,
             // );
 
-            $response = OneSignal::sendNotificationCustom(
-                $appId,
-                $apiKey,
-                $instance['message'],
-                [$notifiable->id],
-                // $instance['url'] ?? null,
-                $notification->deeplink ?? null,
-                $instance['data'] ?? null,
-                $instance['buttons'] ?? null,
-                $instance['schedule'] ?? null,
-                $instance['title'] ?? null,
-            );
-            // $contents = [ 
-            //     "en" => $instance['message'], 
-            //  ]; 
-
-            // $params = array(
-            //     'app_id' => $appId,
-            //     'contents' => $contents,
-            //     'api_key' => $apiKey,
+            // $response = OneSignal::sendNotificationCustom(
+            //     $appId,
+            //     $apiKey,
+            //     $instance['message'],
+            //     [$notifiable->id],
+            //     // $instance['url'] ?? null,
+            //     $notification->deeplink ?? null,
+            //     $instance['data'] ?? null,
+            //     $instance['buttons'] ?? null,
+            //     $instance['schedule'] ?? null,
+            //     $instance['title'] ?? null,
             // );
+            $contents = [ 
+                "en" => $instance['message'], 
+             ]; 
+
+            $params = array(
+                'app_id' => $appId,
+                'contents' => $contents,
+                'include_player_ids' => [$notifiable->id],
+                'api_key' => $apiKey,
+            );
          
-            // if (isset($data)) {
-            //     $params['data'] = $data;
-            // }
-         
-            // if(isset($headings)){
-            //     $params['headings'] = array(
-            //         "en" => $headings
-            //     );
-            // }
-         
-            // OneSignal::sendNotificationCustom($params);
+            OneSignal::sendNotificationCustom($params);
         }
     }
 }
