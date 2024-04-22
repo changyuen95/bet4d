@@ -343,9 +343,10 @@ class TicketController extends Controller
                     $notificationData['title'] = 'New ticket request';
                     $notificationData['message'] = 'You have receive new ticket request.';
                     $notificationData['deepLink'] = 'fortknox-admin://tickets/'.$ticket->id;
-
+                    $appId = env('ONESIGNAL_STAFF_APP_ID');
+                    $apiKey = env('ONESIGNAL_STAFF_REST_API_KEY');
                     foreach($staffs as $staff){
-                        $this->sendNotification($staff,$notificationData,$ticket);
+                        $this->sendNotification($appId, $apiKey, $staff,$notificationData,$ticket);
                     }
                 }
             }
@@ -507,22 +508,27 @@ class TicketController extends Controller
                     $notificationData['title'] = 'Ticket Accepted';
                     $notificationData['message'] = 'Your ticket is in progress';
                     $notificationData['deepLink'] = 'fortknox://me/tickets/'.$ticket->id;
-
-                    $this->sendNotification($ticketUser,$notificationData,$ticket);
+                    $appId = env('ONESIGNAL_APP_ID');
+                    $apiKey = env('ONESIGNAL_REST_API_KEY');
+                    $this->sendNotification($appId, $apiKey, $ticketUser,$notificationData,$ticket);
                 }elseif($request->status == Ticket::STATUS['TICKET_REJECTED']){
                     $notificationData = [];
                     $notificationData['title'] = 'Ticket Rejected';
                     $notificationData['message'] = 'Ticket is rejected';
                     $notificationData['deepLink'] = 'fortknox://me/tickets/'.$ticket->id;
+                    $appId = env('ONESIGNAL_APP_ID');
+                    $apiKey = env('ONESIGNAL_REST_API_KEY');
 
-                    $this->sendNotification($ticketUser,$notificationData,$ticket);
+                    $this->sendNotification($appId, $apiKey, $ticketUser,$notificationData,$ticket);
                 }elseif($request->status == Ticket::STATUS['TICKET_COMPLETED']){
                     $notificationData = [];
                     $notificationData['title'] = 'Ticket process is completed';
                     $notificationData['message'] = 'Ticketing process is completed';
                     $notificationData['deepLink'] = 'fortknox://me/tickets/'.$ticket->id;
+                    $appId = env('ONESIGNAL_APP_ID');
+                    $apiKey = env('ONESIGNAL_REST_API_KEY');
 
-                    $this->sendNotification($ticketUser,$notificationData,$ticket);
+                    $this->sendNotification($appId, $apiKey, $ticketUser,$notificationData,$ticket);
                 }
             }
             DB::commit();

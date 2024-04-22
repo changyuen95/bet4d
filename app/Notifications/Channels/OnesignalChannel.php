@@ -46,7 +46,7 @@ class OnesignalChannel
             $params = array(
                 'app_id' => $appId,
                 'contents' => $contents,
-                'include_aliases' => [$notifiable->id],
+                'include_external_user_ids' => [$notifiable->id],
                 'api_key' => $apiKey,
             );
          

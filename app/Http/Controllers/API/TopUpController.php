@@ -132,8 +132,10 @@ class TopUpController extends Controller
             $notificationData['title'] = 'Top up successfully!';
             $notificationData['message'] = 'Top up successfully! '.$request->amount.' has added into your wallet.';
             $notificationData['deepLink'] = '';
+            $appId = env('ONESIGNAL_APP_ID');
+            $apiKey = env('ONESIGNAL_REST_API_KEY');
 
-            $this->sendNotification($user,$notificationData,$userCredit);
+            $this->sendNotification($appId, $apiKey, $user,$notificationData,$userCredit);
 
             DB::commit();
 

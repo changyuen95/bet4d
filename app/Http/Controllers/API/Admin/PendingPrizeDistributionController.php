@@ -136,8 +136,9 @@ class PendingPrizeDistributionController extends Controller
                 $notificationData['message'] = 'Someone had win the prize, please distribute the prize to customer';
             }
             $notificationData['deepLink'] = 'fortknox-admin://distribute-prizes/'.$winner->id;
-
-            $this->sendNotification($outletStaff,$notificationData,$winner);
+            $appId = env('ONESIGNAL_STAFF_APP_ID');
+            $apiKey = env('ONESIGNAL_STAFF_REST_API_KEY');
+            $this->sendNotification($appId, $apiKey, $outletStaff,$notificationData,$winner);
         }
 
         return response(['message' => trans('messages.resend_notification_successfully')], 200);

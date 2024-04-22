@@ -56,8 +56,9 @@ class GetWinnerList implements ShouldQueue
                                 $notificationData['title'] = 'Congratulation! You had win the prize';
                                 $notificationData['message'] = 'You had win the prize, please wait our staff to distribute the prize to you';
                                 $notificationData['deepLink'] = 'fortknox://me/winner/'.$winner->id;
-        
-                                $this->sendNotification($ticketUser,$notificationData,$winner);
+                                $appId = env('ONESIGNAL_APP_ID');
+                                $apiKey = env('ONESIGNAL_REST_API_KEY');
+                                $this->sendNotification($appId, $apiKey, $ticketUser,$notificationData,$winner);
                             }
     
                             $outletStaffs = optional(optional($ticket->outlet)->staffs())->whereHas('roles', function($q) {
@@ -73,8 +74,9 @@ class GetWinnerList implements ShouldQueue
                                     $notificationData['message'] = 'Someone had win the prize, please distribute the prize to customer';
                                 }
                                 $notificationData['deepLink'] = 'fortknox-admin://distribute-prizes/'.$winner->id;
-        
-                                $this->sendNotification($outletStaff,$notificationData,$winner);
+                                $appId = env('ONESIGNAL_STAFF_APP_ID');
+                                $apiKey = env('ONESIGNAL_STAFF_REST_API_KEY');
+                                $this->sendNotification($appId, $apiKey, $outletStaff,$notificationData,$winner);
                             }
                         }
                     }

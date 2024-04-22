@@ -165,8 +165,9 @@ class SyncDrawResult implements ShouldQueue
                                 $notificationData['title'] = 'Draw result is released!';
                                 $notificationData['message'] = 'Draw result for '.$drawNo.' is released!';
                                 $notificationData['deepLink'] = 'fortknox://draw-results/'.$draw->id;
-                
-                                $this->sendNotification($notifyUser,$notificationData);
+                                $appId = env('ONESIGNAL_APP_ID');
+                                $apiKey = env('ONESIGNAL_REST_API_KEY');
+                                $this->sendNotification($appId, $apiKey, $notifyUser,$notificationData);
                             }
                         }
                         $draw->update([
