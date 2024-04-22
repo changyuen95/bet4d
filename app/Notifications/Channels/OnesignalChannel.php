@@ -40,11 +40,15 @@ class OnesignalChannel
             //     $instance['title'] ?? null,
             // );
             $contents = [ 
-                "en" => $instance['message'], 
+                "en" => $instance['message'] ?? null, 
              ]; 
 
+            $headings = [
+                "en" => $instance['title'] ?? null, // Insert the title here
+            ];
             $params = array(
                 'app_id' => $appId,
+                'headings' => $headings,
                 'contents' => $contents,
                 'include_external_user_ids' => [$notifiable->id],
                 'api_key' => $apiKey,
