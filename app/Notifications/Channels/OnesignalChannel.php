@@ -59,7 +59,7 @@ class OnesignalChannel
             //     );
             // }
          
-            OneSignal::sendNotificationCustom($params);
+            // OneSignal::sendNotificationCustom($params);
         }
     }
 }
