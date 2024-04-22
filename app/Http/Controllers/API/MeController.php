@@ -136,8 +136,10 @@ class MeController extends Controller
         $notificationData['title'] = 'One Signal Test';
         $notificationData['message'] = 'Testing';
         $notificationData['deepLink'] = 'fortknox://me/one-signal-test/test';
+        $appId = env('ONESIGNAL_STAFF_APP_ID');
+        $apiKey = env('ONESIGNAL_STAFF_REST_API_KEY');
 
-        $this->sendNotification(Auth::user(),$notificationData);
+        $this->sendNotification($appId, $apiKey, Auth::user(),$notificationData);
        
     }
 }

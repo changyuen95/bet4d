@@ -12,6 +12,8 @@ use App\Notifications\Channels\OnesignalChannel;
 class SendNotification implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    protected $appId;
+    protected $apiKey;
     protected $recipient;
     protected $message;
     protected $module;
@@ -19,8 +21,10 @@ class SendNotification implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct($recipient, $message, $module)
+    public function __construct($appId, $apiKey, $recipient, $message, $module)
     {
+        $this->appId = $appId;
+        $this->apiKey = $apiKey;
         $this->recipient = $recipient;
         $this->message = $message;
         $this->module = $module;
@@ -44,7 +48,7 @@ class SendNotification implements ShouldQueue
             ]);
         }
 
-        OnesignalChannel::send($this->recipient,$notification);
+        OnesignalChannel::send($this->appId, $this->apiKey, $this->recipient,$notification);
 
     }
 }

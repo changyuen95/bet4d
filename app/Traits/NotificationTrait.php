@@ -6,8 +6,8 @@ use App\Jobs\SendNotification;
 
 trait NotificationTrait
 {
-    public function sendNotification($recipient /* user / admin collection */, $message, $module = null)
+    public function sendNotification($appId, $apiKey, $recipient /* user / admin collection */, $message, $module = null)
     {
-        SendNotification::dispatch($recipient, $message, $module);
+        SendNotification::dispatch($appId, $apiKey, $recipient, $message, $module);
     }
 }
