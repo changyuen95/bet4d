@@ -14,7 +14,8 @@ class TopUp extends Model
 
     const TOP_UP_WITH = [
         'Outlet' => 'outlet',
-        'QR'    => 'qr'
+        'QR'    => 'qr',
+        'Bank'  => 'bank',
     ];
 
     protected function serializeDate(\DateTimeInterface $date)

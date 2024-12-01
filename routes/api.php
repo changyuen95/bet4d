@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\ForgotPasswordController;
-use App\Http\Controllers\API\UserTransferDetailsController;
+use App\Http\Controllers\API\BankReceiptController;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -52,6 +52,10 @@ Route::namespace('API')->group(function () {
 
     Route::prefix('banners')->group(function () {
         Route::get('', 'BannerController@index');
+    });
+
+    Route::prefix('bank-account')->group(function () {
+        Route::get('', 'PlatformController@bankAccount');
     });
 
     Route::prefix('platforms')->group(function () {
@@ -111,6 +115,7 @@ Route::namespace('API')->group(function () {
                 Route::get('','TicketController@index');
                 Route::get('{id}','TicketController@show');
             });
+
             Route::prefix('transfer-details')->group(function () {
                 Route::get('','UserTransferDetailsController@index');
                 Route::get('{id}','UserTransferDetailsController@show');
@@ -145,6 +150,23 @@ Route::namespace('API')->group(function () {
             Route::prefix('winner')->group(function () {
                 Route::get('{id}','WinningHistoryController@show');
                 // Route::get('{id}','WinningHistoryController@show');
+            });
+
+            Route::prefix('bank-receipts')->group(function() {
+                // Display all receipts
+                Route::get('/', [BankReceiptController::class, 'index'])->name('bank-receipts.index');
+
+                // Create a new receipt
+                Route::post('/', [BankReceiptController::class, 'store'])->name('bank-receipts.store');
+
+                // Show a specific receipt
+                Route::get('/{id}', [BankReceiptController::class, 'show'])->name('bank-receipts.show');
+
+                // Update a receipt status (user)
+                Route::put('/{id}/update-status', [BankReceiptController::class, 'updateReceiptStatus'])->name('bank-receipts.updateStatus');
+
+                // Get bank account details
+                Route::get('/bank-account', [BankReceiptController::class, 'bankAccount'])->name('bank-receipts.bankAccount');
             });
         });
 
@@ -192,6 +214,17 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
             Route::get('{id}','VerifyProfileController@verifyProfileDetail');
             Route::post('{id}/approved','VerifyProfileController@approvedICVerification');
             Route::post('{id}/rejected','VerifyProfileController@rejectedICVerification');
+        });
+
+        Route::prefix('bank-receipts')->group(function() {
+            // Display all receipts
+            Route::get('/', [BankReceiptController::class, 'index'])->name('bank-receipts.index');
+
+            // Show a specific receipt
+            Route::get('/{id}', [BankReceiptController::class, 'show'])->name('bank-receipts.show');
+
+            Route::put('/{id}/update-status', [BankReceiptController::class, 'staffUpdateReceiptStatus'])->name('bank-receipts.staffUpdateStatus');
+
         });
     });
 

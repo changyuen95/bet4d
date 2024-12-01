@@ -30,10 +30,10 @@ use App\Http\Controllers\ProfileController;
         Route::get('login', 'LoginController@showLoginForm')->name('.login');
         Route::post('login', 'LoginController@login');
         Route::post('logout', 'LoginController@logout')->name('.logout');
-        Route::get('password/request', 'ForgotPasswordController@showLinkRequestForm')->name('.password.request');
-        Route::post('password/email', 'ForgotPasswordController@sendResetLinkEmail')->name('.password.email');
-        Route::post('reset-password', 'ForgotPasswordController@reset_password')->name('.password.reset');
-        Route::get('forgot-password/{email}/{token}', 'ForgotPasswordController@forgot_password')->name('.forgot-password');
+        // Route::get('password/request', 'ForgotPasswordController@showLinkRequestForm')->name('.password.request');
+        // Route::post('password/email', 'ForgotPasswordController@sendResetLinkEmail')->name('.password.email');
+        // Route::post('reset-password', 'ForgotPasswordController@reset_password')->name('.password.reset');
+        // Route::get('forgot-password/{email}/{token}', 'ForgotPasswordController@forgot_password')->name('.forgot-password');
 
 
     });

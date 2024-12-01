@@ -108,6 +108,11 @@ class Admin extends Authenticatable
         return $this->hasMany(WinnerList::class, 'action_by');
     }
 
+    // public function receipts()
+    // {
+    //     return $this->hasMany(BankReceipt::class, 'action_by');
+    // }
+
     /********  Function  ********/
 
      public static function generatePassword()

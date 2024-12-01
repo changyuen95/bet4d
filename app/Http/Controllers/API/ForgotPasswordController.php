@@ -46,7 +46,7 @@ class ForgotPasswordController extends Controller
             if(env('APP_ENV') == 'production'){
                 $user->notify(new TacNotification($tacNo));
             }
-            
+
             $currentDatetime = Carbon::now();
             $expired_at = $currentDatetime->addMinutes(2);
             $user->tacs()->create([
@@ -56,7 +56,7 @@ class ForgotPasswordController extends Controller
                 'ref' => Tac::REFERENCE['Forgot_Password'],
                 'expired_at' => $expired_at,
             ]);
-            
+
             DB::commit();
             $response = [
                 'message' =>  trans('messages.send_tac_successfully'),
@@ -98,7 +98,7 @@ class ForgotPasswordController extends Controller
 
         $token->token_used_at = Carbon::now();
         $token->save();
-        
+
         return response(['message' => trans('messages.reset_password_successfully')], 200);
     }
 }

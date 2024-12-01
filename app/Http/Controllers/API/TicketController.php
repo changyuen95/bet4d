@@ -78,7 +78,7 @@ class TicketController extends Controller
             $query->doesntHave('ticketNumbers.win');
         }
 
-       
+
         $tickets = $query->with(['ticketNumbers.win', 'draws','platform','game'])->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
 
         return response($tickets, 200);
@@ -192,15 +192,6 @@ class TicketController extends Controller
                 ]);
             }
 
-            // $ticketCreated->creditTransaction()->create([
-            //     'user_id' => $user->id,
-            //     'amount' => $billAmount,
-            //     'type'  => CreditTransaction::TYPE['Decrease'],
-            //     'before_amount' => $userCredit->credit,
-            // ]);
-
-            // $userCredit->credit = $userCredit->credit - $billAmount;
-            // $userCredit->save();
             DB::commit();
 
             return response([

@@ -10,6 +10,8 @@ use App\Models\TopUp;
 use App\Models\User;
 use App\Models\Qrcode;
 use App\Models\QrScannedList;
+use App\Models\BankReceipt;
+use App\Models\BankAccount;
 use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
 use Auth;
@@ -146,6 +148,46 @@ class TopUpController extends Controller
         }
     }
 
+    public function bankAccount(Request $request)
+    {
+        $bank = BankAccount::first();
+        return response($bank, 200);
+    }
+
+    public function uploadReceipot(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'receipt' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'amount' => 'required|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->first()], 422);
+        }
+
+        $user = Auth::user();
+        $upload = BankReceipt::create([
+            'user_id' => $user->id,
+            'amount' => $request->amount,
+            'receipt' => $request->receipt->store('receipts', 'public'),
+            'status' => BankReceipt::STATUS['request'],
+        ]);
+
+        // $topup = TopUp::create([
+        //     'user_id' => $user->id,
+        //     'amount' => $request->amount,
+        //     'remark' => 'Top up by bank transfer',
+        //     'top_up_with' => TopUp::TOP_UP_WITH['Bank'],
+        // ]);
+
+
+        if (!$user) {
+            return response(['message']);
+
+
+        }
+    }
+
     /**
      * Display the specified resource.
      */
@@ -248,6 +290,117 @@ class TopUpController extends Controller
             $qrcode->avaibility = $qrcode->avaibility+1;
             $qrcode->save();
 
+            return response(['message' =>  trans('messages.top_up_failed') ], 422);
+        }
+    }
+
+    public function approveReceipt(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'amount' => 'required|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->first()], 422);
+        }
+
+        $receipt = BankReceipt::find($id);
+        $user = $receipt->user;
+
+        $user = User::find($id);
+        if (!$user) {
+            return response(['message' => trans('messages.no_user_found')], 422);
+        }
+        $staff = Auth::user();
+        $outlet = $staff->outlet;
+        DB::beginTransaction();
+        try{
+            $userCredit = $user->credit;
+            if(!$userCredit){
+                $userCredit = $user->credit()->create([
+                    'credit' => 0
+                ]);
+            }
+
+            $adminCredit = $staff->admin_credit;
+            if(!$adminCredit){
+                $adminCredit = $staff->admin_credit()->create([
+                    'amount' => 0
+                ]);
+            }
+
+            $userPoint = $user->point;
+            if(!$userPoint){
+                $userPoint = $user->point()->create([
+                    'point' => 0
+                ]);
+            }
+
+            // $topup = $user->topup()->create([
+            //     'amount' => $request->amount,
+            //     'remark' => $request->remark,
+            //     'top_up_with' => TopUp::TOP_UP_WITH['Outlet'],
+            //     'created_by' => Auth::user()->id
+            // ]);
+            $topup = $staff->topUpMorph()->create([
+                'user_id' => $user->id,
+                'amount' => $request->amount,
+                'remark' => $request->remark,
+                'top_up_with' => TopUp::TOP_UP_WITH['Outlet'],
+            ]);
+
+            $creditTransaction = $topup->creditTransaction()->create([
+                'user_id' => $user->id,
+                'amount' => $request->amount,
+                'type' => CreditTransaction::TYPE['Increase'],
+                'before_amount' => $userCredit->credit,
+                'outlet_id' => $outlet->id,
+            ]);
+
+            // admin/staff credit
+            $adminTransaction= $topup->adminTransaction()->create([
+                'admin_id' => $staff->id,
+                'amount' => $request->amount,
+                'type' => AdminCreditTransaction::TYPE['Increase'],
+                'before_amount' => $adminCredit->amount,
+                'outlet_id' => $outlet->id,
+                'after_amount' => 0,
+            ]);
+
+            $userCredit->credit = $userCredit->credit + $request->amount;
+            $userCredit->save();
+
+            $adminCredit->amount = $adminCredit->amount + $request->amount;
+            $adminCredit->save();
+
+            $adminTransaction->after_amount = $adminCredit->amount;
+            $adminTransaction->save();
+
+            $pointTransaction = $topup->pointTransaction()->create([
+                'user_id' => $user->id,
+                'point' => $request->amount,
+                'type' => PointTransaction::TYPE['Increase'],
+                'before_point' => $request->amount,
+                'outlet_id' => $outlet->id,
+            ]);
+
+            $userPoint->point = $userPoint->point + $request->amount;
+            $userPoint->save();
+
+            $notificationData = [];
+            $notificationData['title'] = 'Top up successfully!';
+            $notificationData['message'] = 'Top up successfully! '.$request->amount.' has added into your wallet.';
+            $notificationData['deepLink'] = '';
+            $appId = env('ONESIGNAL_APP_ID');
+            $apiKey = env('ONESIGNAL_REST_API_KEY');
+
+            $this->sendNotification($appId, $apiKey, $user,$notificationData,$userCredit);
+
+            DB::commit();
+
+            return response(['message' => trans('messages.you_had_successfully_top_up').' '.$request->amount.' '.trans('messages.credit').' '.trans('messages.for').' '.$user->name], 200);
+        }catch (Exception $e) {
+            DB::rollback();
             return response(['message' =>  trans('messages.top_up_failed') ], 422);
         }
     }
