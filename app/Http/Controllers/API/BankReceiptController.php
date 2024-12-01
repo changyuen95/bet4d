@@ -24,7 +24,8 @@ use Auth;
 use App\Traits\NotificationTrait;
 use Faker\Core\Barcode;
 use App\Models\BankAccount;
-
+use File;
+use Image;
 class BankReceiptController extends Controller
 {
     use NotificationTrait;
@@ -103,10 +104,26 @@ class BankReceiptController extends Controller
             return response(['message' => $validator->errors()->first()], 422);
         }
 
+        $user = Auth::user();
+
+            File::makeDirectory(storage_path('app/public/verify_profile/'.$user->id.'/attachment/'), $mode = 0777, true, true);
+            $receipt_image = $request->file('receipt_image');
+
+           $input['receipt_image'] = 'receipt_image_'.time().'.'.$receipt_image->getClientOriginalExtension();
+
+            $destination_path = storage_path('app/public/verify_profile/'.$user->id.'/attachment/');
+            $stored_image = Image::make($receipt_image->path());
+
+
+            $stored_image->save($destination_path.'/'.$input['receipt_image']);
+
+
+            $image_full_path = 'bank_receipt/'.$user->id.'/_receipt_/'.$input['receipt_image'];
+
         $receipt = BankReceipt::create([
-            'user_id' => Auth::user()->id,
+            'user_id' => $user->id,
             'amount' => $request->amount,
-            'image' => $request->receipt_image,
+            'image' => $image_full_path,
             'status' => BankReceipt::STATUS['RECEIPT_REQUESTED'],
             'approved_by' => null,
         ]);
