@@ -54,9 +54,7 @@ Route::namespace('API')->group(function () {
         Route::get('', 'BannerController@index');
     });
 
-    Route::prefix('bank-account')->group(function () {
-        Route::get('', 'PlatformController@bankAccount');
-    });
+
 
     Route::prefix('platforms')->group(function () {
         Route::get('','PlatformController@index');
@@ -153,6 +151,8 @@ Route::namespace('API')->group(function () {
             });
 
             Route::prefix('bank-receipts')->group(function() {
+                Route::get('/bank-account', [BankReceiptController::class, 'bankAccount'])->name('bank-receipts.bankAccount');
+
                 // Display all receipts
                 Route::get('/', [BankReceiptController::class, 'index'])->name('bank-receipts.index');
 
@@ -166,7 +166,6 @@ Route::namespace('API')->group(function () {
                 Route::put('/{id}/update-status', [BankReceiptController::class, 'updateReceiptStatus'])->name('bank-receipts.updateStatus');
 
                 // Get bank account details
-                Route::get('/bank-account', [BankReceiptController::class, 'bankAccount'])->name('bank-receipts.bankAccount');
             });
         });
 
