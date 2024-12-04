@@ -611,4 +611,49 @@ class TicketController extends Controller
 
         return response($barcode, 200);
     }
+
+    public function getAllNumbers(Request $request , $id){
+
+        $ticket_numbers = Ticket::where('id',$id)->with('ticketNumbers')->first();
+
+        return response($ticket_numbers, 200);
+
+    }
+
+    public function refund(Request $request , $id){
+
+        $validator = Validator::make($request->all(), [
+            'ticket_number' => 'array|exists:ticket_numbers,id',
+            'actual_big_number' => ['array'],
+            'actual_small_number' => ['array'],
+            ]);
+
+        // $validator->setCustomMessages($customMessages);
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->first()], 422);
+        }
+            $total_refund = 0;
+            $ticket = Ticket::find($id);
+        foreach($request->ticket_number as $key => $ticket_number){
+            $ticket_number = TicketNumber::find($ticket_number);
+            $ticket_number->actual_big_amount = $request->actual_big_number[$key];
+            $ticket_number->actual_small_amount = $request->actual_small_number[$key];
+            $ticket_number->refund_amount = ($ticket_number->big_amount + $ticket_number->small_amount) - ($request->actual_big_number[$key] + $request->actual_small_number[$key]);
+            $ticket_number->save();
+
+
+            $total_refund = $total_refund + $ticket_number->refund_amount;
+        }
+        $user = $ticket->user;
+        $user_credit = $user->credit;
+        $user_credit->credit = $user_credit->credit + $total_refund;
+        $user_credit->save();
+
+
+        return response($ticket, 200);
+
+        $ticket = Ticket::find($id);
+
+
+    }
 }

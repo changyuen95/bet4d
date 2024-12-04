@@ -11,6 +11,7 @@ class TopUp extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
     protected $guarded = ['id'];
+    protected $with = ['bankReceipts'];
 
     const TOP_UP_WITH = [
         'Outlet' => 'outlet',
@@ -50,5 +51,10 @@ class TopUp extends Model
     public function creatable()
     {
         return $this->morphTo();
+    }
+
+    public function bankReceipt()
+    {
+        return $this->hasOne(BankReceipt::class, 'top_up_id');
     }
 }

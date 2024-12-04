@@ -21,7 +21,7 @@ class TicketNumber extends Model
     {
         return $date->format('Y-m-d H:i:s');
     }
-    
+
     public function ticket()
     {
         return $this->belongsTo(Ticket::class, 'ticket_id');
@@ -45,7 +45,7 @@ class TicketNumber extends Model
             'small_2nd' => 0,
             'small_3rd' => 0,
         ];
-        
+
         if($potentialWinningData){
             $potentialWinning = [
                 'big_1st' => $this->big_amount * $potentialWinningData->big1st,

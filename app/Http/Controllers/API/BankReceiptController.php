@@ -298,6 +298,8 @@ class BankReceiptController extends Controller
                 return response(['message' => trans('messages.no_user_credit_found')], 422);
             }
             $receipt->status = $request->status;
+            $receipt->approved_by = $admin->id;
+            $receipt->top_up_id = $topup->id;
             $receipt->save();
             DB::commit();
 
