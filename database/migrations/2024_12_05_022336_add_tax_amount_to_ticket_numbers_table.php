@@ -15,7 +15,7 @@ return new class extends Migration
             //
             $table->decimal('tax_amount', 11, 2)->default(0);
             $table->decimal('actual_tax_amount', 11, 2)->default(0);
-            $table->foreignUlid('top_up_id')->nullable()->constrained('top_ups');
+            $table->foreignUlid('tax_id')->nullable()->constrained('taxes');
 
         });
     }
@@ -29,7 +29,7 @@ return new class extends Migration
             //
             $table->dropColumn('tax_amount');
             $table->dropColumn('actual_tax_amount');
-            $table->dropForeign(['top_up_id']);
+            $table->dropForeign(['tax_id']);
         });
     }
 };
