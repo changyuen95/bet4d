@@ -167,6 +167,7 @@ class TicketController extends Controller
             }
             // $drawData = Draw::getDrawData($platform->id);
             $billAmount = 0;
+            $tax = Tax::first();
             foreach($request->ticket as $ticket){
                 $billAmount += $ticket['small_amount'];
                 $billAmount += $ticket['big_amount'];
@@ -175,6 +176,8 @@ class TicketController extends Controller
             // if($userCredit->credit < floatVal($billAmount)){
             //     return response(['message' => trans('messages.insufficient_balance')], 422);
             // }
+
+
 
             $ticketCreated = $user->tickets()->create([
                 'outlet_id' => $outlet->id,
@@ -192,7 +195,7 @@ class TicketController extends Controller
                     'big_amount' => $ticket['big_amount'],
                     'actual_big_amount' => 0,
                     'refund_amount' => 0,
-                    'tax_amount' => 0,
+                    'tax_amount' => (($ticket['big_amount'] + $ticket['small_amount']) * $tax->percentage / 100),
                     'actual_tax_amount' => 0,
                     'tax_id' => Tax::first()->id,
                     'type' => $ticket['type'],
