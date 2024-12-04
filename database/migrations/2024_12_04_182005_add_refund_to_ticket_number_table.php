@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('ticket_number', function (Blueprint $table) {
+        Schema::table('ticket_numbers', function (Blueprint $table) {
             //
             $table->decimal('actual_small_amount',11,2);
             $table->decimal('actual_big_amount',11,2);
@@ -24,7 +24,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('ticket_number', function (Blueprint $table) {
+        Schema::table('ticket_numbers', function (Blueprint $table) {
             //
             $table->dropColumn('actual_small_amount');
             $table->dropColumn('actual_big_amount');
