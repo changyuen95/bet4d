@@ -44,7 +44,8 @@ class BankReceiptController extends Controller
         //     return response(['message' => $validator->errors()->first()], 422);
         // }
 
-        $receipts = BankReceipt::where('status',BankReceipt::STATUS['RECEIPT_REQUESTED'])->get();
+        $query = BankReceipt::where('status',BankReceipt::STATUS['RECEIPT_REQUESTED']);
+        $receipts = $query->paginate($request->get('limit') ?? 10);
 
 
         return response($receipts, 200);
@@ -57,8 +58,9 @@ class BankReceiptController extends Controller
         //     return response(['message' => $validator->errors()->first()], 422);
         // }
 
-        $receipts = BankReceipt::where('status',BankReceipt::STATUS['RECEIPT_REQUESTED'])->get();
+        $query = BankReceipt::where('status',BankReceipt::STATUS['RECEIPT_REQUESTED']);
 
+        $receipts = $query->paginate($request->get('limit') ?? 10);
 
         return response($receipts, 200);
     }

@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::table('ticket_numbers', function (Blueprint $table) {
             //
-            $table->decimal('actual_small_amount',11,2);
-            $table->decimal('actual_big_amount',11,2);
-            $table->decimal('refund_amount',11,2);
+            $table->decimal('actual_small_amount',11,2)->default(0);
+            $table->decimal('actual_big_amount',11,2)->default(0);
+            $table->decimal('refund_amount',11,2)->default(0);
         });
     }
 
