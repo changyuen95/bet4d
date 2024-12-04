@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('bank_receipt', function (Blueprint $table) {
+        Schema::table('bank_receipts', function (Blueprint $table) {
             //
             $table->foreignUlid('top_up_id')->nullable()->constrained('top_ups');
 
@@ -23,7 +23,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('bank_receipt', function (Blueprint $table) {
+        Schema::table('bank_receipts', function (Blueprint $table) {
             //
             $table->dropForeign(['top_up_id']);
         });
