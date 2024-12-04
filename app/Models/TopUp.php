@@ -11,7 +11,7 @@ class TopUp extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
     protected $guarded = ['id'];
-    protected $with = ['bankReceipts'];
+    protected $with = ['bankReceipt'];
 
     const TOP_UP_WITH = [
         'Outlet' => 'outlet',
