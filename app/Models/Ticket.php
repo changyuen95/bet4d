@@ -11,7 +11,7 @@ class Ticket extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
     protected $guarded = ['id'];
-    protected $appends = ['total_amount','creatable_type','creatable_id'];
+    protected $appends = ['sub_total','total_amount','creatable_type','creatable_id'];
     const STATUS = [
         'TICKET_IMCOMPLETED' => 'incompleted',
         'TICKET_COMPLETED' => 'completed',
@@ -82,11 +82,29 @@ class Ticket extends Model
         return $this->belongsTo(Outlet::class, 'outlet_id');
     }
 
-    public function getTotalAmountAttribute(){
+    public function getSubTotalAttribute(){
         $ticketNumbers = $this->ticketNumbers;
         $totalAmount = 0;
         foreach($ticketNumbers as $ticketNumber){
             $totalAmount += ($ticketNumber->small_amount + $ticketNumber->big_amount);
+        }
+        return number_format((float)$totalAmount, 2, '.', '');
+    }
+
+    public function getTotalAmountAttribute(){
+        $ticketNumbers = $this->ticketNumbers;
+        $totalAmount = 0;
+        foreach($ticketNumbers as $ticketNumber){
+            $totalAmount += ($ticketNumber->small_amount + $ticketNumber->big_amount + $ticketNumber->tax_amount);
+        }
+        return number_format((float)$totalAmount, 2, '.', '');
+    }
+
+    public function getTotalTaxAttribute(){
+        $ticketNumbers = $this->ticketNumbers;
+        $totalAmount = 0;
+        foreach($ticketNumbers as $ticketNumber){
+            $totalAmount += ($ticketNumber->tax_amount);
         }
         return number_format((float)$totalAmount, 2, '.', '');
     }

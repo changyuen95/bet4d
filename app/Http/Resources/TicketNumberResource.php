@@ -30,6 +30,7 @@ class TicketNumberResource extends BaseResource
             'refund_amount' => $this->refund_amount,
             'created_at' => $this->formatDate($this->created_at),
             'updated_at' => $this->formatDate($this->updated_at),
+            'tax' => $this->tax,
         ];
     }
 }
