@@ -13,6 +13,7 @@ use App\Models\Role;
 use App\Models\Ticket;
 use App\Models\TicketNumber;
 use App\Models\User;
+use App\Models\Tax;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use DB;
@@ -187,7 +188,13 @@ class TicketController extends Controller
                 $ticketCreated->ticketNumbers()->create([
                     'number' => $ticket['ticket_number'],
                     'small_amount' => $ticket['small_amount'],
+                    'actual_small_amount' => 0,
                     'big_amount' => $ticket['big_amount'],
+                    'actual_big_amount' => 0,
+                    'refund_amount' => 0,
+                    'tax_amount' => 0,
+                    'actual_tax_amount' => 0,
+                    'tax_id' => Tax::first()->id,
                     'type' => $ticket['type'],
                 ]);
             }

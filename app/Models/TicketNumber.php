@@ -11,7 +11,7 @@ class TicketNumber extends Model
     use HasFactory, HasUlids;
     protected $guarded = ['id'];
     protected $appends = ['potential_winning'];
-
+    protected $with = ['tax'];
     const TYPE = [
         'Straight' => 'straight',
         'Permutation' => 'permutation'
@@ -30,6 +30,11 @@ class TicketNumber extends Model
     public function win()
     {
         return $this->hasOne(WinnerList::class, 'ticket_number_id');
+    }
+
+    public function tax()
+    {
+        return $this->hasOne(Tax::class, 'id', 'tax_id');
     }
 
     public function getPotentialWinningAttribute()
