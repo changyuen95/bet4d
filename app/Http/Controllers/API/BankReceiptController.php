@@ -300,7 +300,10 @@ class BankReceiptController extends Controller
             }
             $receipt->status = $request->status;
             $receipt->approved_by = $admin->id;
-            $receipt->top_up_id = $topup->id;
+            if(isset($topup)){
+                $receipt->top_up_id = $topup->id;
+
+            }
             $receipt->save();
             DB::commit();
 
