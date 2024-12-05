@@ -288,7 +288,7 @@ class BankReceiptController extends Controller
                     'admin_id' => $admin->id,
                     'amount' => $receipt->amount,
                     'type' => AdminCreditTransaction::TYPE['Increase'],
-                    'before_amount' => $adminCredit->amount,
+                    'before_amount' => $adminCredit,
                     'outlet_id' => null,
                     'after_amount' => 0,
                 ]);
