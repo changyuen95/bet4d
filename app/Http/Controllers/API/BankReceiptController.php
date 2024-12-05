@@ -108,12 +108,12 @@ class BankReceiptController extends Controller
 
         $user = Auth::user();
 
-            File::makeDirectory(storage_path('app/public/bank_receipt/'.$user->id.'/attachment/'), $mode = 0777, true, true);
+            File::makeDirectory(storage_path('app/public/bank_receipt/'.$user->id.'/_receipt_/'), $mode = 0777, true, true);
             $receipt_image = $request->file('receipt_image');
 
            $input['receipt_image'] = 'receipt_image_'.time().'.'.$receipt_image->getClientOriginalExtension();
 
-            $destination_path = storage_path('app/public/bank_receipt/'.$user->id.'/attachment/');
+            $destination_path = storage_path('app/public/bank_receipt/'.$user->id.'/_receipt_/');
             $stored_image = Image::make($receipt_image->path());
 
 
