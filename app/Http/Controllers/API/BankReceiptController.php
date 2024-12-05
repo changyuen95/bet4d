@@ -251,7 +251,6 @@ class BankReceiptController extends Controller
 
         DB::beginTransaction();
 
-        try{
             $user = $receipt->user;
             $userCredit = $user->credit;
             $adminCredit = $admin->credit;
@@ -320,10 +319,7 @@ class BankReceiptController extends Controller
                 'message' =>  trans('messages.update_status_successfully'),
                 'ticket' => ($receipt)
             ], 200);
-        }catch (Exception $e) {
-            DB::rollback();
-            return response(['message' =>  trans('messages.failed_to_update_status') ], 422);
-        }
+
     }
 
 
