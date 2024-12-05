@@ -240,7 +240,7 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
 
 
             // admin update receipt
-            Route::put('/{id}/update-status', [BankReceiptController::class, 'staffUpdateReceiptStatus'])->name('bank-receipts.updateStatus');
+            Route::post('/{id}/update-status', [BankReceiptController::class, 'staffUpdateReceiptStatus'])->name('bank-receipts.updateStatus');
 
 
             // Get bank account details
