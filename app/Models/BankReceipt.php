@@ -21,4 +21,9 @@ class BankReceipt extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function creditTransaction()
+    {
+        return $this->morphOne(CreditTransaction::class, 'targetable');
+    }
+
 }
