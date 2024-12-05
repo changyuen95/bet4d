@@ -270,14 +270,14 @@ class BankReceiptController extends Controller
 
                 $topup = $admin->topUpMorph()->create([
                     'user_id' => $user->id,
-                    'amount' => $request->amount,
+                    'amount' => $receipt->amount,
                     'remark' => 'Bank transfer',
                     'top_up_with' => TopUp::TOP_UP_WITH['Bank'],
                 ]);
 
                 $creditTransaction = $topup->creditTransaction()->create([
                     'user_id' => $user->id,
-                    'amount' => $request->amount,
+                    'amount' => $receipt->amount,
                     'type' => CreditTransaction::TYPE['Increase'],
                     'before_amount' => $userCredit->credit,
                     'outlet_id' => null,
@@ -286,7 +286,7 @@ class BankReceiptController extends Controller
                 // admin/staff credit
                 $adminTransaction= $topup->adminTransaction()->create([
                     'admin_id' => $admin->id,
-                    'amount' => $request->amount,
+                    'amount' => $receipt->amount,
                     'type' => AdminCreditTransaction::TYPE['Increase'],
                     'before_amount' => $adminCredit->amount,
                     'outlet_id' => null,
