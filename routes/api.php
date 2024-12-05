@@ -225,6 +225,24 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
             Route::put('/{id}/update-status', [BankReceiptController::class, 'staffUpdateReceiptStatus'])->name('bank-receipts.staffUpdateStatus');
 
         });
+
+        Route::prefix('bank-receipts')->group(function() {
+            Route::get('/bank-account', [BankReceiptController::class, 'bankAccount'])->name('bank-receipts.bankAccount');
+
+            // Display all receipts
+            Route::get('/', [BankReceiptController::class, 'index'])->name('bank-receipts.index');
+
+            // Create a new receipt
+            Route::post('/', [BankReceiptController::class, 'store'])->name('bank-receipts.store');
+
+            // Show a specific receipt
+            Route::get('/{id}', [BankReceiptController::class, 'show'])->name('bank-receipts.show');
+
+            // Update a receipt status (user)
+            Route::put('/{id}/update-status', [BankReceiptController::class, 'updateReceiptStatus'])->name('bank-receipts.updateStatus');
+
+            // Get bank account details
+        });
     });
 
     Route::middleware(['checkUserType:'.Role::OPERATOR])->group(function () {
@@ -252,6 +270,7 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
             Route::post('{id}/staff-scan-barcode','TicketController@staffScanBarcode');
             Route::get('{id}/barcode','TicketController@barcodeListing');
             Route::post('{id}/remove-barcode/{barcode_id}','TicketController@removeBarcode');
+            Route::post('{id}/modify-ticket-amounts','TicketController@modifyTicketAmount');
 
             Route::prefix('{ticket_id}/ticket-number')->group(function () {
                 Route::post('{ticket_number_id}/permutation-image','StaffTicketController@permutationImage');
