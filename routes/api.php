@@ -200,14 +200,6 @@ Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::MEMB
 Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAdmin'])->group(function () {
     Route::post('logout', 'LoginController@adminLogout');
 
-    Route::prefix('notifications')->group(function () {
-        Route::get('','NotificationController@index');
-        Route::post('mark-as-read/{id}','NotificationController@markAsRead');
-        Route::post('mark-all-as-read','NotificationController@markAllAsRead');
-        Route::get('unread-count','NotificationController@unReadCount');
-
-    });
-
     Route::prefix('me')->group(function () {
         Route::get('','Admin\MeController@me');
         Route::post('','Admin\MeController@update');
@@ -216,6 +208,15 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
     });
 
     Route::middleware(['checkUserType:'.Role::HQ])->group(function () {
+
+        Route::prefix('notifications')->group(function () {
+            Route::get('','NotificationController@index');
+            Route::post('mark-as-read/{id}','NotificationController@markAsRead');
+            Route::post('mark-all-as-read','NotificationController@markAllAsRead');
+            Route::get('unread-count','NotificationController@unReadCount');
+
+        });
+
         Route::prefix('verify-user-profiles')->group(function () {
             Route::get('','VerifyProfileController@pendingListing');
             Route::get('{id}','VerifyProfileController@verifyProfileDetail');
