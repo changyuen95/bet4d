@@ -67,7 +67,7 @@ class StaffTicketController extends Controller
 
             if($request->win === true){
                 $query->has('ticketNumbers.win');
-    
+
                 if($request->prize_distribution == 'pending'){
                     $query->whereHas('ticketNumbers.win', function ($query) {
                         $query->where('is_distribute', false);
@@ -299,6 +299,40 @@ class StaffTicketController extends Controller
         }
 
         return $ticketNumber->permutation_image ?? null;
+
+
+    }
+
+    public function modifyTicketAmount(Request $request , $id){
+        //update ticket detail
+        $validator = Validator::make($request->all(), [
+            'ticket_number' => 'array|exists:ticket_numbers,id',
+            'actual_big_number' => ['array'],
+            'actual_small_number' => ['array'],
+            ]);
+
+        // $validator->setCustomMessages($customMessages);
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->first()], 422);
+        }
+
+
+
+
+        foreach($request->ticket_number as $key => $ticket_number){
+            $ticket_number = TicketNumber::find($ticket_number);
+            $ticket_number->actual_big_amount = $request->actual_big_number[$key];
+            $ticket_number->actual_small_amount = $request->actual_small_number[$key];
+            $ticket_number->refund_amount = ($ticket_number->big_amount + $ticket_number->small_amount) - ($request->actual_big_number[$key] + $request->actual_small_number[$key]);
+            $ticket_number->save();
+        }
+
+
+
+
+
+
+        return response(['message' =>  'successfully update amount.' ], 200);
 
 
     }

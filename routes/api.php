@@ -277,7 +277,7 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
             Route::post('{id}/staff-scan-barcode','TicketController@staffScanBarcode');
             Route::get('{id}/barcode','TicketController@barcodeListing');
             Route::post('{id}/remove-barcode/{barcode_id}','TicketController@removeBarcode');
-            Route::post('{id}/modify-ticket-amounts','TicketController@modifyTicketAmount');
+            Route::post('{id}/modify-ticket-amounts','StaffTicketController@modifyTicketAmount');
 
             Route::prefix('{ticket_id}/ticket-number')->group(function () {
                 Route::post('{ticket_number_id}/permutation-image','StaffTicketController@permutationImage');
