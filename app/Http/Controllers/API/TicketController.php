@@ -524,7 +524,7 @@ class TicketController extends Controller
                 }elseif($request->status == Ticket::STATUS['TICKET_COMPLETED']){
                     $notificationData = [];
                     $notificationData['title'] = 'Ticket process is completed';
-                    $notificationData['message'] = 'Ticketing process is completed';
+                    $notificationData['message'] = 'Ticketing process is completed , please check your ticket now';
                     $notificationData['deepLink'] = 'fortknox://me/tickets/'.$ticket->id;
                     $appId = env('ONESIGNAL_APP_ID');
                     $apiKey = env('ONESIGNAL_REST_API_KEY');
@@ -630,8 +630,8 @@ class TicketController extends Controller
 
     }
 
-    public function refund(Request $request , $id){
-
+    public function modifyTicketAmount(Request $request , $id){
+        //update ticket detail
         $validator = Validator::make($request->all(), [
             'ticket_number' => 'array|exists:ticket_numbers,id',
             'actual_big_number' => ['array'],
@@ -654,10 +654,8 @@ class TicketController extends Controller
 
             $total_refund = $total_refund + $ticket_number->refund_amount;
         }
-        $user = $ticket->user;
-        $user_credit = $user->credit;
-        $user_credit->credit = $user_credit->credit + $total_refund;
-        $user_credit->save();
+
+
 
 
 
