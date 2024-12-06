@@ -207,15 +207,17 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
         Route::delete('','Admin\MeController@destroy');
     });
 
+    Route::prefix('notifications')->group(function () {
+        Route::get('','NotificationController@index');
+        Route::post('mark-as-read/{id}','NotificationController@markAsRead');
+        Route::post('mark-all-as-read','NotificationController@markAllAsRead');
+        Route::get('unread-count','NotificationController@unReadCount');
+
+    });
+
     Route::middleware(['checkUserType:'.Role::HQ])->group(function () {
 
-        Route::prefix('notifications')->group(function () {
-            Route::get('','NotificationController@index');
-            Route::post('mark-as-read/{id}','NotificationController@markAsRead');
-            Route::post('mark-all-as-read','NotificationController@markAllAsRead');
-            Route::get('unread-count','NotificationController@unReadCount');
 
-        });
 
         Route::prefix('verify-user-profiles')->group(function () {
             Route::get('','VerifyProfileController@pendingListing');
@@ -258,13 +260,7 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
 
     Route::middleware(['checkUserType:'.Role::OPERATOR])->group(function () {
 
-        Route::prefix('notifications')->group(function () {
-            Route::get('','NotificationController@index');
-            Route::post('mark-as-read/{id}','NotificationController@markAsRead');
-            Route::post('mark-all-as-read','NotificationController@markAllAsRead');
-            Route::get('unread-count','NotificationController@unReadCount');
 
-        });
 
         Route::prefix('topup')->group(function () {
             Route::post('/qrcode/{id}','TopUpController@topupByQrCode');
