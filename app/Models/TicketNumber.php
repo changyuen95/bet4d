@@ -14,7 +14,8 @@ class TicketNumber extends Model
     protected $with = ['tax'];
     const TYPE = [
         'Straight' => 'straight',
-        'Permutation' => 'permutation'
+        'Box' => 'box',
+        'e-box' => 'e-box'
     ];
 
     protected function serializeDate(\DateTimeInterface $date)
