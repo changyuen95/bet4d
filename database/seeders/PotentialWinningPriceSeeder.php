@@ -41,7 +41,7 @@ class PotentialWinningPriceSeeder extends Seeder
                 'small3rd' => 1000,
                 'small_special' => 0,
                 'small_consolation' => 0,
-                'remark' => 'Straight',
+                'remark' => 'box',
             ],
             [
                 'type' => TicketNumber::TYPE['e-box'],
@@ -55,7 +55,7 @@ class PotentialWinningPriceSeeder extends Seeder
                 'small3rd' => 250,
                 'small_special' => 0,
                 'small_consolation' => 0,
-                'remark' => '4 Permutation',
+                'remark' => '4 e-box',
             ],[
                 'type' => TicketNumber::TYPE['e-box'],
                 'big1st' => 417,
@@ -68,7 +68,7 @@ class PotentialWinningPriceSeeder extends Seeder
                 'small3rd' => 167,
                 'small_special' => 0,
                 'small_consolation' => 0,
-                'remark' => '6 Permutation',
+                'remark' => '6 e-box',
             ],[
                 'type' => TicketNumber::TYPE['e-box'],
                 'big1st' => 209,
@@ -81,7 +81,7 @@ class PotentialWinningPriceSeeder extends Seeder
                 'small3rd' => 84,
                 'small_special' => 0,
                 'small_consolation' => 0,
-                'remark' => '12 Permutation',
+                'remark' => '12 e-box',
             ],[
                 'type' => TicketNumber::TYPE['e-box'],
                 'big1st' => 105,
@@ -94,7 +94,7 @@ class PotentialWinningPriceSeeder extends Seeder
                 'small3rd' => 42,
                 'small_special' => 0,
                 'small_consolation' => 0,
-                'remark' => '24 Permutation',
+                'remark' => '24 e-box',
             ],
         ];
 
