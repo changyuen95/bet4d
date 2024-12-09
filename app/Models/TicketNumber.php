@@ -41,6 +41,10 @@ class TicketNumber extends Model
     public function getPotentialWinningAttribute()
     {
         $potentialWinningData = PotentialWinningPriceList::where('type',$this->type)->first();
+        if($this->type == TicketNumber::TYPE['e-box']){
+            $potentialWinningData = PotentialWinningPriceList::where('remark',$this->permutation_type.' '.ucfirst($this->type))->first();
+        }
+
         $potentialWinning = [
             'big_1st' => 0,
             'big_2nd' => 0,
