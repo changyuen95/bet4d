@@ -189,7 +189,7 @@ class TicketController extends Controller
 
             foreach($request->ticket as $ticket){
                 if($ticket['type'] == TicketNumber::TYPE['Box']){
-                    $ticketNumberArray = $this->getPermutationsProbabilities($ticket['ticket_number']);
+                    $ticketNumberArray = $this->getPermutationsProbabilities($ticket['ticket_number']);dd($ticketNumberArray);
                     foreach($ticketNumberArray as $ticketGenerated){
                         $permutation_type = $this->calculatePermutations($ticket['ticket_number']);
                         $ticketCreated->ticketNumbers()->create([
@@ -728,29 +728,32 @@ class TicketController extends Controller
     {
         // Convert the string number into an array of digits
         $digits = str_split($number);
-
+    
         // Generate all permutations
         $permutations = $this->generatePermutations($digits);
-
-        // Convert each permutation from array to string (optional)
+    
+        // Convert each permutation from array to string
         $permutationStrings = array_map(function ($permutation) {
             return implode('', $permutation);
         }, $permutations);
-
-        // Return the result as a regular array
-        return $permutationStrings;
+    
+        // Remove duplicate permutations (if any)
+        $uniquePermutations = array_unique($permutationStrings);
+    
+        // Return the result as a regular array (unique permutations)
+        return $uniquePermutations;
     }
-
+    
     // Function to generate all permutations of an array
     private function generatePermutations(array $array)
     {
         $result = [];
-
+    
         // If there is only one element, return it as the only permutation
         if (count($array) == 1) {
             return [$array];
         }
-
+    
         // Loop through each element in the array
         foreach ($array as $key => $value) {
             // Remove the current element from the array
@@ -758,13 +761,13 @@ class TicketController extends Controller
             unset($remaining[$key]);
             // Recursively get permutations of the remaining elements
             $permutations = $this->generatePermutations(array_values($remaining));
-
+    
             // Merge the current element with all the permutations of the remaining elements
             foreach ($permutations as $permutation) {
                 $result[] = array_merge([$value], $permutation);
             }
         }
-
+    
         return $result;
     }
 }
