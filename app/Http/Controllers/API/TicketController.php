@@ -195,9 +195,9 @@ class TicketController extends Controller
                         $ticketCreated->ticketNumbers()->create([
                             'number' => $ticketGenerated,
                             'small_amount' => $ticket['small_amount'],
-                            'actual_small_amount' => 0,
+                            'actual_small_amount' => $ticket['small_amount'],
                             'big_amount' => $ticket['big_amount'],
-                            'actual_big_amount' => 0,
+                            'actual_big_amount' => $ticket['big_amount'],
                             'refund_amount' => 0,
                             'tax_amount' => (($ticket['big_amount'] + $ticket['small_amount']) * $tax->percentage / 100),
                             'actual_tax_amount' => 0,
@@ -214,9 +214,9 @@ class TicketController extends Controller
                     $ticketCreated->ticketNumbers()->create([
                         'number' => $ticket['ticket_number'],
                         'small_amount' => $ticket['small_amount'],
-                        'actual_small_amount' => 0,
+                        'actual_small_amount' => $ticket['small_amount'],
                         'big_amount' => $ticket['big_amount'],
-                        'actual_big_amount' => 0,
+                        'actual_big_amount' => $ticket['big_amount'],
                         'refund_amount' => 0,
                         'tax_amount' => (($ticket['big_amount'] + $ticket['small_amount']) * $tax->percentage / 100),
                         'actual_tax_amount' => 0,
@@ -515,11 +515,11 @@ class TicketController extends Controller
                     return response(['message' => trans('messages.at_least_1_barcode_is_scanned_in_order_to_complete_ticket_request')], 422);
                 }
 
-                foreach($ticketNumber as $ticketNum){
-                    if($ticketNum->type == TicketNumber::TYPE['Permutation'] && $ticketNum->permutation_image == null){
-                        return response(['message' => trans('messages.permutation_image_cannot_be_empty')], 422);
-                    }
-                }
+                // foreach($ticketNumber as $ticketNum){
+                //     if($ticketNum->type == TicketNumber::TYPE['Permutation'] && $ticketNum->permutation_image == null){
+                //         return response(['message' => trans('messages.permutation_image_cannot_be_empty')], 422);
+                //     }
+                // }
                 $ticket->completed_at = Carbon::now();
             }
 
@@ -694,23 +694,23 @@ class TicketController extends Controller
     function calculatePermutations($number) {
         // Count the frequency of each character in the string
         $freq = count_chars($number, 1);
-        
+
         // Calculate the total length of the string
         $total = strlen($number);
-        
+
         // Start with total permutations (factorial of length)
         $permutations = $this->factorial($total);
-        
+
         // Divide by the factorial of each duplicate character frequency
         foreach ($freq as $count) {
             if ($count > 1) {
                 $permutations /= $this->factorial($count);
             }
         }
-        
+
         return $permutations;
     }
-    
+
     // Helper function to calculate factorial
     function factorial($n) {
         if ($n == 0 || $n == 1) {
