@@ -515,11 +515,11 @@ class TicketController extends Controller
                     return response(['message' => trans('messages.at_least_1_barcode_is_scanned_in_order_to_complete_ticket_request')], 422);
                 }
 
-                foreach($ticketNumber as $ticketNum){
-                    if($ticketNum->type == TicketNumber::TYPE['Permutation'] && $ticketNum->permutation_image == null){
-                        return response(['message' => trans('messages.permutation_image_cannot_be_empty')], 422);
-                    }
-                }
+                // foreach($ticketNumber as $ticketNum){
+                //     if($ticketNum->type == TicketNumber::TYPE['Permutation'] && $ticketNum->permutation_image == null){
+                //         return response(['message' => trans('messages.permutation_image_cannot_be_empty')], 422);
+                //     }
+                // }
                 $ticket->completed_at = Carbon::now();
             }
 
