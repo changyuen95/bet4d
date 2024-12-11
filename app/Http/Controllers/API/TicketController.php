@@ -191,9 +191,9 @@ class TicketController extends Controller
                 $ticketCreated->ticketNumbers()->create([
                     'number' => $ticket['ticket_number'],
                     'small_amount' => $ticket['small_amount'],
-                    'actual_small_amount' => 0,
+                    'actual_small_amount' => $ticket['small_amount'],
                     'big_amount' => $ticket['big_amount'],
-                    'actual_big_amount' => 0,
+                    'actual_big_amount' => $ticket['big_amount'],
                     'refund_amount' => 0,
                     'tax_amount' => (($ticket['big_amount'] + $ticket['small_amount']) * $tax->percentage / 100),
                     'actual_tax_amount' => 0,
