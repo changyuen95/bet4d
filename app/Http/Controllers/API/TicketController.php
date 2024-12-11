@@ -189,7 +189,7 @@ class TicketController extends Controller
 
             foreach($request->ticket as $ticket){
                 if($ticket['type'] == TicketNumber::TYPE['Box']){
-                    $ticketNumberArray = $this->getPermutationsProbabilities($ticket['ticket_number']);dd($ticketNumberArray);
+                    $ticketNumberArray = $this->getPermutationsProbabilities($ticket['ticket_number']);
                     foreach($ticketNumberArray as $ticketGenerated){
                         $permutation_type = $this->calculatePermutations($ticket['ticket_number']);
                         $ticketCreated->ticketNumbers()->create([
