@@ -188,22 +188,46 @@ class TicketController extends Controller
             ]);
 
             foreach($request->ticket as $ticket){
-                $ticketCreated->ticketNumbers()->create([
-                    'number' => $ticket['ticket_number'],
-                    'small_amount' => $ticket['small_amount'],
-                    'actual_small_amount' => $ticket['small_amount'],
-                    'big_amount' => $ticket['big_amount'],
-                    'actual_big_amount' => $ticket['big_amount'],
-                    'refund_amount' => 0,
-                    'tax_amount' => (($ticket['big_amount'] + $ticket['small_amount']) * $tax->percentage / 100),
-                    'actual_tax_amount' => 0,
-                    'tax_id' => Tax::first()->id,
-                    'type' => $ticket['type'],
-                ]);
+                if($ticket['type'] == TicketNumber::TYPE['Box']){
+                    $ticketNumberArray = $this->getPermutationsProbabilities($ticket['ticket_number']);
+                    foreach($ticketNumberArray as $ticketGenerated){
+                        $permutation_type = $this->calculatePermutations($ticket['ticket_number']);
+                        $ticketCreated->ticketNumbers()->create([
+                            'number' => $ticketGenerated,
+                            'small_amount' => $ticket['small_amount'],
+                            'actual_small_amount' => $ticket['small_amount'],
+                            'big_amount' => $ticket['big_amount'],
+                            'actual_big_amount' => $ticket['big_amount'],
+                            'refund_amount' => 0,
+                            'tax_amount' => (($ticket['big_amount'] + $ticket['small_amount']) * $tax->percentage / 100),
+                            'actual_tax_amount' => 0,
+                            'tax_id' => Tax::first()->id,
+                            'type' => $ticket['type'],
+                            'permutation_type' => $permutation_type
+                        ]);
+                    }
+                }else{
+                    $permutation_type = null;
+                    if($ticket['type'] == TicketNumber::TYPE['e-box']){
+                        $permutation_type = $this->calculatePermutations($ticket['ticket_number']);
+                    }
+                    $ticketCreated->ticketNumbers()->create([
+                        'number' => $ticket['ticket_number'],
+                        'small_amount' => $ticket['small_amount'],
+                        'actual_small_amount' => $ticket['small_amount'],
+                        'big_amount' => $ticket['big_amount'],
+                        'actual_big_amount' => $ticket['big_amount'],
+                        'refund_amount' => 0,
+                        'tax_amount' => (($ticket['big_amount'] + $ticket['small_amount']) * $tax->percentage / 100),
+                        'actual_tax_amount' => 0,
+                        'tax_id' => Tax::first()->id,
+                        'type' => $ticket['type'],
+                        'permutation_type' => $permutation_type
+                    ]);
+                }
             }
 
             DB::commit();
-
             return response([
                 'message' =>  trans('messages.submit_ticket_request_successfully'),
                 'tickets' =>  new TicketResource($ticketCreated)
@@ -665,5 +689,82 @@ class TicketController extends Controller
         $ticket = Ticket::find($id);
 
 
+    }
+
+    function calculatePermutations($number) {
+        // Count the frequency of each character in the string
+        $freq = count_chars($number, 1);
+
+        // Calculate the total length of the string
+        $total = strlen($number);
+
+        // Start with total permutations (factorial of length)
+        $permutations = $this->factorial($total);
+
+        // Divide by the factorial of each duplicate character frequency
+        foreach ($freq as $count) {
+            if ($count > 1) {
+                $permutations /= $this->factorial($count);
+            }
+        }
+
+        return $permutations;
+    }
+
+    // Helper function to calculate factorial
+    function factorial($n) {
+        if ($n == 0 || $n == 1) {
+            return 1;
+        }
+        $result = 1;
+        for ($i = 2; $i <= $n; $i++) {
+            $result *= $i;
+        }
+        return $result;
+    }
+
+
+    public function getPermutationsProbabilities($number)
+    {
+        // Convert the string number into an array of digits
+        $digits = str_split($number);
+
+        // Generate all permutations
+        $permutations = $this->generatePermutations($digits);
+
+        // Convert each permutation from array to string (optional)
+        $permutationStrings = array_map(function ($permutation) {
+            return implode('', $permutation);
+        }, $permutations);
+
+        // Return the result as a regular array
+        return $permutationStrings;
+    }
+
+    // Function to generate all permutations of an array
+    private function generatePermutations(array $array)
+    {
+        $result = [];
+
+        // If there is only one element, return it as the only permutation
+        if (count($array) == 1) {
+            return [$array];
+        }
+
+        // Loop through each element in the array
+        foreach ($array as $key => $value) {
+            // Remove the current element from the array
+            $remaining = $array;
+            unset($remaining[$key]);
+            // Recursively get permutations of the remaining elements
+            $permutations = $this->generatePermutations(array_values($remaining));
+
+            // Merge the current element with all the permutations of the remaining elements
+            foreach ($permutations as $permutation) {
+                $result[] = array_merge([$value], $permutation);
+            }
+        }
+
+        return $result;
     }
 }
