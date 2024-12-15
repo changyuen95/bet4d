@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Ticket extends Model
 {
@@ -50,7 +51,13 @@ class Ticket extends Model
 
     public function ticketNumbers()
     {
-        return $this->hasMany(TicketNumber::class, 'ticket_id');
+        if(isset(Auth::user()) &&  (Auth::user()->role == Role::NORMAL_USER || Auth::user()->role == Role::MEMBER ) ){
+            return $this->hasMany(TicketNumber::class, 'ticket_id')->where('is_main',1);
+        }else{
+            return $this->hasMany(TicketNumber::class, 'ticket_id');
+
+        }
+
     }
 
     public function creditTransaction()
