@@ -33,7 +33,10 @@ class TicketNumberResource extends BaseResource
             'updated_at' => $this->formatDate($this->updated_at),
             'tax' => $this->tax,
             'is_main' => $this->is_main,
+            'refund_tickets' => $this->refund_tickets,
+            'sub_tickets' => $this->sub_tickets,
             // 'maid_ticket_id' =>$this->main_ticket_id,
+
         ];
     }
 }
