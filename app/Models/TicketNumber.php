@@ -71,7 +71,7 @@ class TicketNumber extends Model
         return $potentialWinning;
     }
 
-    public function refundTickets()
+    public function refund_tickets()
     {
 
 
