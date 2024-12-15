@@ -50,7 +50,7 @@ class Ticket extends Model
 
     public function ticketNumbers()
     {
-        if(isset(Auth::user()) &&  (Auth::user()->role == Role::NORMAL_USER || Auth::user()->role == Role::MEMBER ) ){
+        if(Auth::user() &&  (Auth::user()->role == Role::NORMAL_USER || Auth::user()->role == Role::MEMBER ) ){
             return $this->hasMany(TicketNumber::class, 'ticket_id')->where('is_main',1);
         }else{
             return $this->hasMany(TicketNumber::class, 'ticket_id');
