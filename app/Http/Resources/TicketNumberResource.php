@@ -32,6 +32,8 @@ class TicketNumberResource extends BaseResource
             'created_at' => $this->formatDate($this->created_at),
             'updated_at' => $this->formatDate($this->updated_at),
             'tax' => $this->tax,
+            'is_main' => $this->is_main,
+            // 'maid_ticket_id' =>$this->main_ticket_id,
         ];
     }
 }

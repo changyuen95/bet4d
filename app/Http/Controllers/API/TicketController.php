@@ -203,7 +203,8 @@ class TicketController extends Controller
                             'actual_tax_amount' => 0,
                             'tax_id' => Tax::first()->id,
                             'type' => $ticket['type'],
-                            'permutation_type' => $permutation_type
+                            'permutation_type' => $permutation_type,
+                            'is_main' => ($ticketGenerated == $ticket['ticket_number'] ? 1 : 0),
                         ]);
                     }
                 }else{
