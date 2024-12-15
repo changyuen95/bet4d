@@ -187,12 +187,14 @@ class TicketController extends Controller
                 'status' => Ticket::STATUS['TICKET_IMCOMPLETED'],
             ]);
 
+            $sub_main_id = null;
+            $all_sub_tickets =[];
             foreach($request->ticket as $ticket){
                 if($ticket['type'] == TicketNumber::TYPE['Box']){
                     $ticketNumberArray = $this->getPermutationsProbabilities($ticket['ticket_number']);
                     foreach($ticketNumberArray as $ticketGenerated){
                         $permutation_type = $this->calculatePermutations($ticket['ticket_number']);
-                        $ticketCreated->ticketNumbers()->create([
+                        $sub_ticket =  $ticketCreated->ticketNumbers()->create([
                             'number' => $ticketGenerated,
                             'small_amount' => $ticket['small_amount'],
                             'actual_small_amount' => $ticket['small_amount'],
@@ -206,6 +208,12 @@ class TicketController extends Controller
                             'permutation_type' => $permutation_type,
                             'is_main' => ($ticketGenerated == $ticket['ticket_number'] ? 1 : 0),
                         ]);
+
+                        if($ticketGenerated == $ticket['ticket_number']){
+                            $sub_main_id = $sub_ticket->id;
+                        }else{
+                            $all_sub_tickets[] = $sub_ticket->id;
+                        }
                     }
                 }else{
                     $permutation_type = null;
@@ -223,10 +231,21 @@ class TicketController extends Controller
                         'actual_tax_amount' => 0,
                         'tax_id' => Tax::first()->id,
                         'type' => $ticket['type'],
-                        'permutation_type' => $permutation_type
+                        'permutation_type' => $permutation_type,
+                        'is_main' => 1,
                     ]);
+
                 }
+
+                if($sub_main_id){
+                    $sub_tickets = TicketNumber::whereIn('id',$all_sub_tickets);
+                    $sub_tickets->update(['main_id' => $sub_main_id]);
+                    $sub_main_id = null;
+                    $all_sub_tickets = [];
+                }
+
             }
+
 
             DB::commit();
             return response([
@@ -729,32 +748,32 @@ class TicketController extends Controller
     {
         // Convert the string number into an array of digits
         $digits = str_split($number);
-    
+
         // Generate all permutations
         $permutations = $this->generatePermutations($digits);
-    
+
         // Convert each permutation from array to string
         $permutationStrings = array_map(function ($permutation) {
             return implode('', $permutation);
         }, $permutations);
-    
+
         // Remove duplicate permutations (if any)
         $uniquePermutations = array_unique($permutationStrings);
-    
+
         // Return the result as a regular array (unique permutations)
         return $uniquePermutations;
     }
-    
+
     // Function to generate all permutations of an array
     private function generatePermutations(array $array)
     {
         $result = [];
-    
+
         // If there is only one element, return it as the only permutation
         if (count($array) == 1) {
             return [$array];
         }
-    
+
         // Loop through each element in the array
         foreach ($array as $key => $value) {
             // Remove the current element from the array
@@ -762,13 +781,13 @@ class TicketController extends Controller
             unset($remaining[$key]);
             // Recursively get permutations of the remaining elements
             $permutations = $this->generatePermutations(array_values($remaining));
-    
+
             // Merge the current element with all the permutations of the remaining elements
             foreach ($permutations as $permutation) {
                 $result[] = array_merge([$value], $permutation);
             }
         }
-    
+
         return $result;
     }
 }

@@ -13,7 +13,6 @@ class Ticket extends Model
     use HasFactory, HasUlids, SoftDeletes;
     protected $guarded = ['id'];
     protected $appends = ['sub_total','total_amount','creatable_type','creatable_id','total_refund'];
-    protected $with = ['refundTicket'];
     const STATUS = [
         'TICKET_IMCOMPLETED' => 'incompleted',
         'TICKET_COMPLETED' => 'completed',
@@ -55,9 +54,7 @@ class Ticket extends Model
             return $this->hasMany(TicketNumber::class, 'ticket_id')->where('is_main',1);
         }else{
             return $this->hasMany(TicketNumber::class, 'ticket_id');
-
         }
-
     }
 
     public function creditTransaction()
@@ -139,7 +136,5 @@ class Ticket extends Model
         return 'App\\Models\\Admin';
     }
 
-    public function refundTicket(){
-        return $this->hasMany(TicketNumber::class, 'ticket_id')->where('refund_amount','>',0);
-    }
+
 }
