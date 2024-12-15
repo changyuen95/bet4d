@@ -11,7 +11,7 @@ class TicketNumber extends Model
     use HasFactory, HasUlids;
     protected $guarded = ['id'];
     protected $appends = ['potential_winning'];
-    protected $with = ['tax','refundTicket','subTickets'];
+    protected $with = ['tax','refund_tickets','sub_tickets'];
     const TYPE = [
         'Straight' => 'straight',
         'Box' => 'box',
@@ -71,7 +71,7 @@ class TicketNumber extends Model
         return $potentialWinning;
     }
 
-    public function refundTickets()
+    public function refund_tickets()
     {
         if ($this->is_main != 1) {
             // Return an empty relationship if the current ticket is not main
@@ -82,7 +82,7 @@ class TicketNumber extends Model
                     ->where('is_main', 0)->where('refund_amount','>',0);
     }
 
-    public function subTickets()
+    public function sub_tickets()
     {
         if ($this->is_main != 1) {
             // Return an empty relationship if the current ticket is not main
