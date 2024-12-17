@@ -9,6 +9,7 @@ use App\Models\Ticket;
 use App\Models\TicketNumber;
 use App\Models\VerifyProfile;
 use App\Models\WinnerList;
+use App\Models\Tax;
 use Validator;
 use Illuminate\Validation\Rule;
 use Auth;
