@@ -98,7 +98,7 @@ class Ticket extends Model
         $ticketNumbers = $this->allTicketNumbers;
         $totalAmount = 0;
         foreach($ticketNumbers as $ticketNumber){
-            $totalAmount += ($ticketNumber->small_amount - $ticketNumber->actual_small_amount) + ($ticketNumber->big_amount - $ticketNumber->actual_big_amount);
+            $totalAmount += ($ticketNumber->small_amount - $ticketNumber->actual_small_amount) + ($ticketNumber->big_amount - $ticketNumber->actual_big_amount) + ($ticketNumber->tax_amount - $ticketNumber->actual_tax_amount);
         }
         return number_format((float)$totalAmount, 2, '.', '');
     }
@@ -107,7 +107,7 @@ class Ticket extends Model
         $ticketNumbers = $this->allTicketNumbers;
         $totalAmount = 0;
         foreach($ticketNumbers as $ticketNumber){
-            $totalAmount += ($ticketNumber->small_amount + $ticketNumber->big_amount);
+            $totalAmount += ($ticketNumber->actual_small_amount + $ticketNumber->actual_big_amount);
         }
         return number_format((float)$totalAmount, 2, '.', '');
     }
@@ -116,7 +116,7 @@ class Ticket extends Model
         $ticketNumbers = $this->allTicketNumbers;
         $totalAmount = 0;
         foreach($ticketNumbers as $ticketNumber){
-            $totalAmount += ($ticketNumber->small_amount + $ticketNumber->big_amount + $ticketNumber->tax_amount);
+            $totalAmount += ($ticketNumber->actual_small_amount + $ticketNumber->actual_big_amount + $ticketNumber->actual_tax_amount);
         }
         return number_format((float)$totalAmount, 2, '.', '');
     }
@@ -125,7 +125,7 @@ class Ticket extends Model
         $ticketNumbers = $this->allTicketNumbers;
         $totalAmount = 0;
         foreach($ticketNumbers as $ticketNumber){
-            $totalAmount += ($ticketNumber->tax_amount);
+            $totalAmount += ($ticketNumber->actual_tax_amount);
         }
         return number_format((float)$totalAmount, 2, '.', '');
     }

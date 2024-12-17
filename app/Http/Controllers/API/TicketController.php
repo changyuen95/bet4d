@@ -541,6 +541,19 @@ class TicketController extends Controller
                 //     }
                 // }
                 $ticket->completed_at = Carbon::now();
+
+                if($ticket->total_refund > 0){
+                    $ticket->creditTransaction()->create([
+                        'user_id' => $user->id,
+                        'amount' => $billAmount,
+                        'type'  => CreditTransaction::TYPE['Increase'],
+                        'before_amount' => $userCredit->credit,
+                        'outlet_id' => $ticket->outlet_id,
+                    ]);
+                    $userCredit->credit = $userCredit->credit + $ticket->total_refund;
+                    $userCredit->save();
+                }
+
             }
 
             $ticket->status = $request->status;
@@ -688,11 +701,15 @@ class TicketController extends Controller
         }
             $total_refund = 0;
             $ticket = Ticket::find($id);
+            $tax = Tax::first();
+
         foreach($request->ticket_number as $key => $ticket_number){
             $ticket_number = TicketNumber::find($ticket_number);
             $ticket_number->actual_big_amount = $request->actual_big_number[$key];
             $ticket_number->actual_small_amount = $request->actual_small_number[$key];
-            $ticket_number->refund_amount = ($ticket_number->big_amount + $ticket_number->small_amount) - ($request->actual_big_number[$key] + $request->actual_small_number[$key]);
+            $actual_tax = (($request->actual_big_number[$key] + $request->actual_small_number[$key]) * $tax->percentage / 100);
+            $ticket_number->actual_tax_amount =  $actual_tax;
+            $ticket_number->refund_amount = ($ticket_number->big_amount + $ticket_number->small_amount + $ticket_number->tax_amount ) - ($request->actual_big_number[$key] + $request->actual_small_number[$key] + $actual_tax ) ;
             $ticket_number->save();
 
 
