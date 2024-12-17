@@ -239,7 +239,7 @@ class TicketController extends Controller
 
                 if($sub_main_id){
                     $sub_tickets = TicketNumber::whereIn('id',$all_sub_tickets);
-                    $sub_tickets->update(['main_id' => $sub_main_id]);
+                    $sub_tickets->update(['main_ticket_id' => $sub_main_id]);
                     $sub_main_id = null;
                     $all_sub_tickets = [];
                 }
