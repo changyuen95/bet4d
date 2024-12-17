@@ -30,6 +30,7 @@ class TicketResource extends BaseResource
             'sub_total' => $this->sub_total,
             'total_amount' => $this->total_amount,
             'tax_amount' => $this->total_tax,
+            'actual_total_amount' => $this->actual_total_amount,
             'refund_amount' => $this->total_refund,
             'draw' => $this->draws,
             'platform' => $this->platform,
