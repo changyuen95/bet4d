@@ -59,6 +59,10 @@ class Ticket extends Model
         return $query;
     }
 
+    public function allTicketNumbers()
+    {
+        return $this->hasMany(TicketNumber::class, 'ticket_id');
+    }
 
     public function creditTransaction()
     {
@@ -91,7 +95,7 @@ class Ticket extends Model
     }
 
     public function getTotalRefundAttribute(){
-        $ticketNumbers = $this->ticketNumbers;
+        $ticketNumbers = $this->allTicketNumbers;
         $totalAmount = 0;
         foreach($ticketNumbers as $ticketNumber){
             $totalAmount += ($ticketNumber->small_amount - $ticketNumber->actual_small_amount) + ($ticketNumber->big_amount - $ticketNumber->actual_big_amount);
@@ -100,7 +104,7 @@ class Ticket extends Model
     }
 
     public function getSubTotalAttribute(){
-        $ticketNumbers = $this->ticketNumbers;
+        $ticketNumbers = $this->allTicketNumbers;
         $totalAmount = 0;
         foreach($ticketNumbers as $ticketNumber){
             $totalAmount += ($ticketNumber->small_amount + $ticketNumber->big_amount);
@@ -109,7 +113,7 @@ class Ticket extends Model
     }
 
     public function getTotalAmountAttribute(){
-        $ticketNumbers = $this->ticketNumbers;
+        $ticketNumbers = $this->allTicketNumbers;
         $totalAmount = 0;
         foreach($ticketNumbers as $ticketNumber){
             $totalAmount += ($ticketNumber->small_amount + $ticketNumber->big_amount + $ticketNumber->tax_amount);
@@ -118,7 +122,7 @@ class Ticket extends Model
     }
 
     public function getTotalTaxAttribute(){
-        $ticketNumbers = $this->ticketNumbers;
+        $ticketNumbers = $this->allTicketNumbers;
         $totalAmount = 0;
         foreach($ticketNumbers as $ticketNumber){
             $totalAmount += ($ticketNumber->tax_amount);

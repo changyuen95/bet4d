@@ -202,7 +202,7 @@ class TicketController extends Controller
                             'actual_big_amount' => $ticket['big_amount'],
                             'refund_amount' => 0,
                             'tax_amount' => (($ticket['big_amount'] + $ticket['small_amount']) * $tax->percentage / 100),
-                            'actual_tax_amount' => 0,
+                            'actual_tax_amount' => (($ticket['big_amount'] + $ticket['small_amount']) * $tax->percentage / 100),
                             'tax_id' => Tax::first()->id,
                             'type' => $ticket['type'],
                             'permutation_type' => $permutation_type,
