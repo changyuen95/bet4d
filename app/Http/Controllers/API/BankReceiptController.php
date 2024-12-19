@@ -26,6 +26,7 @@ use Faker\Core\Barcode;
 use App\Models\BankAccount;
 use File;
 use Image;
+use log;
 class BankReceiptController extends Controller
 {
     use NotificationTrait;
@@ -103,6 +104,7 @@ class BankReceiptController extends Controller
         ]);
 
         if ($validator->fails()) {
+            log::info($validator->errors()->first());
             return response(['message' => $validator->errors()->first()], 422);
         }
 
