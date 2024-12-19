@@ -33,11 +33,11 @@ class RegisterController extends Controller
                 return response(['message' => $validator->errors()->first()], 422);
             }
     
-            $user = User::firstOrNew(['email' => $request->get('email')]);
+            $user = new User;
     
-            if ($user->email_verified_at) {
-                return response(['message' => 'This email has been taken'], 422);
-            }
+            // if ($user->email_verified_at) {
+            //     return response(['message' => 'This email has been taken'], 422);
+            // }
             $defaultAvatar = asset('images/default_avatar.jpg');
             
             $user->fill($request->only('name', 'email', 'username', 'phone_e164'));
