@@ -9,6 +9,7 @@ use App\Models\Draw;
 use App\Models\Game;
 use App\Models\Platform;
 use App\Models\Barcode as Barcode_table;
+use App\Models\Outlet;
 use App\Models\Role;
 use App\Models\Ticket;
 use App\Models\TicketNumber;
@@ -177,25 +178,58 @@ class TicketController extends Controller
             //     return response(['message' => trans('messages.insufficient_balance')], 422);
             // }
 
+            //temp
+
+            $all_outlet = Outlet::all();
+
+            //end temp
+            foreach($all_outlet as $outlet){
+                $ticketCreated = $user->tickets()->create([
+                    'outlet_id' => $outlet->id,
+                    'platform_id' => $platform->id,
+                    'game_id' => $game->id,
+                    'draw_id' => $drawData->id,
+                    'status' => Ticket::STATUS['TICKET_IMCOMPLETED'],
+                ]);
 
 
-            $ticketCreated = $user->tickets()->create([
-                'outlet_id' => $outlet->id,
-                'platform_id' => $platform->id,
-                'game_id' => $game->id,
-                'draw_id' => $drawData->id,
-                'status' => Ticket::STATUS['TICKET_IMCOMPLETED'],
-            ]);
 
-            $sub_main_id = null;
-            $all_sub_tickets =[];
-            foreach($request->ticket as $ticket){
-                if($ticket['type'] == TicketNumber::TYPE['Box']){
-                    $ticketNumberArray = $this->getPermutationsProbabilities($ticket['ticket_number']);
-                    foreach($ticketNumberArray as $ticketGenerated){
-                        $permutation_type = $this->calculatePermutations($ticket['ticket_number']);
-                        $sub_ticket =  $ticketCreated->ticketNumbers()->create([
-                            'number' => $ticketGenerated,
+
+                $sub_main_id = null;
+                $all_sub_tickets =[];
+                foreach($request->ticket as $ticket){
+                    if($ticket['type'] == TicketNumber::TYPE['Box']){
+                        $ticketNumberArray = $this->getPermutationsProbabilities($ticket['ticket_number']);
+                        foreach($ticketNumberArray as $ticketGenerated){
+                            $permutation_type = $this->calculatePermutations($ticket['ticket_number']);
+                            $sub_ticket =  $ticketCreated->ticketNumbers()->create([
+                                'number' => $ticketGenerated,
+                                'small_amount' => $ticket['small_amount'],
+                                'actual_small_amount' => $ticket['small_amount'],
+                                'big_amount' => $ticket['big_amount'],
+                                'actual_big_amount' => $ticket['big_amount'],
+                                'refund_amount' => 0,
+                                'tax_amount' => (($ticket['big_amount'] + $ticket['small_amount']) * $tax->percentage / 100),
+                                'actual_tax_amount' => (($ticket['big_amount'] + $ticket['small_amount']) * $tax->percentage / 100),
+                                'tax_id' => Tax::first()->id,
+                                'type' => $ticket['type'],
+                                'permutation_type' => $permutation_type,
+                                'is_main' => ($ticketGenerated == $ticket['ticket_number'] ? 1 : 0),
+                            ]);
+
+                            if($ticketGenerated == $ticket['ticket_number']){
+                                $sub_main_id = $sub_ticket->id;
+                            }else{
+                                $all_sub_tickets[] = $sub_ticket->id;
+                            }
+                        }
+                    }else{
+                        $permutation_type = null;
+                        if($ticket['type'] == TicketNumber::TYPE['e-box']){
+                            $permutation_type = $this->calculatePermutations($ticket['ticket_number']);
+                        }
+                        $ticketCreated->ticketNumbers()->create([
+                            'number' => $ticket['ticket_number'],
                             'small_amount' => $ticket['small_amount'],
                             'actual_small_amount' => $ticket['small_amount'],
                             'big_amount' => $ticket['big_amount'],
@@ -206,44 +240,19 @@ class TicketController extends Controller
                             'tax_id' => Tax::first()->id,
                             'type' => $ticket['type'],
                             'permutation_type' => $permutation_type,
-                            'is_main' => ($ticketGenerated == $ticket['ticket_number'] ? 1 : 0),
+                            'is_main' => 1,
                         ]);
 
-                        if($ticketGenerated == $ticket['ticket_number']){
-                            $sub_main_id = $sub_ticket->id;
-                        }else{
-                            $all_sub_tickets[] = $sub_ticket->id;
-                        }
                     }
-                }else{
-                    $permutation_type = null;
-                    if($ticket['type'] == TicketNumber::TYPE['e-box']){
-                        $permutation_type = $this->calculatePermutations($ticket['ticket_number']);
+
+                    if($sub_main_id){
+                        $sub_tickets = TicketNumber::whereIn('id',$all_sub_tickets);
+                        $sub_tickets->update(['main_ticket_id' => $sub_main_id]);
+                        $sub_main_id = null;
+                        $all_sub_tickets = [];
                     }
-                    $ticketCreated->ticketNumbers()->create([
-                        'number' => $ticket['ticket_number'],
-                        'small_amount' => $ticket['small_amount'],
-                        'actual_small_amount' => $ticket['small_amount'],
-                        'big_amount' => $ticket['big_amount'],
-                        'actual_big_amount' => $ticket['big_amount'],
-                        'refund_amount' => 0,
-                        'tax_amount' => (($ticket['big_amount'] + $ticket['small_amount']) * $tax->percentage / 100),
-                        'actual_tax_amount' => (($ticket['big_amount'] + $ticket['small_amount']) * $tax->percentage / 100),
-                        'tax_id' => Tax::first()->id,
-                        'type' => $ticket['type'],
-                        'permutation_type' => $permutation_type,
-                        'is_main' => 1,
-                    ]);
 
                 }
-
-                if($sub_main_id){
-                    $sub_tickets = TicketNumber::whereIn('id',$all_sub_tickets);
-                    $sub_tickets->update(['main_ticket_id' => $sub_main_id]);
-                    $sub_main_id = null;
-                    $all_sub_tickets = [];
-                }
-
             }
 
 

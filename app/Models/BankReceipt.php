@@ -26,4 +26,8 @@ class BankReceipt extends Model
         return $this->morphOne(CreditTransaction::class, 'targetable');
     }
 
+    public function getImageattribute($value){
+        return $value ? asset('storage/'.$value) : null;
+    }
+
 }
