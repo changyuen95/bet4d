@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\AppVersion;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Validator;
@@ -66,8 +67,7 @@ class SettingController extends Controller
             return response(['message' => $validator->errors()->first()], 422);
         }
 
-        $currentVersion = DB::table('app_versions')
-            ->where('platform', $request->platform)
+        $currentVersion = AppVersion::where('platform', $request->platform)
             ->orderBy('created_at', 'desc')
             ->first();
 
