@@ -65,19 +65,26 @@ class SettingController extends Controller
             ->first();
 
         if (!$currentVersion) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Platform not supported.',
-            ], 400);
+            return response(['message' => 'platform not exists'], 422);
+
         }
 
         $isOutdated = version_compare($validated['version'], $currentVersion->version, '<');
         $forceUpdate = $currentVersion->force_update;
 
-        return response()->json([
+        $result = [
             'is_outdated' => $isOutdated,
             'force_update' => $forceUpdate,
             'latest_version' => $currentVersion->version,
-        ]);
+        ];
+
+        // return response()->json([
+        //     'is_outdated' => $isOutdated,
+        //     'force_update' => $forceUpdate,
+        //     'latest_version' => $currentVersion->version,
+        // ]);
+
+        return response($result, 200);
+
     }
 }
