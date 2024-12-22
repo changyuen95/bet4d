@@ -26,7 +26,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::namespace('API')->group(function () {
 
     Route::get('webviews', 'SettingController@index');
-    Route::get('check-version', [SettingController::class, 'checkVersion']);
+    Route::get('check-version', 'SettingController@checkVersion');
 
 
     Route::post("login", LoginController::class);
@@ -201,7 +201,7 @@ Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::MEMB
 
 Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAdmin'])->group(function () {
     Route::post('logout', 'LoginController@adminLogout');
-    Route::get('check-version', [SettingController::class, 'checkVersion']);
+    Route::get('check-version', 'SettingController@checkVersion');
 
     Route::prefix('me')->group(function () {
         Route::get('','Admin\MeController@me');
