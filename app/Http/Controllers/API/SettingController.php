@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Validator;
 
 class SettingController extends Controller
 {
@@ -54,13 +56,18 @@ class SettingController extends Controller
 
     public function checkVersion(Request $request)
     {
-        $validated = $request->validate([
+
+        $validator = Validator::make($request->all(), [
             'platform' => 'required|in:android,ios',
             'version'  => 'required|string',
         ]);
 
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->first()], 422);
+        }
+
         $currentVersion = DB::table('app_versions')
-            ->where('platform', $validated['platform'])
+            ->where('platform', $request->platform)
             ->orderBy('created_at', 'desc')
             ->first();
 
