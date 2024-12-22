@@ -76,7 +76,7 @@ class SettingController extends Controller
 
         }
 
-        $isOutdated = version_compare($validated['version'], $currentVersion->version, '<');
+        $isOutdated = version_compare($request->version, $currentVersion->version, '<');
         $forceUpdate = $currentVersion->force_update;
 
         $result = [
