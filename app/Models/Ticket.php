@@ -74,6 +74,11 @@ class Ticket extends Model
         return $this->hasMany(BarCode::class, 'ticket_id');
     }
 
+    public function receipts()
+    {
+        return $this->hasMany(TicketReceipt::class, 'ticket_id');
+    }
+
     public function draws()
     {
         return $this->belongsTo(Draw::class, 'draw_id');

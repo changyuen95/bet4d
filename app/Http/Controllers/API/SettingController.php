@@ -51,4 +51,33 @@ class SettingController extends Controller
     {
         //
     }
+
+    public function checkVersion(Request $request)
+    {
+        $validated = $request->validate([
+            'platform' => 'required|in:android,ios',
+            'version'  => 'required|string',
+        ]);
+
+        $currentVersion = DB::table('app_versions')
+            ->where('platform', $validated['platform'])
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if (!$currentVersion) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Platform not supported.',
+            ], 400);
+        }
+
+        $isOutdated = version_compare($validated['version'], $currentVersion->version, '<');
+        $forceUpdate = $currentVersion->force_update;
+
+        return response()->json([
+            'is_outdated' => $isOutdated,
+            'force_update' => $forceUpdate,
+            'latest_version' => $currentVersion->version,
+        ]);
+    }
 }
