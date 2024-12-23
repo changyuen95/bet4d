@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('ticket_receipts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ticket_id')->constrained()->onDelete('cascade');
+            $table->foreignUlid('ticket_id')->constrained()->onDelete('cascade');
             $table->string('path',225);
             $table->timestamps();
         });
