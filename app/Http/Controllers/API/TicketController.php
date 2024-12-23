@@ -14,6 +14,8 @@ use App\Models\Ticket;
 use App\Models\TicketNumber;
 use App\Models\User;
 use App\Models\Tax;
+use App\Models\TicketReceipt;
+
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use DB;
@@ -605,7 +607,7 @@ class TicketController extends Controller
 
     public function staffScanBarcode(Request $request, $id){
         $validator = Validator::make($request->all(), [
-            'barcode' => ['required'],
+            'image' => 'required|image|mimes:jpg,png,jpeg',
         ]);
 
         if ($validator->fails()) {
@@ -617,24 +619,49 @@ class TicketController extends Controller
         if(!$ticket || $ticket->action_by != $staff->id){
             return response(['message' =>  trans('messages.invalid_ticket') ], 422);
         }
-        $checkDuplicateBarcode = $ticket->barcode()->where('barcode',$request->barcode)->count();
-        if($checkDuplicateBarcode > 0){
-            return response(['message' =>  trans('messages.this_ticket_had_scanned_before_please_try_another_ticket') ], 422);
-        }
+        // $checkDuplicateBarcode = $ticket->receipts()->where('path',$request->image)->count();
+        // if($checkDuplicateBarcode > 0){
+        //     return response(['message' =>  trans('messages.this_ticket_had_scanned_before_please_try_another_ticket') ], 422);
+        // }
 
         DB::beginTransaction();
+
         try{
+            if($request->hasFile('image')) {
+                $allowedfileExtension=['jpg','png','jpeg'];
 
-            $ticket->barcode()->create([
-                'barcode' => $request->barcode
-            ]);
+                $attachmentFile = $request->file('image');
+                $attachmentfilename = $attachmentFile->getClientOriginalName();
+                $attachmentextension = $attachmentFile->extension();
 
-            DB::commit();
-            return $ticket->barcode;
-            // return response(['message' =>  trans('messages.successfully_scanned_barcode') ], 200);
+                $check =in_array($attachmentextension,$allowedfileExtension);
 
+                if($check) {
+                    File::makeDirectory(storage_path('app/public/ticket_receipts/'.$ticket->id.'/attachment/'), $mode = 0777, true, true);
+                    $input['imagename'] = 'avatar_'.time().'.'.$attachmentFile->getClientOriginalExtension();
+                    $destination_path = storage_path('app/public/ticket_receipts/'.$ticket->id.'/attachment/');
+                    $img = Image::make($attachmentFile->path());
+                    $img->save($destination_path.'/'.$input['imagename']);
+                    $attachment_image_full_path = asset('storage/ticket_receipts/'.$ticket->id.'/attachment/'.$input['imagename']);
+                    // $oldImage = $ticketNumber->permutation_image;
+                    $ticket_receipt = new TicketReceipt();
+                    $ticket_receipt->path = $attachment_image_full_path;
+                    $ticket_receipt->ticket_id = $ticket->id;
+                    $ticket_receipt->save();
+                    // Storage::delete('public/'.str_replace(asset('storage/'),'',$oldImage));
+                    DB::commit();
+                    return response([
+                        'message' =>  trans('messages.successfully_insert_permutation_image'),
+                    ], 200);
+                } else {
+                    DB::rollback();
+                    return response(['message' =>  trans('messages.failed_to_scan_barcode') ], 422);
+                }
 
-
+            }else{
+                DB::rollback();
+                return response(['message' =>  trans('messages.failed_to_scan_barcode') ], 422);
+            }
         }catch (Exception $e) {
             DB::rollback();
             return response(['message' =>  trans('messages.failed_to_scan_barcode') ], 422);
@@ -647,7 +674,7 @@ class TicketController extends Controller
         if(!$ticket){
             return response(['message' =>  trans('messages.invalid_ticket') ], 422);
         }
-        $barcode = $ticket->barcode()->find($barcode_id);
+        $barcode = $ticket->receipts()->find($barcode_id);
         if(!$barcode){
             return response(['message' =>  trans('messages.invalid_barcode') ], 422);
         }
@@ -672,7 +699,7 @@ class TicketController extends Controller
             return response(['message' =>  trans('messages.invalid_ticket') ], 422);
         }
 
-        $barcodeQuery = $ticket->barcode();
+        $barcodeQuery = $ticket->receipts();
 
         $barcode = $barcodeQuery->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
 
