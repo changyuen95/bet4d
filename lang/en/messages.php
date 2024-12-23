@@ -113,6 +113,7 @@ return [
     'invalid_ticket_number' => 'Invalid Ticket Number',
     'failed_to_insert_permutation_image' => 'Failed to insert permutation image',
     'successfully_insert_permutation_image' => 'Successfully insert permutation image',
+    'successfully_insert_rceipt' => 'Successfully insert receipt',
     'permutation_image_existed' => 'Permutation image existed',
     'permutation_image_not_found' => 'Permutation image not found',
     'successfully_remove_permutation_image' => 'Successfully remove permutation image',

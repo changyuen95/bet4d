@@ -45,7 +45,7 @@ class TicketResource extends BaseResource
             'updated_at' => $this->formatDate($this->updated_at),
             'deleted_at' => $this->formatDate($this->updated_at),
             'barcodes' => $this->barcode,
-
+            'receipts' => $this->receipts,
         ];
     }
 }

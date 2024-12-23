@@ -653,7 +653,7 @@ class TicketController extends Controller
                     // Storage::delete('public/'.str_replace(asset('storage/'),'',$oldImage));
                     DB::commit();
                     return response([
-                        'message' =>  trans('messages.successfully_insert_permutation_image'),
+                        'message' =>  trans('messages.successfully_insert_rceipt'),
                     ], 200);
                 } else {
                     DB::rollback();
