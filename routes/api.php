@@ -199,9 +199,11 @@ Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::MEMB
     // Routes for Member users
 });
 
+
+Route::get('admin/check-version', 'SettingController@checkVersion');
+
 Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAdmin'])->group(function () {
     Route::post('logout', 'LoginController@adminLogout');
-    Route::get('check-version', 'SettingController@checkVersion');
 
     Route::prefix('me')->group(function () {
         Route::get('','Admin\MeController@me');

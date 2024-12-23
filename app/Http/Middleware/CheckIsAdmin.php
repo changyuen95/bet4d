@@ -16,11 +16,6 @@ class CheckIsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-
-        if ($request->is('admin/check-version')) {
-            return $next($request); // Skip authentication for this route
-        }
-
         if ($request->user() && ($request->user() instanceof Admin) ) {
             return $next($request);
         }
