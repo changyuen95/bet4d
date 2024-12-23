@@ -83,6 +83,8 @@ class SettingController extends Controller
             'is_outdated' => $isOutdated,
             'force_update' => $forceUpdate,
             'latest_version' => $currentVersion->version,
+            // 'url' => 'https://play.google.com/store/apps/details?id=com.abc.xyz',
+            'url' => 'https://fortknox.group/grab4d',
         ];
 
         // return response()->json([
