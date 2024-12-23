@@ -25,6 +25,8 @@ use Exception;
 use Auth;
 use App\Traits\NotificationTrait;
 use Faker\Core\Barcode;
+use File;
+use Image;
 
 class TicketController extends Controller
 {
