@@ -242,6 +242,16 @@ class DistributePrizeController extends Controller
     }
 
     public function claimTicket(Request $request,$id){
+
+        $validator = Validator::make($request->all(), [
+            'image' => 'required|image|mimes:jpg,png,jpeg',
+        ]);
+
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->first()], 422);
+        }
+
+
         $staff = Auth::user();
 
         // $ticket_number = TicketNumber::where('ticket_id',$id)->get()->pluck('id');
@@ -251,14 +261,67 @@ class DistributePrizeController extends Controller
             return response(['message' => trans('messages.no_winner_found')], 422);
         }
 
-        WinnerList::where('id',$winner->id)
-                    ->update(['is_distribute' => 1
-                ]);
 
-        return response([
-            'message' =>  trans('messages.successfully_claim_ticket'),
-        ], 200);
+        DB::beginTransaction();
+        try {
+            if($request->hasFile('image')) {
+                $allowedfileExtension=['jpg','png','jpeg'];
 
+                $distributeAttachmentFile = $request->file('image');
+                $distributeAttachmentfilename = $distributeAttachmentFile->getClientOriginalName();
+                $distributeAttachmentextension = $distributeAttachmentFile->extension();
+
+                $check =in_array($distributeAttachmentextension,$allowedfileExtension);
+
+                if($check) {
+                    File::makeDirectory(storage_path('app/public/distribute_prize/'.$staff->id.'/attachment/'), $mode = 0777, true, true);
+                    $input['imagename'] = 'distribute_attachment_'.time().'.'.$distributeAttachmentFile->getClientOriginalExtension();
+                    $destination_path = storage_path('app/public/distribute_prize/'.$staff->id.'/attachment/');
+                    $frontimg = Image::make($distributeAttachmentFile->path());
+                    $frontimg->save($destination_path.'/'.$input['imagename']);
+                    $distribute_attachment_image_full_path = 'distribute_prize/'.$staff->id.'/attachment/'.$input['imagename'];
+                    $winner->update([
+                        'is_distribute' => true,
+                        'distribute_attachment' => $distribute_attachment_image_full_path,
+                        'action_by' => $staff->id
+                    ]);
+
+                    // $winnerUser = $winner->winner;
+                    // if($winnerUser){
+                    //     $notificationData = [];
+                    //     $notificationData['title'] = 'Prize distribution';
+                    //     $notificationData['message'] = 'Your Prize had distributed by our staff';
+                    //     $notificationData['deepLink'] = 'fortknox://me/winner/'.$winner->id;
+                    //     $appId = env('ONESIGNAL_APP_ID');
+                    //     $apiKey = env('ONESIGNAL_REST_API_KEY');
+                    //     $this->sendNotification($appId, $apiKey, $winnerUser,$notificationData,$winner);
+                    // }
+
+                    $winner->update([
+                        'is_distribute' => true,
+                        'distribute_attachment' => $distribute_attachment_image_full_path,
+                        'action_by' => $staff->id
+                    ]);
+
+
+                    DB::commit();
+                    return response([
+                        'message' =>  trans('messages.successfully_claim_ticket'),
+                    ], 200);
+                } else {
+                    DB::rollback();
+                    return response(['message' => trans('messages.only_png_jpg_jpeg_is_accepted')], 422);
+                }
+
+            }else{
+                DB::rollback();
+                return response(['message' => trans('messages.no_file_detected')], 422);
+            }
+
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return response(['message' => trans('messages.failed_to_distribute_prize')], 422);
+        }
 
         //update ticket
     }
