@@ -215,4 +215,25 @@ class DistributePrizeController extends Controller
     {
         //
     }
+
+
+    public function keepTicket(Reuqest $request,$id){
+        $staff = Auth::user();
+
+        //update ticket
+
+    }
+
+    public function claimTicket(Request $request,$id){
+        $staff = Auth::user();
+
+        $ticket = $staff->outlet->tickets()->find($id);
+
+        WinnerList::where('ticket_number_id',$ticket->ticketNumbers->pluck('id'))
+                    ->update(['is_distribute' => 1
+                ]);
+
+
+        //update ticket
+    }
 }

@@ -160,25 +160,29 @@ class MeController extends Controller
 
         $winner = WinnerList::whereIn('ticket_number_id', $ticket_number)->where('is_request',0)->get();
 
-        if(count($winner) <= 0){
+        if(count($winner) == 0){
             return response(['message' => trans('messages.no_winner_found')], 422);
+        }else{
+            $totalAmount = $winner->sum('amount');
+
+            WinnerList::whereIn('ticket_number_id', $ticket_number)->update(['is_request' => 1]);
+
+
+            $userRequestPrize = $user->userRequestPrizes()->create([
+                'ticket_id' => $ticket->id,
+                'user_id' => $user->id,
+                'amount' => $totalAmount,
+            ]);
+
+            return response([
+                'message' =>  'Successfully request prize',
+            ], 200);
         }
 
 
 
-        $totalAmount = $winner->sum('amount');
-
-        WinnerList::whereIn('ticket_number_id', $ticket_number)->update(['is_request' => 1]);
-
-
-        $userRequestPrize = $user->userRequestPrizes()->create([
-            'ticket_id' => $ticket->id,
-            'user_id' => $user->id,
-            'amount' => $totalAmount,
-        ]);
-
         return response([
-            'message' =>  'Successfully request prize',
+            'message' =>  'failed to submit',
         ], 200);
 
 

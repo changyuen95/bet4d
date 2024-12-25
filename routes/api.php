@@ -307,6 +307,8 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
             Route::post('{id}','DistributePrizeController@store');
         });
 
+
+
         Route::get('cleared-transactions/credit-distribute','Admin\DownlineController@creditDistribute');
         Route::get('{admin_id}/clear-transactions/credit-distribute/{id}','Admin\DownlineController@creditDistributeDetail');
 

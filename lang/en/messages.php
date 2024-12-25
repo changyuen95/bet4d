@@ -342,4 +342,5 @@ return [
     'no_pending_verify_prize_found' => 'No pending verify prize found',
     'no_verified_prize_found' => 'No verified prize found',
     'transaction_detail_not_found' => 'Transaction detail not found',
+    'no_winner_found' => 'no winner found',
 ];
