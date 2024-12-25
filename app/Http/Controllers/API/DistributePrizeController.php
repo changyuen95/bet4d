@@ -225,13 +225,13 @@ class DistributePrizeController extends Controller
 
 
 
-        $ticket = WinnerList::where('keep_ticket',0)->find($id);
+        $winner = WinnerList::where('keep_ticket',0)->find($id);
 
-        if(!$ticket){
-            return response(['message' => trans('messages.no_ticket_found')], 422);
+        if(!$winner){
+            return response(['message' => trans('messages.no_winner_found')], 422);
         }
 
-        WinnerList::where('ticket_number_id',$ticket->ticketNumbers->pluck('id'))
+        WinnerList::where('id',$winner->id)
                     ->update(['keep_ticket' => 1
                 ]);
 
@@ -246,12 +246,12 @@ class DistributePrizeController extends Controller
 
         // $ticket_number = TicketNumber::where('ticket_id',$id)->get()->pluck('id');
 
-        $ticket = WinnerList::where('is_distribute',0)->find($id);
-        if(!$ticket){
-            return response(['message' => trans('messages.no_ticket_found')], 422);
+        $winner = WinnerList::where('is_distribute',0)->find($id);
+        if(!$winner){
+            return response(['message' => trans('messages.no_winner_found')], 422);
         }
 
-        WinnerList::where('ticket_number_id',$ticket->ticketNumbers->pluck('id'))
+        WinnerList::where('id',$winner->id)
                     ->update(['is_distribute' => 1
                 ]);
 
