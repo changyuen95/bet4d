@@ -164,9 +164,7 @@ class MeController extends Controller
             return response(['message' => trans('messages.no_winner_found')], 422);
         }
 
-        if($winner->is_request == 1){
-            return response(['message' => trans('messages.winner_already_request')], 422);
-        }
+
 
         $totalAmount = $winner->sum('amount');
 
