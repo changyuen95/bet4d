@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\Bank;
+use App\Models\WinnerList;
 use App\Traits\NotificationTrait;
 use Auth;
 use Hash;
@@ -150,21 +151,37 @@ class MeController extends Controller
         if(!$user){
             return response(['message' => trans('messages.no_user_found')], 422);
         }
-        $ticket_number = $user->ticketNumbers()->find($id);
+        $ticket = $user->tickets()->find($id);
 
-        if(!$ticket_number){
+        if(!$ticket){
             return response(['message' => trans('messages.no_ticket_number_found')], 422);
         }
+        $ticket_number = $ticket->ticketNumbers->pluck('id');
 
-        $ticket = $ticket_number->ticket;
-        if(!$ticket){
-            return response(['message' => trans('messages.no_ticket_found')], 422);
-        }
+        $winner = WinnerList::whereIn('ticket_number_id', $ticket_number)->where('is_request',0)->get();
 
-        $winner = $ticket_number->win;
-        if(!$winner){
+        if(count($winner) <= 0){
             return response(['message' => trans('messages.no_winner_found')], 422);
         }
+
+        if($winner->is_request == 1){
+            return response(['message' => trans('messages.winner_already_request')], 422);
+        }
+
+        $totalAmount = $winner->sum('amount');
+
+        WinnerList::whereIn('ticket_number_id', $ticket_number)->update(['is_request' => 1]);
+
+
+        $userRequestPrize = $user->userRequestPrizes()->create([
+            'ticket_id' => $ticket->id,
+            'user_id' => $user->id,
+            'amount' => $totalAmount,
+        ]);
+
+        return response([
+            'message' =>  'Successfully request prize',
+        ], 200);
 
 
     }

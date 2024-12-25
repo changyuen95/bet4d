@@ -10,7 +10,7 @@ class UserRequestPrize extends Model
     use HasFactory;
     protected $table = 'user_request_prizes';
     protected $guarded = ['id'];
-    protected $with = ['ticket', 'ticketNumber', 'winner'];
+    protected $with = ['ticket'];
 
     public function ticket()
     {
@@ -22,13 +22,4 @@ class UserRequestPrize extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function ticketNumber()
-    {
-        return $this->belongsTo(TicketNumber::class, 'ticket_number_id');
-    }
 
-    public function winner()
-    {
-        return $this->belongsTo(WinnerList::class, 'winner_list_id');
-    }
-}

@@ -15,8 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignUlid('user_id')->constrained('users');
             $table->foreignUlid('ticket_id')->constrained('tickets');
-            $table->foreignUlid('ticket_number_id')->constrained('ticket_numbers');
-            $table->foreignUlid('winner_list_id')->constrained('winner_lists');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
         });
