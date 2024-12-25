@@ -34,11 +34,6 @@ class TicketNumber extends Model
     }
 
 
-    public function pendingWinner()
-    {
-        return $this->hasMany(UserRequestPrize::class, 'ticket_number_id')->where('status', 'pending');
-    }
-
     public function tax()
     {
         return $this->hasOne(Tax::class, 'id', 'tax_id');
