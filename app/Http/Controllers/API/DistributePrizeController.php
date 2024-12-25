@@ -217,7 +217,7 @@ class DistributePrizeController extends Controller
     }
 
 
-    public function keepTicket(Reuqest $request,$id){
+    public function keepTicket(Request $request,$id){
         $staff = Auth::user();
 
         $ticket = $staff->outlet->tickets()->find($id)->where('keep_ticket',0)->first();

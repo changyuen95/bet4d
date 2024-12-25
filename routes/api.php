@@ -305,6 +305,9 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
             Route::get('','DistributePrizeController@index');
             Route::get('{id}','DistributePrizeController@show');
             Route::post('{id}','DistributePrizeController@store');
+            Route::post('{id}/keep-ticket','DistributePrizeController@keepTicket');
+            Route::post('{id}/claim-ticket','DistributePrizeController@claimTicket');
+
         });
 
 
