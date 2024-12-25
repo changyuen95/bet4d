@@ -38,8 +38,6 @@ class TicketNumberResource extends BaseResource
             'is_main' => $this->is_main,
             'refund_tickets' => $this->refund_tickets,
             'sub_tickets' => $this->sub_tickets,
-            'isClaimable' => $this->isClaimable,
-            'claim_status' => $this->claim_status,
             'prizes' => $this->win,
             // 'maid_ticket_id' =>$this->main_ticket_id,
 

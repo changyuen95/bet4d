@@ -12,7 +12,7 @@ class Ticket extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
     protected $guarded = ['id'];
-    protected $appends = ['sub_total','total_amount','creatable_type','creatable_id','total_refund'];
+    protected $appends = ['sub_total','total_amount','creatable_type','creatable_id','total_refund','is_claimable','claim_status'];
     protected $with = ['requestWinner'];
     const STATUS = [
         'TICKET_IMCOMPLETED' => 'incompleted',
@@ -157,6 +157,42 @@ class Ticket extends Model
 
     public function getCreatableTypeAttribute(){
         return 'App\\Models\\Admin';
+    }
+
+    public function getIsClaimableAttribute()
+    {
+        $ticketNumbers = $this->allTicketNumbers->pluck('id');
+        $winner = WinnerList::whereIn('ticket_number_id', $ticketNumbers)->where('is_request',0)->get();
+
+        if(count($winner)){
+
+            return true;
+
+        }else{
+            return false;
+        }
+
+    }
+
+    public function getClaimStatusAttribute()
+    {
+        $ticketNumbers = $this->allTicketNumbers->pluck('id');
+        $winner = WinnerList::whereIn('ticket_number_id', $ticketNumbers)->where('is_request',0)->first();
+
+        if($winner){
+
+            if($winner->is_request)
+            {
+                return 'Requested';
+            }elseif($winner->is_distribute){
+                return 'Claimed';
+            }else{
+                return 'Ready To Request';
+            }
+
+        }else{
+            return 'No Result';
+        }
     }
 
 
