@@ -169,7 +169,7 @@ class Ticket extends Model
 
     public function getIsClaimableAttribute()
     {
-        if (Auth::check() && in_array(Auth::user()->role, [Role::OPERATOR, Role::ADMIN])) {
+        if (Auth::check() && in_array(Auth::user()->role, [Role::OPERATOR])) {
             //staff
             $ticketNumbers = $this->allTicketNumbers->pluck('id');
             $winner = WinnerList::whereIn('ticket_number_id', $ticketNumbers)->where('is_distribute',0)->get();
