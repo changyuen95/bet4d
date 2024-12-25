@@ -172,7 +172,7 @@ class Ticket extends Model
         if (Auth::check() && in_array(Auth::user()->role, [Role::OPERATOR])) {
             //staff
             $ticketNumbers = $this->allTicketNumbers->pluck('id');
-            $winner = WinnerList::whereIn('ticket_number_id', $ticketNumbers)->where('is_distribute',0)->get();
+            $winner = WinnerList::whereIn('ticket_number_id', $ticketNumbers)->where('is_distribute',0)->where('is_request',1)->get();
 
             if(count($winner)){
 
