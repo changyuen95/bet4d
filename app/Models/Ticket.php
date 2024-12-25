@@ -169,16 +169,35 @@ class Ticket extends Model
 
     public function getIsClaimableAttribute()
     {
-        $ticketNumbers = $this->allTicketNumbers->pluck('id');
-        $winner = WinnerList::whereIn('ticket_number_id', $ticketNumbers)->where('is_request',0)->get();
+        if (Auth::check() && in_array(Auth::user()->role, [Role::OPERATOR, Role::ADMIN])) {
+            //staff
+            $ticketNumbers = $this->allTicketNumbers->pluck('id');
+            $winner = WinnerList::whereIn('ticket_number_id', $ticketNumbers)->where('is_distribute',0)->get();
 
-        if(count($winner)){
+            if(count($winner)){
 
-            return true;
+                return true;
 
+            }else{
+                return false;
+            }
         }else{
-            return false;
+            //user
+            $ticketNumbers = $this->allTicketNumbers->pluck('id');
+            $winner = WinnerList::whereIn('ticket_number_id', $ticketNumbers)->where('is_request',0)->get();
+
+            if(count($winner)){
+
+                return true;
+
+            }else{
+                return false;
+            }
+
         }
+
+
+
 
     }
 

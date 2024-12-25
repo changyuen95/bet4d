@@ -220,18 +220,38 @@ class DistributePrizeController extends Controller
     public function keepTicket(Reuqest $request,$id){
         $staff = Auth::user();
 
-        //update ticket
+        $ticket = $staff->outlet->tickets()->find($id)->where('keep_ticket',0)->first();
+
+        if(!$ticket){
+            return response(['message' => trans('messages.no_ticket_found')], 422);
+        }
+
+        WinnerList::where('ticket_number_id',$ticket->ticketNumbers->pluck('id'))
+                    ->update(['keep_ticket' => 1
+                ]);
+
+        return response([
+            'message' =>  trans('messages.successfully_keep_ticket'),
+        ], 200);
 
     }
 
     public function claimTicket(Request $request,$id){
         $staff = Auth::user();
 
-        $ticket = $staff->outlet->tickets()->find($id);
+        $ticket = $staff->outlet->tickets()->find($id)->where('is_distribute',0)->first();
+
+        if(!$ticket){
+            return response(['message' => trans('messages.no_ticket_found')], 422);
+        }
 
         WinnerList::where('ticket_number_id',$ticket->ticketNumbers->pluck('id'))
                     ->update(['is_distribute' => 1
                 ]);
+
+        return response([
+            'message' =>  trans('messages.successfully_claim_ticket'),
+        ], 200);
 
 
         //update ticket
