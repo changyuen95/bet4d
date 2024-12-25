@@ -95,7 +95,7 @@ class Ticket extends Model
         return $this->belongsTo(Draw::class, 'draw_id');
     }
 
-    public function winner(){
+    public function getWinnerAttribute(){
         $winner=[];
         $ticketNumbers = $this->allTicketNumbers;
         foreach($ticketNumbers as $ticketNumber){
