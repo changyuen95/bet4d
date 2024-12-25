@@ -28,7 +28,7 @@ class VerifyProfileController extends Controller
         }
 
         $verifyProfile = $query->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
-        
+
         return response($verifyProfile, 200);
     }
 
@@ -74,7 +74,7 @@ class VerifyProfileController extends Controller
         try {
             if($request->hasFile('front_ic') && $request->hasFile('back_ic') && $request->hasFile('selfie_with_ic')) {
                 $allowedfileExtension=['jpg','png','jpeg'];
-                
+
                 $frontICFile = $request->file('front_ic');
                 $backICFile = $request->file('back_ic');
                 $selfieICFile = $request->file('selfie_with_ic');
@@ -91,10 +91,10 @@ class VerifyProfileController extends Controller
                 $check2 =in_array($backICextension,$allowedfileExtension);
                 $check3 =in_array($selfieICextension,$allowedfileExtension);
 
-                
+
                 if($check1 && $check2 && $check3) {
                     File::makeDirectory(storage_path('app/public/verify_profile/'.$user->id.'/attachment/'), $mode = 0777, true, true);
-    
+
                     $input['frontimagename'] = 'front_ic_'.time().'.'.$frontICFile->getClientOriginalExtension();
                     $input['backimagename'] = 'back_ic_'.time().'.'.$backICFile->getClientOriginalExtension();
                     $input['selfieimagename'] = 'selfie_ic_'.time().'.'.$selfieICFile->getClientOriginalExtension();
@@ -103,7 +103,7 @@ class VerifyProfileController extends Controller
                     $frontimg = Image::make($frontICFile->path());
                     $backimg = Image::make($backICFile->path());
                     $selfieimg = Image::make($selfieICFile->path());
-                
+
                     $frontimg->save($destination_path.'/'.$input['frontimagename']);
                     $backimg->save($destination_path.'/'.$input['backimagename']);
                     $selfieimg->save($destination_path.'/'.$input['selfieimagename']);
@@ -144,12 +144,12 @@ class VerifyProfileController extends Controller
                     DB::rollback();
                     return response(['message' => trans('messages.only_png_jpg_jpeg_is_accepted')], 422);
                 }
-                
+
             }else{
                 DB::rollback();
                 return response(['message' => trans('messages.no_file_detected')], 422);
             }
-            
+
         } catch (\Throwable $th) {
             DB::rollback();
             return response(['message' => trans('messages.failed_to_submit_document')], 422);
@@ -190,7 +190,7 @@ class VerifyProfileController extends Controller
 
     public function pendingListing(Request $request){
         $verifyProfiles = VerifyProfile::where('status',VerifyProfile::STATUS['Pending'])->paginate($request->get('limit') ?? 10);
-        
+
         return response($verifyProfiles, 200);
     }
 
@@ -228,7 +228,7 @@ class VerifyProfileController extends Controller
         $user->update([
             'is_verified' => true
         ]);
- 
+
         DB::commit();
         return response([
             'message' =>  trans('messages.profile_verified_you_can_start_playing_now'),
@@ -246,7 +246,7 @@ class VerifyProfileController extends Controller
         if($verifyProfile->status != VerifyProfile::STATUS['Pending']){
             return response(['message' => trans('messages.not_able_to_reject_when_status_is_not_pending')], 422);
         }
-      
+
         $user = $verifyProfile->user;
         if(!$user){
             return response(['message' => trans('messages.no_ic_verification_owner_found')], 422);

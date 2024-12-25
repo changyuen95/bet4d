@@ -239,7 +239,7 @@ class DistributePrizeController extends Controller
     public function claimTicket(Request $request,$id){
         $staff = Auth::user();
 
-        $ticket = $staff->outlet->tickets()->find($id)->where('is_distribute',0)->first();
+        $ticket = $staff->outlet->tickets()->where('is_distribute',0)->find($id);
 
         if(!$ticket){
             return response(['message' => trans('messages.no_ticket_found')], 422);
