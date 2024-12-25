@@ -18,6 +18,12 @@ class DistributeResource extends BaseResource
     {
         $winner = $this->winner;
         $winner->transfer_details = $this->winner->transferDetails()->orderBy('primary', 'asc')->get();
+        $is_claimable = false;
+
+        if($this->is_distribute == 0 && $this->is_request == 1){
+            $is_claimable = true;
+        }
+
 
         return [
             'id' => $this->id,
@@ -35,6 +41,8 @@ class DistributeResource extends BaseResource
             'draw_result' => $this->drawResult,
             'ticket_number' => $this->ticketNumber,
             'winner' => $winner,
+            'is_claimable' => $is_claimable,
+            'keep_ticket' => $this->keep_ticket ? true : false,
         ];
     }
 }

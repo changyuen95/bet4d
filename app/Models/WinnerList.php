@@ -66,4 +66,5 @@ class WinnerList extends Model
     public function getVerifiedAtAttribute($value){
         return $value == ''?'':Carbon::parse($value)->format('Y-m-d H:i:s');
     }
+
 }
