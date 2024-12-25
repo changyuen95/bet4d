@@ -114,6 +114,7 @@ Route::namespace('API')->group(function () {
             Route::prefix('tickets')->group(function () {
                 Route::get('','TicketController@index');
                 Route::get('{id}','TicketController@show');
+                Route::post('{id}/request-winner', 'MeController@requestWinner');
             });
 
             Route::prefix('transfer-details')->group(function () {
