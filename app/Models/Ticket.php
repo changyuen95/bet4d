@@ -95,6 +95,15 @@ class Ticket extends Model
         return $this->belongsTo(Draw::class, 'draw_id');
     }
 
+    public function winner(){
+        $winner=[];
+        $ticketNumbers = $this->allTicketNumbers;
+        foreach($ticketNumbers as $ticketNumber){
+            $winner[] = $ticketNumber->win;
+        }
+        return $winner;
+    }
+
     public function platform()
     {
         return $this->belongsTo(Platform::class, 'platform_id');
