@@ -117,12 +117,12 @@ class User extends Authenticatable
 
     public function tickets()
     {
-        return $this->hasMany(Ticket::class, 'user_id')->orderby('created_at','desc');
+        return $this->hasMany(Ticket::class, 'user_id');
     }
 
     public function userRequestPrizes()
     {
-        return $this->hasMany(UserRequestPrize::class, 'user_id')->orderby('created_at','desc');
+        return $this->hasMany(UserRequestPrize::class, 'user_id');
     }
 
 
