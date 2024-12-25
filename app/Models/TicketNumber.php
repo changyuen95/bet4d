@@ -11,7 +11,7 @@ class TicketNumber extends Model
     use HasFactory, HasUlids;
     protected $guarded = ['id'];
     protected $appends = ['potential_winning','is_claimable','claim_status'];
-    protected $with = ['tax','refund_tickets','sub_tickets','win','requestWinner','pendingWinner'];
+    protected $with = ['tax','refund_tickets','sub_tickets','win','pendingWinner'];
     const TYPE = [
         'Straight' => 'straight',
         'Box' => 'box',
@@ -33,10 +33,6 @@ class TicketNumber extends Model
         return $this->hasOne(WinnerList::class, 'ticket_number_id');
     }
 
-    public function requestWinner()
-    {
-        return $this->hasMany(UserRequestPrize::class, 'ticket_number_id');
-    }
 
     public function pendingWinner()
     {

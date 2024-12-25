@@ -13,6 +13,7 @@ class Ticket extends Model
     use HasFactory, HasUlids, SoftDeletes;
     protected $guarded = ['id'];
     protected $appends = ['sub_total','total_amount','creatable_type','creatable_id','total_refund'];
+    protected $with = ['requestWinner'];
     const STATUS = [
         'TICKET_IMCOMPLETED' => 'incompleted',
         'TICKET_COMPLETED' => 'completed',
