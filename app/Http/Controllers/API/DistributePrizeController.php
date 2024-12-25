@@ -54,7 +54,7 @@ class DistributePrizeController extends Controller
                 $q->where('number', $request->ticket_number);
             }
         })
-            ->with('drawResult', 'ticketNumber', 'winner');
+            ->with('drawResult', 'ticketNumber', 'winner','outlet');
 
         // Filter by is_distribute
         $query->where('is_distribute', 0);
