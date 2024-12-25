@@ -151,7 +151,7 @@ class MeController extends Controller
         if(!$user){
             return response(['message' => trans('messages.no_user_found')], 422);
         }
-        $ticket = $user->tickets()->find($id);
+        $ticket = $user->tickets()->where('id', $id)->first();
 
         if(!$ticket){
             return response(['message' => trans('messages.no_ticket_number_found')], 422);
