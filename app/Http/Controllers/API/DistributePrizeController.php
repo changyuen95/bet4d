@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DistributeResource;
+use App\Models\TicketNumber;
 use App\Models\WinnerList;
 use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
@@ -220,7 +221,11 @@ class DistributePrizeController extends Controller
     public function keepTicket(Request $request,$id){
         $staff = Auth::user();
 
-        $ticket = $staff->outlet->tickets()->where('keep_ticket',0)->find($id);
+        $ticket_number = TicketNumber::where('ticket_id',$id)->get()->pluck('id');
+
+
+
+        $ticket = WinnerList::whereIn('ticket_number_id',$ticket_number)->where('keep_ticket',0)->find($id);
 
         if(!$ticket){
             return response(['message' => trans('messages.no_ticket_found')], 422);
@@ -239,8 +244,9 @@ class DistributePrizeController extends Controller
     public function claimTicket(Request $request,$id){
         $staff = Auth::user();
 
-        $ticket = $staff->outlet->tickets()->where('is_distribute',0)->find($id);
+        $ticket_number = TicketNumber::where('ticket_id',$id)->get()->pluck('id');
 
+        $ticket = WinnerList::whereIn('ticket_number_id',$ticket_number)->where('is_distribute',0)->find($id);
         if(!$ticket){
             return response(['message' => trans('messages.no_ticket_found')], 422);
         }
