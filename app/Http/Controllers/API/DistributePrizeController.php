@@ -25,7 +25,9 @@ class DistributePrizeController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'game_id' => 'nullable|exists:games,id',
-            'handled_by_me' => [Rule::in(array_values([true,false]))],
+            'handled_by_me' => [Rule::in([true, false])],
+            'outlet_type' => 'required|in:all,self,other',
+            'ticket_number' => 'nullable|exists:ticket_numbers,number', // Allow nullable ticket_number
         ]);
 
         if ($validator->fails()) {
@@ -33,45 +35,53 @@ class DistributePrizeController extends Controller
         }
 
         $staff = Auth::user();
-        if(!$staff){
+        if (!$staff) {
             return response(['message' => trans('messages.no_user_found')], 422);
         }
 
-        // $query = $staff->tickets()->whereHas('ticketNumbers.win', function($q){
-        //                             $q->where('is_distribute', false);
-        //                         })->with('ticketNumbers.win.drawResult');
         $requestGameId = $request->game_id;
-        $query = WinnerList::whereHas('ticketNumber', function($q) use($requestGameId){
-                                $q->whereHas('ticket', function($q) use($requestGameId){
-                                    $q->when($requestGameId != '', function ($query) use($requestGameId){
-                                        return $query->where('game_id', $requestGameId);
-                                    });
-                                });
-                            })->where('outlet_id',$staff->outlet_id)->with('drawResult','ticketNumber','winner');
+        $query = WinnerList::whereHas('ticketNumber', function ($q) use ($requestGameId, $request) {
+            // Filter by game_id if provided
+            $q->whereHas('ticket', function ($q) use ($requestGameId) {
+                $q->when($requestGameId != '', function ($query) use ($requestGameId) {
+                    return $query->where('game_id', $requestGameId);
+                });
+            });
 
-        // if($request->is_distribute != ''){
-        //     $booleanValue = filter_var($request->is_distribute, FILTER_VALIDATE_BOOLEAN);
-            // $query->where('is_distribute',$booleanValue);
-            // if($booleanValue){
-            //     $query->where('action_by',$staff->id);
-            // }
-        // }
+            // Filter by ticket_number if provided
+            if ($request->filled('ticket_number')) {
+                $q->where('number', $request->ticket_number);
+            }
+        })
+            ->with('drawResult', 'ticketNumber', 'winner');
 
-            $query->where('is_distribute',0);
+        // Filter by is_distribute
+        $query->where('is_distribute', 0);
 
-
-        if($request->handled_by_me){
-            $query->where('action_by',$staff->id);
+        // Filter by handled_by_me
+        if ($request->handled_by_me) {
+            $query->where('action_by', $staff->id);
         }
 
-        if($request->duration != ''){
-            $query->where('created_at','>=', Carbon::now()->subDays($request->duration));
+        // Filter by duration
+        if ($request->duration != '') {
+            $query->where('created_at', '>=', Carbon::now()->subDays($request->duration));
         }
 
-        $winnerList = $query->orderBy('created_at','DESC')->paginate($request->get('limit') ?? 10);
+        // Filter by outlet_type
+        if ($request->outlet_type) {
+            if ($request->outlet_type == 'self') {
+                $query->where('outlet_id', $staff->outlet_id);
+            } elseif ($request->outlet_type == 'other') {
+                $query->where('outlet_id', '!=', $staff->outlet_id);
+            }
+        }
+
+        $winnerList = $query->orderBy('created_at', 'DESC')->paginate($request->get('limit') ?? 10);
 
         return response($winnerList, 200);
     }
+
 
     /**
      * Show the form for creating a new resource.
