@@ -120,6 +120,12 @@ class User extends Authenticatable
         return $this->hasMany(Ticket::class, 'user_id')->orderby('created_at','desc');
     }
 
+    public function userRequestPrizes()
+    {
+        return $this->hasMany(UserRequestPrize::class, 'user_id')->orderby('created_at','desc');
+    }
+
+
     public function topup()
     {
         return $this->hasMany(TopUp::class, 'user_id');
