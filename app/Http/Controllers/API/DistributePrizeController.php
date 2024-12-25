@@ -25,7 +25,7 @@ class DistributePrizeController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'game_id' => 'nullable|exists:games,id',
-            'handled_by_me' => [Rule::in([true, false])],
+            'handled_by_me' => [Rule::in([true, false,'true','false'])],
             'outlet_type' => 'required|in:all,self,other',
             'ticket_number' => 'nullable|exists:ticket_numbers,number', // Allow nullable ticket_number
         ]);
