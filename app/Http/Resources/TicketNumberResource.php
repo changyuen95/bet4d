@@ -41,8 +41,6 @@ class TicketNumberResource extends BaseResource
             'isClaimable' => $this->isClaimable,
             'claim_status' => $this->claim_status,
             'prizes' => $this->win,
-            'is_requesting_prize' => $this->pendingWinner()->exists(),
-            'requested_prize' => $this->pendingWinner,
             // 'maid_ticket_id' =>$this->main_ticket_id,
 
         ];

@@ -10,7 +10,7 @@ class TicketNumber extends Model
 {
     use HasFactory, HasUlids;
     protected $guarded = ['id'];
-    protected $appends = ['potential_winning','is_claimable','claim_status'];
+    protected $appends = ['potential_winning'];
     protected $with = ['tax','refund_tickets','sub_tickets','win'];
     const TYPE = [
         'Straight' => 'straight',
@@ -32,7 +32,6 @@ class TicketNumber extends Model
     {
         return $this->hasOne(WinnerList::class, 'ticket_number_id');
     }
-
 
     public function tax()
     {
