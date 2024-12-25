@@ -221,11 +221,11 @@ class DistributePrizeController extends Controller
     public function keepTicket(Request $request,$id){
         $staff = Auth::user();
 
-        $ticket_number = TicketNumber::where('ticket_id',$id)->get()->pluck('id');
+        // $ticket_number = TicketNumber::where('ticket_id',$id)->get()->pluck('id');
 
 
 
-        $ticket = WinnerList::whereIn('ticket_number_id',$ticket_number)->where('keep_ticket',0)->find($id);
+        $ticket = WinnerList::where('keep_ticket',0)->find($id);
 
         if(!$ticket){
             return response(['message' => trans('messages.no_ticket_found')], 422);
@@ -244,9 +244,9 @@ class DistributePrizeController extends Controller
     public function claimTicket(Request $request,$id){
         $staff = Auth::user();
 
-        $ticket_number = TicketNumber::where('ticket_id',$id)->get()->pluck('id');
+        // $ticket_number = TicketNumber::where('ticket_id',$id)->get()->pluck('id');
 
-        $ticket = WinnerList::whereIn('ticket_number_id',$ticket_number)->where('is_distribute',0)->find($id);
+        $ticket = WinnerList::where('is_distribute',0)->find($id);
         if(!$ticket){
             return response(['message' => trans('messages.no_ticket_found')], 422);
         }
