@@ -10,8 +10,8 @@ class TicketNumber extends Model
 {
     use HasFactory, HasUlids;
     protected $guarded = ['id'];
-    protected $appends = ['potential_winning'];
-    protected $with = ['tax','refund_tickets','sub_tickets'];
+    protected $appends = ['potential_winning','is_claimable','claim_status'];
+    protected $with = ['tax','refund_tickets','sub_tickets','win','requestWinner','pendingWinner'];
     const TYPE = [
         'Straight' => 'straight',
         'Box' => 'box',
