@@ -59,6 +59,17 @@ class Ticket extends Model
         return $query;
     }
 
+    public function requestWinner()
+    {
+        return $this->hasMany(UserRequestPrize::class, 'ticket_id');
+    }
+
+    public function pendingWinner()
+    {
+        return $this->hasMany(UserRequestPrize::class, 'ticket_id')->where('status', 'pending');
+    }
+
+
     public function allTicketNumbers()
     {
         return $this->hasMany(TicketNumber::class, 'ticket_id');

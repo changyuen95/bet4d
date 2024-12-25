@@ -139,6 +139,26 @@ class User extends Authenticatable
         return $this->hasMany(VerifyProfile::class, 'user_id');
     }
 
+    public function requestWinner()
+    {
+        return $this->hasMany(UserRequestPrize::class, 'user_id');
+    }
+
+    public function pendingWinner()
+    {
+        return $this->hasMany(UserRequestPrize::class, 'user_id')->where('status', 'pending');
+    }
+
+    public function pendingVerifyProfiles()
+    {
+        return $this->hasMany(VerifyProfile::class, 'user_id')->where('status', 'pending');
+    }
+
+    public function pendingOnlineBanking()
+    {
+        return $this->hasMany(BankReceipt::class, 'user_id')->where('status', 'requested');
+    }
+
     public function getIsFinishFirstTimeTopUpAttribute($status)
     {
         $isFinishFirstTimeTopUp = false;

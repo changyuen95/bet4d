@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Storage;
 class MeController extends Controller
 {
     use NotificationTrait;
-    
+
     public function me()
     {
         return new UserResource(Auth::user());
@@ -140,6 +140,32 @@ class MeController extends Controller
         $apiKey = env('ONESIGNAL_REST_API_KEY');
 
         $this->sendNotification($appId, $apiKey, Auth::user(),$notificationData);
-       
+
+    }
+
+    public function requestWinner(Request $request , $id)
+        {
+
+        $user = Auth::user();
+        if(!$user){
+            return response(['message' => trans('messages.no_user_found')], 422);
+        }
+        $ticket_number = $user->ticketNumbers()->find($id);
+
+        if(!$ticket_number){
+            return response(['message' => trans('messages.no_ticket_number_found')], 422);
+        }
+
+        $ticket = $ticket_number->ticket;
+        if(!$ticket){
+            return response(['message' => trans('messages.no_ticket_found')], 422);
+        }
+
+        $winner = $ticket_number->win;
+        if(!$winner){
+            return response(['message' => trans('messages.no_winner_found')], 422);
+        }
+
+
     }
 }

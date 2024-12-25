@@ -15,6 +15,9 @@ class TicketNumberResource extends BaseResource
      */
     public function toArray(Request $request): array
     {
+
+
+
         return [
             'id' => $this->id,
             'ticket_id' => $this->ticket_id,
@@ -35,6 +38,11 @@ class TicketNumberResource extends BaseResource
             'is_main' => $this->is_main,
             'refund_tickets' => $this->refund_tickets,
             'sub_tickets' => $this->sub_tickets,
+            'isClaimable' => $this->isClaimable,
+            'claim_status' => $this->claim_status,
+            'prizes' => $this->win,
+            'is_requesting_prize' => $this->pendingWinner()->exists(),
+            'requested_prize' => $this->pendingWinner,
             // 'maid_ticket_id' =>$this->main_ticket_id,
 
         ];

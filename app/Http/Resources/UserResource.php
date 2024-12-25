@@ -17,6 +17,17 @@ class UserResource extends BaseResource
     {
         $userCredit = $this->credit;
         $userPoint = $this->point;
+        $verify_pending = 0;
+        $online_pending = 0;
+
+        if (!$this->is_verified && $this->pendingVerifyProfiles->count() > 0) {
+            $verify_pending = 1;
+        }
+
+        if($this->credit && $this->pendingOnlineBanking->count() > 0){
+            $online_pending = 1;
+        }
+
 
         $result = [
             'id' => $this->id,
@@ -33,6 +44,10 @@ class UserResource extends BaseResource
             'is_finish_first_time_topup' => $this->is_finish_first_time_topup,
             'winning_amount' => $this->winning_amount,
             'user_credit' => $userCredit,
+            'is_verify_pending' => $verify_pending,
+            'is_online_banking_pending' => $online_pending,
+            'is_requesting_prize' => $this->pendingWinner()->exists(),
+            'requested_prize' => $this->pendingWinner,
             'user_point' => $userPoint,
             'created_at' => $this->formatDate($this->created_at),
             'updated_at' => $this->formatDate($this->updated_at),

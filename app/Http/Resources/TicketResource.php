@@ -37,6 +37,8 @@ class TicketResource extends BaseResource
             'game' => $this->game,
             'status' => $this->status,
             'ticketNumbers' => TicketNumberResource::collection($ticketNumber),
+            'is_requesting_prize' => $this->pendingWinner()->exists(),
+            'requested_prize' => $this->pendingWinner,
             'action_by' => $this->action_by,
             'staff' => $this->staff,
             'reject_reason' => $this->reject_reason,

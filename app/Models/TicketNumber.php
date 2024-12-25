@@ -33,6 +33,16 @@ class TicketNumber extends Model
         return $this->hasOne(WinnerList::class, 'ticket_number_id');
     }
 
+    public function requestWinner()
+    {
+        return $this->hasMany(UserRequestPrize::class, 'ticket_number_id');
+    }
+
+    public function pendingWinner()
+    {
+        return $this->hasMany(UserRequestPrize::class, 'ticket_number_id')->where('status', 'pending');
+    }
+
     public function tax()
     {
         return $this->hasOne(Tax::class, 'id', 'tax_id');
@@ -91,6 +101,42 @@ class TicketNumber extends Model
 
         return $this->hasMany(self::class,'main_ticket_id','id')
                     ->where('is_main', 0);
+    }
+
+    public function getIsClaimableAttribute()
+    {
+        $winner = $this->win;
+        if($winner){
+
+            if($winner->is_request || $winner->is_distribute){
+                return false;
+            }else{
+                return true;
+            }
+
+        }else{
+            return false;
+        }
+
+    }
+
+    public function getClaimStatusAttribute()
+    {
+        $winner = $this->win;
+        if($winner){
+
+            if($winner->is_request)
+            {
+                return 'Requested';
+            }elseif($winner->is_distribute){
+                return 'Claimed';
+            }else{
+                return 'Ready To Request';
+            }
+
+        }else{
+            return 'No Result';
+        }
     }
 
 }
