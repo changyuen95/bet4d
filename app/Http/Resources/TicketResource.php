@@ -37,7 +37,7 @@ class TicketResource extends BaseResource
             'game' => $this->game,
             'status' => $this->status,
             'is_claimable' => $this->isClaimable,
-            'keep_ticket' => $this->keep_ticket,
+            'keep_ticket' => $this->keep_ticket ?true: false,
             'claim_status' => $this->claim_status,
             'ticketNumbers' => TicketNumberResource::collection($ticketNumber),
             'prize' => $this->winner,
