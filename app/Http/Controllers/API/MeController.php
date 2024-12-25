@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\Bank;
+use App\Models\Ticket;
 use App\Models\WinnerList;
 use App\Traits\NotificationTrait;
 use Auth;
@@ -151,7 +152,7 @@ class MeController extends Controller
         if(!$user){
             return response(['message' => trans('messages.no_user_found')], 422);
         }
-        $ticket = $user->tickets()->where('id', $id)->first();
+        $ticket = Ticket::where('id',$id)->where('user_id',$user->id)->first();
 
         if(!$ticket){
             return response(['message' => trans('messages.no_ticket_number_found')], 422);
