@@ -148,10 +148,18 @@ class MeController extends Controller
     public function requestWinner(Request $request , $id)
         {
 
+        $validator = Validator::make($request->all(),
+        [
+            'status' => 'required|in:1,0',
+        ]);
+
+
         $user = Auth::user();
+
         if(!$user){
             return response(['message' => trans('messages.no_user_found')], 422);
         }
+
         $ticket = Ticket::where('id',$id)->where('user_id',$user->id)->first();
 
         if(!$ticket){
@@ -159,32 +167,34 @@ class MeController extends Controller
         }
         $ticket_number = $ticket->ticketNumbers->pluck('id');
 
-        $winner = WinnerList::whereIn('ticket_number_id', $ticket_number)->where('is_request',0)->get();
 
-        if(count($winner) == 0){
-            return response(['message' => trans('messages.no_winner_found')], 422);
+        if($request->status == 1){
+            $winner = WinnerList::whereIn('ticket_number_id', $ticket_number)->where('is_request',0)->get();
+
+            if(count($winner) == 0){
+                return response(['message' => trans('messages.no_winner_found')], 422);
+            }else{
+                $totalAmount = $winner->sum('amount');
+
+                WinnerList::whereIn('ticket_number_id', $ticket_number)->update(['is_request' => 1]);
+
+
+                $userRequestPrize = $user->userRequestPrizes()->create([
+                    'ticket_id' => $ticket->id,
+                    'user_id' => $user->id,
+                    'amount' => $totalAmount,
+                ]);
+
+                return response([
+                    'message' =>  'Successfully request prize',
+                ], 200);
+            }
         }else{
-            $totalAmount = $winner->sum('amount');
-
-            WinnerList::whereIn('ticket_number_id', $ticket_number)->update(['is_request' => 1]);
-
-
-            $userRequestPrize = $user->userRequestPrizes()->create([
-                'ticket_id' => $ticket->id,
-                'user_id' => $user->id,
-                'amount' => $totalAmount,
-            ]);
-
+            WinnerList::whereIn('ticket_number_id', $ticket_number)->update(['is_request' => 0]);
             return response([
-                'message' =>  'Successfully request prize',
+                'message' =>  'Successfully cancel request',
             ], 200);
         }
-
-
-
-        return response([
-            'message' =>  'failed to submit',
-        ], 200);
 
 
     }
