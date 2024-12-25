@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('winner_list', function (Blueprint $table) {
+        Schema::table('winner_lists', function (Blueprint $table) {
             //
             $table->boolean('is_request')->default(false);
         });
@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('winner_list', function (Blueprint $table) {
+        Schema::table('winner_lists', function (Blueprint $table) {
             //
             $table->dropColumn('is_request');
         });
