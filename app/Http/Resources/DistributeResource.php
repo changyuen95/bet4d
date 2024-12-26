@@ -20,7 +20,7 @@ class DistributeResource extends BaseResource
         $winner->transfer_details = $this->winner->transferDetails()->orderBy('primary', 'asc')->get();
         $is_claimable = false;
 
-        if($this->is_distribute == 0 && $this->is_request == 1){
+        if($this->is_distribute == 0 ){
             $is_claimable = true;
         }
 
