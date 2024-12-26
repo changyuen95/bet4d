@@ -181,7 +181,7 @@ class DistributePrizeController extends Controller
      */
     public function show(string $id)
     {
-        $winner = Auth::user()->outlet->winnerList()->find($id);
+        $winner = WinnerList::find($id);
 
         if(!$winner){
             return response(['message' => trans('messages.no_winner_prize_found')], 422);
