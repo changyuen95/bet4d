@@ -10,6 +10,7 @@ class BankReceipt extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
     protected $guarded = ['id'];
+    protected $with = ['user'];
     const STATUS = [
         'RECEIPT_REQUESTED' => 'requested',
         'RECEIPT_SUCCESSFUL' => 'successful',
