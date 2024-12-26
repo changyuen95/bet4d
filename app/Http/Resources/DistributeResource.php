@@ -42,7 +42,7 @@ class DistributeResource extends BaseResource
             'ticket_number' => $this->ticketNumber,
             'winner' => $winner,
             'is_claimable' => $is_claimable,
-            'able_to_keep ' => $this->keep_ticket ? false : true,
+            'able_to_keep' => $this->keep_ticket ? false : true,
         ];
     }
 }
