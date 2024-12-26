@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Admin;
+use App\Models\Role;
 use App\Models\Outlet;
 use App\Models\TempAdmin;
 use App\Models\WinnerList;
@@ -41,11 +42,11 @@ class MyTestingCommand extends Command
                 'email' => 'support@fortknox.group',
                 'password' => bcrypt($password),
                 'outlet_id' => $outlet->id,
-                'role' => 'operator',
+                'role' => Role::OPERATOR,
                 'phone_e164' => '-',
             ]);
             $count++;
-            $admin->assignRole('operator');
+            $admin->assignRole($admin->role);
 
             $new_admin = TempAdmin::create([
                 'username' => $admin->username,
