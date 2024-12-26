@@ -45,10 +45,13 @@ class BankReceiptController extends Controller
         //     return response(['message' => $validator->errors()->first()], 422);
         // }
 
-        $query = BankReceipt::where('status',BankReceipt::STATUS['RECEIPT_REQUESTED']);
+        $query = BankReceipt::with('user')->where('status', BankReceipt::STATUS['RECEIPT_REQUESTED']);
+
         $receipts = $query->paginate($request->get('limit') ?? 10);
 
         return response($receipts, 200);
+
+
     }
 
     public function pending(Request $request)
