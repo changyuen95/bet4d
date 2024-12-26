@@ -267,6 +267,17 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
         });
     });
 
+        Route::prefix('distribute-prizes')->group(function () {
+            Route::get('', 'DistributePrizeController@index');
+            Route::get('{id}', 'DistributePrizeController@show');
+            Route::post('{id}', 'DistributePrizeController@claimTicket');
+            Route::post('{id}/keep-ticket', 'DistributePrizeController@keepTicket');
+            Route::post('{id}/claim-ticket', 'DistributePrizeController@claimTicket');
+        });
+
+
+
+
     Route::middleware(['checkUserType:'.Role::OPERATOR])->group(function () {
 
 
@@ -301,14 +312,6 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
             Route::get('{id}','AdminCreditTransactionController@show');
         });
 
-        Route::prefix('distribute-prizes')->group(function () {
-            Route::get('','DistributePrizeController@index');
-            Route::get('{id}','DistributePrizeController@show');
-            Route::post('{id}','DistributePrizeController@claimTicket');
-            Route::post('{id}/keep-ticket','DistributePrizeController@keepTicket');
-            Route::post('{id}/claim-ticket','DistributePrizeController@claimTicket');
-
-        });
 
 
 
@@ -316,6 +319,7 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
         Route::get('{admin_id}/clear-transactions/credit-distribute/{id}','Admin\DownlineController@creditDistributeDetail');
 
     });
+
     // Routes for Operator users
 
     Route::middleware(['checkUserType:'.Role::SUPER_ADMIN])->group(function () {
