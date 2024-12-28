@@ -202,7 +202,7 @@ Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::MEMB
 
 Route::namespace('API')->prefix('admin')->group(function () {
 
-    Route::get('check-version', 'SettingController@checkVersion');
+    Route::get('check-version', 'SettingController@checkVersionAdmin');
 
 });
 
