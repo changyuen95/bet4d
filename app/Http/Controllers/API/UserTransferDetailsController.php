@@ -37,10 +37,25 @@ class UserTransferDetailsController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'transfer_option_id' => ['required','exists:transfer_options,id'],
-            'primary' => ['required',Rule::in(array_values(UserTransferDetails::PRIMARY))],
-        ]);
+        $user = Auth::user();
+
+        $got_primary = UserTransferDetails::where('user_id',$user->id)->where('primary',1)->first();
+
+        if($got_primary){
+
+            $validator = Validator::make($request->all(), [
+                'transfer_option_id' => ['required','exists:transfer_options,id'],
+            ]);
+
+        }else{
+            $validator = Validator::make($request->all(), [
+                'transfer_option_id' => ['required','exists:transfer_options,id'],
+                'primary' => ['required',Rule::in(array_values(UserTransferDetails::PRIMARY))],
+            ]);
+        }
+
+
+
 
         if ($validator->fails()) {
             return response(['message' => $validator->errors()->first()], 422);
@@ -137,7 +152,7 @@ class UserTransferDetailsController extends Controller
             return response(['message' => trans('messages.no_user_found')], 422);
         }
 
-        $got_primary = UserTransferDetails::where('user_id',$user->id)->where('primary',UserTransferDetails::PRIMARY['Yes'])->first();
+        $got_primary = UserTransferDetails::where('user_id',$user->id)->where('primary',1)->first();
 
         if(!$got_primary){
 
