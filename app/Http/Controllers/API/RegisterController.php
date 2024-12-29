@@ -23,28 +23,31 @@ class RegisterController extends Controller
             $validator = Validator::make($request->all(), [
                 'name' => ['required'],
                 'username' => ['required', Rule::unique('users')->whereNull('deleted_at')],
-                'phone_e164' => ['required','phone',Rule::unique('users')->whereNull('deleted_at')],
+                'phone_e164' => ['required','phone'],
                 'email' => ['nullable','email',Rule::unique('users')->whereNull('deleted_at')],
                 'password' => 'required|min:6|confirmed',
                 'password_confirmation' => 'min:6'
+            ],[
+                'phone_e164.required' => 'The phone number field is required.',
+                'phone_e164.phone' => 'The phone number format is invalid.',
             ]);
-    
+
             if ($validator->fails()) {
                 return response(['message' => $validator->errors()->first()], 422);
             }
-    
+
             $user = new User;
-    
+
             // if ($user->email_verified_at) {
             //     return response(['message' => 'This email has been taken'], 422);
             // }
             $defaultAvatar = asset('images/default_avatar.jpg');
-            
+
             $user->fill($request->only('name', 'email', 'username', 'phone_e164'));
             $user->password = bcrypt($request->get('password'));
             $user->avatar = $defaultAvatar;
             $user->save();
-            
+
             $user->credit()->create([
                 'credit' => 0
             ]);
@@ -56,13 +59,13 @@ class RegisterController extends Controller
             $user->assignRole('normal_user');
             DB::commit();
             return response(['message' =>  trans('messages.register_successfully') ], 200);
-    
+
             // $user->sendEmailVerificationNotification();
         }catch (Exception $e) {
             DB::rollback();
             return response(['message' =>  trans('messages.register_failed') ], 422);
         }
-    
+
     }
 
     public function registerTac(Request $request){
@@ -91,11 +94,11 @@ class RegisterController extends Controller
             }
 
             // $tacNo = $this->sendTac($request->phone_e164);
-            $tacNo = mt_rand(1000, 9999);        
+            $tacNo = mt_rand(1000, 9999);
             if(env('APP_ENV') == 'production'){
                 $user->notify(new TacNotification($tacNo));
             }
-            
+
             $currentDatetime = Carbon::now();
             $expired_at = $currentDatetime->addMinutes(2);
             $user->tacs()->create([
@@ -105,7 +108,7 @@ class RegisterController extends Controller
                 'ref' => Tac::REFERENCE['Register_User'],
                 'expired_at' => $expired_at,
             ]);
-            
+
             DB::commit();
 
             $response = [

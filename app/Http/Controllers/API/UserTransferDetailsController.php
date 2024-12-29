@@ -132,17 +132,25 @@ class UserTransferDetailsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $validator = Validator::make($request->all(), [
-            'primary' => ['required',Rule::in(array_values(UserTransferDetails::PRIMARY))],
-        ]);
-
-        if ($validator->fails()) {
-            return response(['message' => $validator->errors()->first()], 422);
-        }
         $user = Auth::user();
         if(!$user){
             return response(['message' => trans('messages.no_user_found')], 422);
         }
+
+        $got_primary = UserTransferDetails::where('user_id',$user->id)->where('primary',UserTransferDetails::PRIMARY['Yes'])->first();
+
+        if(!$got_primary){
+
+            $validator = Validator::make($request->all(), [
+                'primary' => ['required',Rule::in(array_values(UserTransferDetails::PRIMARY))],
+            ]);
+
+        }
+
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->first()], 422);
+        }
+
         $transferDetails = $user->transferDetails()->find($id);
         if(!$transferDetails){
             return response(['message' => trans('messages.no_transfer_detail_found')], 422);

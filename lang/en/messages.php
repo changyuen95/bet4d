@@ -67,7 +67,7 @@ return [
     'unable_to_reject_ticket_request_when_ticket_status_is_not_requested' => 'Unable to reject ticket request when ticket status is not requested',
     'unable_to_complete_ticket_request_when_ticket_status_is_not_in_progress' => 'Unable to complete ticket request when ticket status is not in progress',
     'no_ticket_owner_found' => 'No ticket owner found',
-    'at_least_1_barcode_is_scanned_in_order_to_complete_ticket_request' => 'At least 1 barcode is scanned in order to complete ticket request',
+    'at_least_1_barcode_is_scanned_in_order_to_complete_ticket_request' => 'At least 1 ticket receipt is scanned in order to complete ticket request',
     'ticket_request_selected_is_not_belongs_to_you' => 'Ticket request selected is not belongs to you',
     'successfully_scanned_barcode' => 'Successfully scanned barcode',
     'failed_to_scan_barcode' => 'Failed to scan barcode',

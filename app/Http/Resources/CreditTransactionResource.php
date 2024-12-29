@@ -15,10 +15,10 @@ class CreditTransactionResource extends BaseResource
      */
     public function toArray(Request $request): array
     {
-        
+
         $relatedModel = $this->targetable;
         if($relatedModel->creatable_type == 'App\Models\Admin'){
-            $relatedModel->creatable->outlet->platform;  
+            $relatedModel->creatable->outlet->platform;
         }
 
         $result = [
@@ -50,8 +50,8 @@ class CreditTransactionResource extends BaseResource
         //     $result['ticket'] = $relatedModel;
         // }else{
         //     $result['targetable'] = $relatedModel;
-        // 
-        
+        //
+
         return $result;
     }
 }

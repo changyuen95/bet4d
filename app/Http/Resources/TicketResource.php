@@ -35,7 +35,7 @@ class TicketResource extends BaseResource
             'draw' => $this->draws,
             'platform' => $this->platform,
             'game' => $this->game,
-            'status' => $this->status,
+            'status' => ucwords(strtolower($this->status)),
             'is_claimable' => $this->isClaimable,
             'keep_ticket' => $this->keep_ticket ?true: false,
             'claim_status' => $this->claim_status,

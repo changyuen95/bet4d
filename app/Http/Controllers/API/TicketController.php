@@ -198,7 +198,7 @@ class TicketController extends Controller
                     $ticketNumberArray = $this->getPermutationsProbabilities($ticket['ticket_number']);
                     foreach($ticketNumberArray as $ticketGenerated){
                         $permutation_type = $this->calculatePermutations($ticket['ticket_number']);
-                        $sub_ticket =  $ticketCreated->ticketNumbers()->create([
+                        $sub_ticket =  $ticketCreated->allticketNumbers()->create([
                             'number' => $ticketGenerated,
                             'small_amount' => $ticket['small_amount'],
                             'actual_small_amount' => $ticket['small_amount'],
@@ -224,7 +224,7 @@ class TicketController extends Controller
                     if($ticket['type'] == TicketNumber::TYPE['e-box']){
                         $permutation_type = $this->calculatePermutations($ticket['ticket_number']);
                     }
-                    $ticketCreated->ticketNumbers()->create([
+                    $ticketCreated->allticketNumbers()->create([
                         'number' => $ticket['ticket_number'],
                         'small_amount' => $ticket['small_amount'],
                         'actual_small_amount' => $ticket['small_amount'],
@@ -336,11 +336,13 @@ class TicketController extends Controller
 
         DB::beginTransaction();
         try{
-            $ticketNumber = $ticket->ticketNumbers;
+            $ticketNumber = $ticket->allTicketNumbers;
             $billAmount = 0;
             foreach($ticketNumber as $ticketNo){
                 $billAmount += $ticketNo->small_amount;
                 $billAmount += $ticketNo->big_amount;
+                $billAmount += $ticketNo->tax_amount;
+
             }
 
             $userCredit = $user->credit;
@@ -506,11 +508,12 @@ class TicketController extends Controller
 
         DB::beginTransaction();
         try{
-            $ticketNumber = $ticket->ticketNumbers;
+            $ticketNumber = $ticket->allTicketNumbers;
             $billAmount = 0;
             foreach($ticketNumber as $ticketNo){
-                $billAmount += $ticketNo->small_amount;
-                $billAmount += $ticketNo->big_amount;
+                $billAmount += $ticketNo->actual_small_amount;
+                $billAmount += $ticketNo->actual_big_amount;
+                $billAmount += $ticketNo->actual_tax_amount;
             }
 
             $userCredit = $user->credit;
@@ -534,7 +537,7 @@ class TicketController extends Controller
                 }
 
             }else{
-                $barCodeCount = $ticket->barcode()->count();
+                $barCodeCount = $ticket->receipts()->count();
                 if($barCodeCount <= 0){
                     return response(['message' => trans('messages.at_least_1_barcode_is_scanned_in_order_to_complete_ticket_request')], 422);
                 }
