@@ -32,35 +32,48 @@ class MyTestingCommand extends Command
     {
         // create admins for each outlet
 
-        $outlets = Outlet::all();
+        // $outlets = Outlet::all();
+        $accounts = TempAdmin::all();
         $count = 1;
-        foreach($outlets as $outlet) {
 
-            for($i = 0; $i < 5; $i++) {
-
-                $admin = Admin::create([
-                    $password = substr(str_shuffle(str_repeat('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', 10)), 0, 10),
-                    'name' => 'Staff '.$count,
-                    'username' => 'staff'.$count,
-                    'email' => 'support@fortknox.group',
-                    'password' => bcrypt($password),
-                    'outlet_id' => $outlet->id,
-                    'role' => Role::OPERATOR,
-                    'phone_e164' => '-',
-                ]);
-                $count++;
+        foreach($accounts as $account){
+            $admin = Admin::where('username', $admin->username)->first();
+            $outlet = Outlet::where('name', $account->outlet_name)->first();
+            $admin->outlet_id = $outlet->id;
+            //assign role
+            if($outlet){
                 $admin->assignRole($admin->role);
-
-                $new_admin = TempAdmin::create([
-                    'username' => $admin->username,
-                    'password' => $password,
-                    'outlet_name' => $outlet->name,
-                ]);
-
-            }
-
-
+                $admin->save();
+|           }
         }
+
+        // foreach($outlets as $outlet) {
+
+        //     for($i = 0; $i < 5; $i++) {
+
+        //         $admin = Admin::create([
+        //             $password = substr(str_shuffle(str_repeat('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', 10)), 0, 10),
+        //             'name' => 'Staff '.$count,
+        //             'username' => 'staff'.$count,
+        //             'email' => 'support@fortknox.group',
+        //             'password' => bcrypt($password),
+        //             'outlet_id' => $outlet->id,
+        //             'role' => Role::OPERATOR,
+        //             'phone_e164' => '-',
+        //         ]);
+        //         $count++;
+        //         $admin->assignRole($admin->role);
+
+        //         $new_admin = TempAdmin::create([
+        //             'username' => $admin->username,
+        //             'password' => $password,
+        //             'outlet_name' => $outlet->name,
+        //         ]);
+
+        //     }
+
+
+        // }
 
 
 
