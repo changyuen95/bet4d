@@ -148,4 +148,15 @@ class SettingController extends Controller
         return response($popups, 200);
     }
 
+    public function popupShow(Request $request, $id)
+    {
+        $popup = Popup::find($id);
+
+        if (!$popup) {
+            return response(['message' => 'Popup not found'], 422);
+        }
+
+        return response($popup, 200);
+    }
+
 }

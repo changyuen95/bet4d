@@ -182,6 +182,12 @@ Route::namespace('API')->group(function () {
 
         });
 
+        Route::prefix('popup')->group(function () {
+            Route::get('','settingController@popup');
+            Route::get('show','settingController@popupShow');
+
+        });
+
 
         Route::prefix('tickets')->group(function () {
             Route::post('','TicketController@store');
