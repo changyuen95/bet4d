@@ -56,6 +56,12 @@ Route::namespace('API')->group(function () {
         Route::get('', 'BannerController@index');
     });
 
+    Route::prefix('popup')->group(function () {
+        Route::get('','settingController@popup');
+        Route::get('show','settingController@popupShow');
+
+    });
+
 
 
     Route::prefix('platforms')->group(function () {
@@ -179,12 +185,6 @@ Route::namespace('API')->group(function () {
             Route::post('mark-as-read/{id}','NotificationController@markAsRead');
             Route::post('mark-all-as-read','NotificationController@markAllAsRead');
             Route::get('unread-count','NotificationController@unReadCount');
-
-        });
-
-        Route::prefix('popup')->group(function () {
-            Route::get('','settingController@popup');
-            Route::get('show','settingController@popupShow');
 
         });
 
