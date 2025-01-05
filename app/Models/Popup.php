@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Popup extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
+        'id',
         'title',
         'description',
         'image',

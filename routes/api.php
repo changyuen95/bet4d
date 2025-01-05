@@ -58,7 +58,7 @@ Route::namespace('API')->group(function () {
 
     Route::prefix('popup')->group(function () {
         Route::get('','SettingController@popup');
-        Route::get('show','SettingController@popupShow');
+        Route::get('{id}','SettingController@popupShow');
 
     });
 
