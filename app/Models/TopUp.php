@@ -59,11 +59,6 @@ class TopUp extends Model
         return $this->hasOne(BankReceipt::class);
     }
 
-    public function getTopUpWithAttribute($value)
-    {
-        return array_search($this->top_up_with, self::TOP_UP_WITH) ?? $this->top_up_with;
-    }
-
     public function bonus()
     {
         return $this->belongsTo(Bonus::class, 'bonus_id');
