@@ -56,7 +56,7 @@ class TopUp extends Model
 
     public function bankReceipt()
     {
-        return $this->hasOne(BankReceipt::class, 'bank_receipt_id');
+        return $this->hasOne(BankReceipt::class);
     }
 
     public function getTopUpWithAttribute($value)
