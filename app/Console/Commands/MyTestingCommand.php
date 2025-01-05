@@ -44,7 +44,7 @@ class MyTestingCommand extends Command
             if($outlet){
                 $admin->assignRole($admin->role);
                 $admin->save();
-|           }
+           }
         }
 
         // foreach($outlets as $outlet) {

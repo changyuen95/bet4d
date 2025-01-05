@@ -93,5 +93,22 @@ class TicketNumber extends Model
                     ->where('is_main', 0);
     }
 
+    public function scopeFilterByType($query, $type)
+    {
+        return $query->where('type', $type);
+    }
+
+    public function scopeFilterByMain($query, $isMain = true)
+    {
+        return $query->where('is_main', $isMain ? 1 : 0);
+    }
+
+    public function scopeFilterByWinningStatus($query, $status)
+    {
+        return $query->whereHas('win', function ($q) use ($status) {
+            $q->where('status', $status);
+        });
+    }
+
 
 }

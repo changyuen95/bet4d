@@ -237,34 +237,17 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
 
         Route::prefix('bank-receipts')->group(function() {
             // Display all receipts
-            Route::get('/', [BankReceiptController::class, 'index'])->name('bank-receipts.index');
+            Route::get('/', [BankReceiptController::class, 'index'])->name('admin.bank-receipts.index');
+            Route::post('/', [BankReceiptController::class, 'store'])->name('admin.bank-receipts.store');
+            Route::get('/bank-account', [BankReceiptController::class, 'bankAccount'])->name('admin.bank-receipts.bankAccount');
 
             // Show a specific receipt
-            Route::get('/{id}', [BankReceiptController::class, 'show'])->name('bank-receipts.show');
+            Route::get('/{id}', [BankReceiptController::class, 'show'])->name('admin.bank-receipts.show');
 
-            Route::put('/{id}/update-status', [BankReceiptController::class, 'staffUpdateReceiptStatus'])->name('bank-receipts.staffUpdateStatus');
+            Route::put('/{id}/update-status', [BankReceiptController::class, 'staffUpdateReceiptStatus'])->name('admin.bank-receipts.staffUpdateStatus');
 
         });
 
-        Route::prefix('bank-receipts')->group(function() {
-            Route::get('/bank-account', [BankReceiptController::class, 'bankAccount'])->name('bank-receipts.bankAccount');
-
-            // Display all receipts
-            Route::get('/', [BankReceiptController::class, 'index'])->name('bank-receipts.index');
-
-            // Create a new receipt
-            Route::post('/', [BankReceiptController::class, 'store'])->name('bank-receipts.store');
-
-            // Show a specific receipt
-            Route::get('/{id}', [BankReceiptController::class, 'show'])->name('bank-receipts.show');
-
-
-            // admin update receipt
-            Route::post('/{id}/update-status', [BankReceiptController::class, 'staffUpdateReceiptStatus'])->name('bank-receipts.updateStatus');
-
-
-            // Get bank account details
-        });
     });
 
         Route::prefix('distribute-prizes')->group(function () {

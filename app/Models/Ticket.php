@@ -113,6 +113,21 @@ class Ticket extends Model
         return $this->belongsTo(Game::class, 'game_id');
     }
 
+    public function scopeFilterByDate($query, $startDate, $endDate)
+    {
+        return $query->whereBetween('created_at', [$startDate, $endDate]);
+    }
+
+    public function scopeFilterByOutlet($query, $outletId)
+    {
+        return $query->where('outlet_id', $outletId);
+    }
+
+    public function scopeFilterByStaff($query, $staffId)
+    {
+        return $query->where('action_by', $staffId);
+    }
+
     public function outlet()
     {
         return $this->belongsTo(Outlet::class, 'outlet_id');

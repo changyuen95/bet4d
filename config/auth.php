@@ -37,19 +37,29 @@ return [
 
     'guards' => [
         'web' => [
+            //for review
+            //for grab4d landing page
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'admins',
         ],
         'api' => [
+            // for user app
             'driver' => 'passport',
             'provider' => 'users',
             'hash' => false,
         ],
         'admin-api' => [
+            // for admin app
             'driver' => 'session',
             'provider' => 'admins',
             'hash' => false,
         ],
+        'admin' => [
+            // for backeend
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
+
     ],
 
     /*

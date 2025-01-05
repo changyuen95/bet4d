@@ -29,4 +29,6 @@ class BankReceipt extends Model
         return $value ? asset('storage/'.$value) : null;
     }
 
+
+
 }

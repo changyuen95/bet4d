@@ -45,7 +45,13 @@ class BankReceiptController extends Controller
         //     return response(['message' => $validator->errors()->first()], 422);
         // }
 
-        $query = BankReceipt::with('user')->where('status', BankReceipt::STATUS['RECEIPT_REQUESTED']);
+        //check if admin or user
+        $user = Auth::user();
+        if($user->hasRole(Role::HQ) || $user->hasRole(Role::OPERATOR)){
+            $query = BankReceipt::with('user')->where('status', BankReceipt::STATUS['RECEIPT_REQUESTED']);
+        }else{
+            $query = BankReceipt::with('user')->where('user_id', $user->id);
+        }
 
         $receipts = $query->paginate($request->get('limit') ?? 10);
 
@@ -260,32 +266,24 @@ class BankReceiptController extends Controller
             $adminCredit = $admin->credit;
 
             if($receipt->status == BankReceipt::STATUS['RECEIPT_REQUESTED'] && $request->status == BankReceipt::STATUS['RECEIPT_SUCCESSFUL']){
-                $receipt->creditTransaction()->create([
-                    'user_id' => $user->id,
-                    'amount' => $receipt->amount,
-                    'type'  => CreditTransaction::TYPE['Increase'],
-                    'before_amount' => $userCredit->credit,
-                    'outlet_id' => null,
-                    'bank_receipt_id' => $receipt->id,
-                ]);
-
-                $userCredit->credit = $userCredit->credit + $receipt->amount;
-                $userCredit->save();
-
                 $topup = $admin->topUpMorph()->create([
                     'user_id' => $user->id,
                     'amount' => $receipt->amount,
                     'remark' => 'Bank transfer',
                     'top_up_with' => TopUp::TOP_UP_WITH['Bank'],
+                    'bank_receipt_id' => $receipt->id,
                 ]);
 
                 $creditTransaction = $topup->creditTransaction()->create([
                     'user_id' => $user->id,
-                    'amount' => $receipt->amount,
+                    'amount' => $request->amount,
                     'type' => CreditTransaction::TYPE['Increase'],
                     'before_amount' => $userCredit->credit,
                     'outlet_id' => null,
                 ]);
+
+                $userCredit->credit = $userCredit->credit + $receipt->amount;
+                $userCredit->save();
 
                 // admin/staff credit
                 $adminTransaction= $topup->adminTransaction()->create([
