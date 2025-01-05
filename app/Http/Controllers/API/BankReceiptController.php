@@ -108,7 +108,7 @@ class BankReceiptController extends Controller
        // user create bank receipt
         $validator = Validator::make($request->all(), [
             'amount' => ['required','numeric'],
-            // 'receipt_image' => ['required','image'],
+            'receipt_image' => ['required','image'],
         ]);
 
         if ($validator->fails()) {
@@ -118,19 +118,19 @@ class BankReceiptController extends Controller
 
         $user = Auth::user();
 
-        //     File::makeDirectory(storage_path('app/public/bank_receipt/'.$user->id.'/_receipt_/'), $mode = 0777, true, true);
-        //     $receipt_image = $request->file('receipt_image');
+            File::makeDirectory(storage_path('app/public/bank_receipt/'.$user->id.'/_receipt_/'), $mode = 0777, true, true);
+            $receipt_image = $request->file('receipt_image');
 
-        //    $input['receipt_image'] = 'receipt_image_'.time().'.'.$receipt_image->getClientOriginalExtension();
+           $input['receipt_image'] = 'receipt_image_'.time().'.'.$receipt_image->getClientOriginalExtension();
 
-        //     $destination_path = storage_path('app/public/bank_receipt/'.$user->id.'/_receipt_/');
-        //     $stored_image = Image::make($receipt_image->path());
-
-
-        //     $stored_image->save($destination_path.'/'.$input['receipt_image']);
+            $destination_path = storage_path('app/public/bank_receipt/'.$user->id.'/_receipt_/');
+            $stored_image = Image::make($receipt_image->path());
 
 
-        //     $image_full_path = 'bank_receipt/'.$user->id.'/_receipt_/'.$input['receipt_image'];
+            $stored_image->save($destination_path.'/'.$input['receipt_image']);
+
+
+            $image_full_path = 'bank_receipt/'.$user->id.'/_receipt_/'.$input['receipt_image'];
 
         $receipt = BankReceipt::create([
             'user_id' => $user->id,
