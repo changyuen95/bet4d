@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\AppVersion;
+use App\Models\Popup;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Validator;
@@ -138,4 +139,13 @@ class SettingController extends Controller
         return response($result, 200);
 
     }
+
+    public function popup(Request $request)
+    {
+        //scopeActive
+        $popups = Popup::where('status','active')->get();
+
+        return response($popups, 200);
+    }
+
 }

@@ -35,7 +35,7 @@ class TicketNumberResource extends BaseResource
             'created_at' => $this->formatDate($this->created_at),
             'updated_at' => $this->formatDate($this->updated_at),
             'tax' => $this->tax,
-            'is_main' => $this->is_main,
+            'is_main' => (int)$this->is_main,
             'refund_tickets' => $this->refund_tickets,
             'sub_tickets' => $this->sub_tickets,
             'prizes' => $this->win,
