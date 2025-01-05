@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('notification', function (Blueprint $table) {
+        Schema::table('notifications', function (Blueprint $table) {
             //
             $table->boolean('is_pop_up')->default(false);
         });
@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('notification', function (Blueprint $table) {
+        Schema::table('notifications', function (Blueprint $table) {
             //
             $table->dropColumn('is_pop_up');
         });
