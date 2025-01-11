@@ -7,20 +7,22 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
-
+use Log;
 class RouteServiceProvider extends ServiceProvider
 {
     /**
-     * The path to your application's "home" route.
+     * Namespace for default controllers.
      *
-     * Typically, users are redirected here after authentication.
-     *
-     * @var string
+     * @var string|null
      */
     protected $namespace = 'App\Http\Controllers';
-    protected $admin_namespace = 'App\Http\Controllers\Admin';
 
-    public const HOME = '/dashboard';
+    /**
+     * Namespace for admin controllers.
+     *
+     * @var string|null
+     */
+    protected $admin_namespace = 'App\Http\Controllers\Admin';
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
@@ -32,19 +34,31 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         $this->routes(function () {
-            Route::middleware('api')
-                ->prefix('api')
-                ->namespace($this->namespace)
-                ->group(base_path('routes/api.php'));
-
-                Route::middleware('web')
+            // Web Routes
+            // Route::middleware('web')
+            //     ->domain(env('APP_URL'))
+            //     ->namespace($this->namespace)
+            //     ->group(function () {
+            //         Log::info('web routes loaded');
+            //         require base_path('routes/web.php');
+            //     });
+            // Admin Routes
+            Route::middleware('web')
                 ->namespace($this->admin_namespace)
-                ->domain(env('APP_ADMIN_URL'))
+                // ->domain(env('APP_ADMIN_URL'))
                 ->name('admin.')
-                ->group(base_path('routes/admin.php'));
+                ->group(function () {
+                    Log::info('Admin routes loaded');
+                    require base_path('routes/admin.php');
+                });
 
-
-
+            // API Routes
+            Route::middleware('api')
+                ->namespace($this->namespace)
+                ->prefix('api')
+                ->group(base_path('routes/api.php'));
         });
+
+
     }
 }
