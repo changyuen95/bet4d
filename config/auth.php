@@ -40,7 +40,7 @@ return [
             //for review
             //for grab4d landing page
             'driver' => 'session',
-            'provider' => 'admins',
+            'provider' => 'users',
         ],
         'api' => [
             // for user app
