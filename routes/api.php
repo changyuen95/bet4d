@@ -172,7 +172,7 @@ Route::namespace('API')->group(function () {
                 Route::get('/{id}', [BankReceiptController::class, 'show'])->name('bank-receipts.show');
 
                 // Update a receipt status (user)
-                Route::put('/{id}/update-status', [BankReceiptController::class, 'updateReceiptStatus'])->name('bank-receipts.updateStatus');
+                Route::post('/{id}/update-status', [BankReceiptController::class, 'updateReceiptStatus'])->name('bank-receipts.updateStatus');
 
                 // Get bank account details
             });
@@ -250,7 +250,7 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
             // Show a specific receipt
             Route::get('/{id}', [BankReceiptController::class, 'show'])->name('admin.bank-receipts.show');
 
-            Route::put('/{id}/update-status', [BankReceiptController::class, 'staffUpdateReceiptStatus'])->name('admin.bank-receipts.staffUpdateStatus');
+            Route::post('/{id}/update-status', [BankReceiptController::class, 'staffUpdateReceiptStatus'])->name('admin.bank-receipts.staffUpdateStatus');
 
         });
 
