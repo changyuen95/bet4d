@@ -276,7 +276,7 @@ class BankReceiptController extends Controller
 
                 $creditTransaction = $topup->creditTransaction()->create([
                     'user_id' => $user->id,
-                    'amount' => $request->amount,
+                    'amount' => $receipt->amount,
                     'type' => CreditTransaction::TYPE['Increase'],
                     'before_amount' => $userCredit->credit,
                     'outlet_id' => null,
