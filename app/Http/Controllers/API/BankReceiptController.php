@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\TicketResource;
 use App\Models\CreditTransaction;
 use App\Models\AdminCreditTransaction;
+use App\Models\PointTransaction;
 use App\Models\Game;
 use App\Models\Admin;
 use App\Models\Platform;
@@ -139,6 +140,29 @@ class BankReceiptController extends Controller
             'status' => BankReceipt::STATUS['RECEIPT_REQUESTED'],
             'approved_by' => null,
         ]);
+
+            $staffs = Admin::whereHas('roles', function($q) {
+                return $q->where('name', Role::HQ);
+            })->get();
+
+            $notificationData = [];
+            $notificationData['title'] = 'New online topup request';
+            $notificationData['message'] = 'You have receive new bank receipt.';
+            $notificationData['deepLink'] = 'fortknox-admin://bank-receipt/'.$receipt->id;
+            $appId = env('ONESIGNAL_STAFF_APP_ID');
+            $apiKey = env('ONESIGNAL_STAFF_REST_API_KEY');
+            foreach($staffs as $staff){
+                $this->sendNotification($appId, $apiKey, $staff,$notificationData,$receipt);
+            }
+
+            $notificationData = [];
+            $notificationData['title'] = 'You have submit new bank receipt';
+            $notificationData['message'] = 'Please wait for approval.';
+            $notificationData['deepLink'] = 'fortknox://bank-receipt/'.$receipt->id;
+            $appId = env('ONESIGNAL_APP_ID');
+            $apiKey = env('ONESIGNAL_REST_API_KEY');
+            $this->sendNotification($appId, $apiKey, $user,$notificationData,$receipt);
+
 
         return response($receipt, 200);
     }
@@ -295,6 +319,18 @@ class BankReceiptController extends Controller
                     'after_amount' => 0,
                 ]);
 
+                $pointTransaction = $topup->pointTransaction()->create([
+                    'user_id' => $user->id,
+                    'point' => $request->amount,
+                    'type' => PointTransaction::TYPE['Increase'],
+                    'before_point' => $request->amount,
+                    'outlet_id' => null,
+                ]);
+
+                $userPoint = $user->point;
+                $userPoint->point = $userPoint->point + $request->amount;
+                $userPoint->save();
+
             }
 
             if(!$userCredit){
@@ -309,15 +345,23 @@ class BankReceiptController extends Controller
             $receipt->save();
             DB::commit();
 
-            if($receipt->status == BankReceipt::STATUS['RECEIPT_REQUESTED']){
+            if($receipt->status == BankReceipt::STATUS['RECEIPT_SUCCESSFUL']){
                     $notificationData = [];
-                    $notificationData['title'] = 'New ticket request';
-                    $notificationData['message'] = 'You have receive new ticket request.';
+                    $notificationData['title'] = 'Bank Receipt has been approved';
+                    $notificationData['message'] = 'Your bank receipt has been approved.';
                     $notificationData['deepLink'] = 'fortknox://bank_receipt/'.$receipt->id;
-                    $appId = env('ONESIGNAL_STAFF_APP_ID');
-                    $apiKey = env('ONESIGNAL_STAFF_REST_API_KEY');
-                    $this->sendNotification($appId, $apiKey, $receipt->user_id,$notificationData,$receipt);
+                    $appId = env('ONESIGNAL_APP_ID');
+                    $apiKey = env('ONESIGNAL_REST_API_KEY');
+                    $this->sendNotification($appId, $apiKey, $user,$notificationData,$receipt);
 
+            }elseif($receipt->status == BankReceipt::STATUS['RECEIPT_REJECTED']){
+                $notificationData = [];
+                $notificationData['title'] = 'Bank Receipt has been rejected';
+                $notificationData['message'] = 'Your bank receipt has been rejected.';
+                $notificationData['deepLink'] = 'fortknox://bank_receipt/'.$receipt->id;
+                $appId = env('ONESIGNAL_APP_ID');
+                $apiKey = env('ONESIGNAL_REST_API_KEY');
+                $this->sendNotification($appId, $apiKey, $user,$notificationData,$receipt);
             }
 
             return response([
