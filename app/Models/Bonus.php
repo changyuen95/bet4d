@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
 class Bonus extends Model
 {
-    use HasFactory;
+    use HasFactory,HasUlids;
 
     /**
      * The table associated with the model.
@@ -79,5 +80,20 @@ class Bonus extends Model
         $validUntil = $this->valid_until ? $this->valid_until->isAfter($now) : true;
 
         return $validFrom && $validUntil && $this->status === 'active';
+    }
+
+    public function calculateBonus(float $topupAmount): float
+    {
+        if ($this->type === 'fixed') {
+            // For fixed bonus, return the fixed value
+            return $this->value;
+        }
+
+        if ($this->type === 'percentage') {
+            // For percentage bonus, calculate based on the top-up amount
+            return $topupAmount * ($this->value / 100);
+        }
+
+        return 0; // Default to 0 if no valid bonus type
     }
 }
