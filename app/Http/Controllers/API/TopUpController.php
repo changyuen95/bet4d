@@ -74,7 +74,7 @@ class TopUpController extends Controller
         $adminCredit = $admin->credit ?? $admin->admin_credit()->create(['amount' => 0]);
         $userPoint = $user->point ?? $user->point()->create(['point' => 0]);
 
-        $bonus = Bonus::where('target', 'bank_topup')->where('status', 'active')->first();
+        $bonus = Bonus::where('target', 'first_topup')->where('status', 'active')->first();
         $bonusAmount = 0;
 
         if ($bonus) {
