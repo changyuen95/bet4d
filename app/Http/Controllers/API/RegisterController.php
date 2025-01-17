@@ -15,9 +15,14 @@ use Exception;
 use Illuminate\Validation\Rule;
 use Validator;
 use DB;
+use App\Traits\NotificationTrait;
+
 use Str;
 class RegisterController extends Controller
 {
+
+    use NotificationTrait;
+
     public function __invoke(Request $request)
 {
     DB::beginTransaction();
