@@ -64,6 +64,10 @@ class TopUp extends Model
         return $this->belongsTo(Bonus::class, 'bonus_id');
     }
 
+    public function userBonus(){
+        return $this->belongsTo(UserBonus::class, 'user_bonus_id');
+    }
+
     public function scopeFilterByType($query, $type)
     {
         return $query->where('top_up_with', $type);
@@ -84,6 +88,8 @@ class TopUp extends Model
         return $query->where('creatable_type', 'App\\Models\\Outlet')
                      ->where('creatable_id', $outletId);
     }
+
+
 
 
 }
