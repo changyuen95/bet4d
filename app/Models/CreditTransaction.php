@@ -43,9 +43,9 @@ class CreditTransaction extends Model
         return 'Completed';
     }
 
-    public function bonus()
+    public function userbonus()
     {
-        return $this->belongsTo(Bonus::class, 'bonus_id');
+        return $this->belongsTo(UserBonus::class, 'user_bonus_id');
     }
 
     public function getDescriptionAttribute()

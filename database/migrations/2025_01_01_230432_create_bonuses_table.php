@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('bonuses', function (Blueprint $table) {
-            $table->id(); // Primary key
+            $table->ulid('id')->primary();
             $table->string('name'); // Bonus name, e.g., "First Top-Up Bonus"
             $table->enum('type', ['fixed', 'percentage']); // Bonus type: fixed or percentage
             $table->decimal('value', 10, 2); // Bonus value (e.g., RM10 for fixed or 10% for percentage)

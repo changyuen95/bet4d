@@ -7,6 +7,8 @@ use App\Http\Resources\TicketResource;
 use App\Models\CreditTransaction;
 use App\Models\AdminCreditTransaction;
 use App\Models\PointTransaction;
+use App\Models\Bonus;
+use App\Models\UserBonus;
 use App\Models\Game;
 use App\Models\Admin;
 use App\Models\Platform;
@@ -266,11 +268,17 @@ class BankReceiptController extends Controller
 
 
 
-    public function staffUpdateReceiptStatus(Request $request, $id){
-       //admin update ticket status
-       $validator = Validator::make($request->all(), [
-        // 'user_id' => ['required'],
-        'status' => ['required',Rule::in(array_values([BankReceipt::STATUS['RECEIPT_REQUESTED'],BankReceipt::STATUS['RECEIPT_REJECTED'],BankReceipt::STATUS['RECEIPT_SUCCESSFUL']]))],
+    public function staffUpdateReceiptStatus(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => [
+                'required',
+                Rule::in([
+                    BankReceipt::STATUS['RECEIPT_REQUESTED'],
+                    BankReceipt::STATUS['RECEIPT_REJECTED'],
+                    BankReceipt::STATUS['RECEIPT_SUCCESSFUL'],
+                ]),
+            ],
         ]);
 
         if ($validator->fails()) {
@@ -279,18 +287,31 @@ class BankReceiptController extends Controller
 
         $admin = Auth::user();
         $receipt = BankReceipt::find($id);
-        if(!$receipt){
-            return response(['message' =>  trans('messages.invalid_receipt') ], 422);
+
+        if (!$receipt) {
+            return response(['message' => trans('messages.invalid_receipt')], 422);
         }
 
         DB::beginTransaction();
 
+        try {
             $user = $receipt->user;
-            $userCredit = $user->credit;
-            $adminCredit = $admin->credit;
-            $userPoint = $user->point;
+            $userCredit = $user->credit ?? $user->credit()->create(['credit' => 0]);
+            $adminCredit = $admin->credit ?? $admin->admin_credit()->create(['amount' => 0]);
+            $userPoint = $user->point ?? $user->point()->create(['point' => 0]);
 
-            if($receipt->status == BankReceipt::STATUS['RECEIPT_REQUESTED'] && $request->status == BankReceipt::STATUS['RECEIPT_SUCCESSFUL']){
+            $bonus = Bonus::where('target', 'bank_topup')->where('status', 'active')->first();
+            $bonusAmount = 0;
+
+            if ($bonus) {
+                // Calculate bonus amount based on type
+                $bonusAmount = $bonus->type === 'fixed' ? $bonus->value : $receipt->amount * ($bonus->value / 100);
+            }
+
+            if (
+                $receipt->status == BankReceipt::STATUS['RECEIPT_REQUESTED']
+                && $request->status == BankReceipt::STATUS['RECEIPT_SUCCESSFUL']
+            ) {
                 $topup = $admin->topUpMorph()->create([
                     'user_id' => $user->id,
                     'amount' => $receipt->amount,
@@ -299,77 +320,100 @@ class BankReceiptController extends Controller
                     'bank_receipt_id' => $receipt->id,
                 ]);
 
+                $userBonus = null;
+                if ($bonus) {
+                    $userBonus = UserBonus::create([
+                        'user_id' => $user->id,
+                        'bonus_id' => $bonus->id,
+                        'amount' => $bonusAmount,
+                        'description' => 'Bonus applied for bank top-up',
+                    ]);
+
+                    // Link UserBonus to TopUp
+                    $topup->user_bonus_id = $userBonus->id;
+                    $topup->save();
+                }
+
                 $creditTransaction = $topup->creditTransaction()->create([
                     'user_id' => $user->id,
-                    'amount' => $receipt->amount,
+                    'amount' => $receipt->amount + $bonusAmount,
                     'type' => CreditTransaction::TYPE['Increase'],
                     'before_amount' => $userCredit->credit,
+                    'user_bonus_id' => $userBonus ? $userBonus->id : null, // Link UserBonus if available
                     'outlet_id' => null,
                 ]);
 
-                $userCredit->credit = $userCredit->credit + $receipt->amount;
+                $userCredit->credit += $receipt->amount + $bonusAmount;
                 $userCredit->save();
 
-                // admin/staff credit
-                $adminTransaction= $topup->adminTransaction()->create([
+                $adminTransaction = $topup->adminTransaction()->create([
                     'admin_id' => $admin->id,
                     'amount' => $receipt->amount,
                     'type' => AdminCreditTransaction::TYPE['Increase'],
-                    'before_amount' => $adminCredit,
+                    'before_amount' => $adminCredit->amount,
                     'outlet_id' => null,
-                    'after_amount' => 0,
                 ]);
+
+                $adminCredit->amount += $receipt->amount;
+                $adminCredit->save();
+
+                $adminTransaction->after_amount = $adminCredit->amount;
+                $adminTransaction->save();
 
                 $pointTransaction = $topup->pointTransaction()->create([
                     'user_id' => $user->id,
                     'point' => $receipt->amount,
                     'type' => PointTransaction::TYPE['Increase'],
-                    'before_point' => $userPoint->amount,
+                    'before_point' => $userPoint->point,
                     'outlet_id' => null,
                 ]);
 
-                $userPoint->point = $userPoint->point + $receipt->amount;
+                $userPoint->point += $receipt->amount;
                 $userPoint->save();
-
             }
 
-            if(!$userCredit){
+            if (!$userCredit) {
                 return response(['message' => trans('messages.no_user_credit_found')], 422);
             }
+
             $receipt->status = $request->status;
             $receipt->approved_by = $admin->id;
-            if(isset($topup)){
-                $receipt->top_up_id = $topup->id;
 
+            if (isset($topup)) {
+                $receipt->top_up_id = $topup->id;
             }
+
             $receipt->save();
+
             DB::commit();
 
-            if($receipt->status == BankReceipt::STATUS['RECEIPT_SUCCESSFUL']){
-                    $notificationData = [];
-                    $notificationData['title'] = 'Bank Receipt has been approved';
-                    $notificationData['message'] = 'Your bank receipt has been approved.';
-                    $notificationData['deepLink'] = 'fortknox://bank_receipt/'.$receipt->id;
-                    $appId = env('ONESIGNAL_APP_ID');
-                    $apiKey = env('ONESIGNAL_REST_API_KEY');
-                    $this->sendNotification($appId, $apiKey, $user,$notificationData,$receipt);
-
-            }elseif($receipt->status == BankReceipt::STATUS['RECEIPT_REJECTED']){
-                $notificationData = [];
-                $notificationData['title'] = 'Bank Receipt has been rejected';
-                $notificationData['message'] = 'Your bank receipt has been rejected.';
-                $notificationData['deepLink'] = 'fortknox://bank_receipt/'.$receipt->id;
-                $appId = env('ONESIGNAL_APP_ID');
-                $apiKey = env('ONESIGNAL_REST_API_KEY');
-                $this->sendNotification($appId, $apiKey, $user,$notificationData,$receipt);
+            if ($receipt->status == BankReceipt::STATUS['RECEIPT_SUCCESSFUL']) {
+                $notificationData = [
+                    'title' => 'Bank Receipt has been approved',
+                    'message' => 'Your bank receipt has been approved.',
+                    'deepLink' => 'fortknox://bank_receipt/' . $receipt->id,
+                ];
+                $this->sendNotification(env('ONESIGNAL_APP_ID'), env('ONESIGNAL_REST_API_KEY'), $user, $notificationData, $receipt);
+            } elseif ($receipt->status == BankReceipt::STATUS['RECEIPT_REJECTED']) {
+                $notificationData = [
+                    'title' => 'Bank Receipt has been rejected',
+                    'message' => 'Your bank receipt has been rejected.',
+                    'deepLink' => 'fortknox://bank_receipt/' . $receipt->id,
+                ];
+                $this->sendNotification(env('ONESIGNAL_APP_ID'), env('ONESIGNAL_REST_API_KEY'), $user, $notificationData, $receipt);
             }
 
             return response([
-                'message' =>  trans('messages.update_status_successfully'),
-                'ticket' => ($receipt)
+                'message' => trans('messages.update_status_successfully'),
+                'ticket' => $receipt,
             ], 200);
-
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response(['message' => trans('messages.update_status_failed')], 422);
+        }
     }
+
+
 
 
     public function bankAccount(Request $request)

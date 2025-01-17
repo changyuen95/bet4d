@@ -17,56 +17,81 @@ use Str;
 class RegisterController extends Controller
 {
     public function __invoke(Request $request)
-    {
-        DB::beginTransaction();
-        try{
-            $validator = Validator::make($request->all(), [
-                'name' => ['required'],
-                'username' => ['required', Rule::unique('users')->whereNull('deleted_at')],
-                'phone_e164' => ['required','phone'],
-                'email' => ['nullable','email',Rule::unique('users')->whereNull('deleted_at')],
-                'password' => 'required|min:6|confirmed',
-                'password_confirmation' => 'min:6'
-            ],[
-                'phone_e164.required' => 'The phone number field is required.',
-                'phone_e164.phone' => 'The phone number format is invalid.',
-            ]);
+{
+    DB::beginTransaction();
+    try {
+        $validator = Validator::make($request->all(), [
+            'name' => ['required'],
+            'username' => ['required', Rule::unique('users')->whereNull('deleted_at')],
+            'phone_e164' => ['required', 'phone'],
+            'email' => ['nullable', 'email', Rule::unique('users')->whereNull('deleted_at')],
+            'password' => 'required|min:6|confirmed',
+            'password_confirmation' => 'min:6',
+        ], [
+            'phone_e164.required' => 'The phone number field is required.',
+            'phone_e164.phone' => 'The phone number format is invalid.',
+        ]);
 
-            if ($validator->fails()) {
-                return response(['message' => $validator->errors()->first()], 422);
-            }
-
-            $user = new User;
-
-            // if ($user->email_verified_at) {
-            //     return response(['message' => 'This email has been taken'], 422);
-            // }
-            $defaultAvatar = asset('images/default_avatar.jpg');
-
-            $user->fill($request->only('name', 'email', 'username', 'phone_e164'));
-            $user->password = bcrypt($request->get('password'));
-            $user->avatar = $defaultAvatar;
-            $user->save();
-
-            $user->credit()->create([
-                'credit' => 0
-            ]);
-
-            $user->point()->create([
-                'point' => 0
-            ]);
-
-            $user->assignRole('normal_user');
-            DB::commit();
-            return response(['message' =>  trans('messages.register_successfully') ], 200);
-
-            // $user->sendEmailVerificationNotification();
-        }catch (Exception $e) {
-            DB::rollback();
-            return response(['message' =>  trans('messages.register_failed') ], 422);
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->first()], 422);
         }
 
+        // Create the new user
+        $user = new User;
+
+        $defaultAvatar = asset('images/default_avatar.jpg');
+
+        $user->fill($request->only('name', 'email', 'username', 'phone_e164'));
+        $user->password = bcrypt($request->get('password'));
+        $user->avatar = $defaultAvatar;
+        $user->save();
+
+        // Create user credit and point records
+        $user->credit()->create(['credit' => 0]);
+        $user->point()->create(['point' => 0]);
+
+        // Assign default role
+        $user->assignRole('normal_user');
+
+        // Check for active registration bonus
+        $bonus = Bonus::where('target', 'registration')->where('status', 'active')->first();
+
+        if ($bonus) {
+            $bonusAmount = $bonus->type === 'fixed'
+                ? round($bonus->value, 2) // Fixed bonus
+                : 0; // Percentage is not applicable for registration bonuses
+
+            // Create UserBonus record
+            $userBonus = UserBonus::create([
+                'user_id' => $user->id,
+                'bonus_id' => $bonus->id,
+                'amount' => $bonusAmount,
+                'description' => 'Bonus for registering an account',
+            ]);
+
+            // Add bonus to user credit
+            $userCredit = $user->credit;
+            $userCredit->credit += $bonusAmount;
+            $userCredit->save();
+
+            // Send notification about the registration bonus
+            $notificationData = [
+                'title' => 'Welcome Bonus Received!',
+                'message' => 'You have received ' . $bonusAmount . ' as a welcome bonus for registering.',
+                'deepLink' => '', // Add your app-specific deep link if needed
+            ];
+            $this->sendNotification(env('ONESIGNAL_APP_ID'), env('ONESIGNAL_REST_API_KEY'), $user, $notificationData, $userCredit);
+        }
+
+        DB::commit();
+
+        return response(['message' => trans('messages.register_successfully')], 200);
+    } catch (Exception $e) {
+        DB::rollback();
+        return response(['message' => trans('messages.register_failed')], 422);
     }
+}
+
 
     public function registerTac(Request $request){
         $validator = Validator::make($request->all(), [

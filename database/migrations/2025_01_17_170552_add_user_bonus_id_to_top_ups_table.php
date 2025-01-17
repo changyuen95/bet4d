@@ -11,7 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('credit_transactions', function (Blueprint $table) {
+        Schema::table('top_ups', function (Blueprint $table) {
+            //
+
             $table->foreignUlid('user_bonus_id')->nullable()->constrained('user_bonuses')->onDelete('set null');
         });
     }
@@ -21,10 +23,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('credit_transactions', function (Blueprint $table) {
+        Schema::table('top_ups', function (Blueprint $table) {
             //
             $table->dropForeign(['user_bonus_id']);
-            $table->dropColumn('user_bonus_id');
         });
     }
 };

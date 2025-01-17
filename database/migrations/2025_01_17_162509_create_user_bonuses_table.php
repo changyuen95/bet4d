@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('user_bonuses', function (Blueprint $table) {
+            $table->uuid('id')->primary(); // UUID for the primary key
+            $table->decimal('amount', 10, 2); // Bonus amount
+            $table->text('description')->nullable(); // Optional description
+            $table->timestamps();
+
+            // Foreign keys
+            $table->foreignUlid('user_id')->nullable()->constrained('users');
+
+            $table->foreignUlid('bonus_id')->nullable()->constrained('bonuses')->onDelete('set null');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('user_bonuses');
+    }
+};
