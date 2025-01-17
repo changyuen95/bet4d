@@ -321,7 +321,7 @@ class BankReceiptController extends Controller
 
                 $pointTransaction = $topup->pointTransaction()->create([
                     'user_id' => $user->id,
-                    'point' => $request->amount,
+                    'point' => $receipt->amount,
                     'type' => PointTransaction::TYPE['Increase'],
                     'before_point' => $request->amount,
                     'outlet_id' => null,
