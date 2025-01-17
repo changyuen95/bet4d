@@ -8,6 +8,8 @@ use App\Models\TicketNumber;
 use App\Models\WinnerList;
 use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
+use App\Models\Role;
+
 use Auth;
 use Carbon\Carbon;
 use File;
@@ -41,6 +43,9 @@ class DistributePrizeController extends Controller
         }
 
         $requestGameId = $request->game_id;
+
+
+
         $query = WinnerList::whereHas('ticketNumber', function ($q) use ($requestGameId, $request) {
             // Filter by game_id if provided
             $q->whereHas('ticket', function ($q) use ($requestGameId) {
@@ -58,6 +63,11 @@ class DistributePrizeController extends Controller
 
         // Filter by is_distribute
         $query->where('is_distribute', 0);
+
+        //check user role if hq then is request = 1
+        if($staff->hasRole(Role::HQ) ){
+            $query->where('is_request', 1);
+        }
 
         // Filter by handled_by_me
         if ($request->handled_by_me) {
