@@ -288,6 +288,7 @@ class BankReceiptController extends Controller
             $user = $receipt->user;
             $userCredit = $user->credit;
             $adminCredit = $admin->credit;
+            $userPoint = $user->point;
 
             if($receipt->status == BankReceipt::STATUS['RECEIPT_REQUESTED'] && $request->status == BankReceipt::STATUS['RECEIPT_SUCCESSFUL']){
                 $topup = $admin->topUpMorph()->create([
@@ -323,12 +324,11 @@ class BankReceiptController extends Controller
                     'user_id' => $user->id,
                     'point' => $receipt->amount,
                     'type' => PointTransaction::TYPE['Increase'],
-                    'before_point' => $request->amount,
+                    'before_point' => $userPoint->amount,
                     'outlet_id' => null,
                 ]);
 
-                $userPoint = $user->point;
-                $userPoint->point = $userPoint->point + $request->amount;
+                $userPoint->point = $userPoint->point + $receipt->amount;
                 $userPoint->save();
 
             }
