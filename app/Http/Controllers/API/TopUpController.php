@@ -42,148 +42,149 @@ class TopUpController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function staffUpdateReceiptStatus(Request $request, $id)
+    public function store(Request $request, $id)
 {
     $validator = Validator::make($request->all(), [
-        'status' => [
-            'required',
-            Rule::in([
-                BankReceipt::STATUS['RECEIPT_REQUESTED'],
-                BankReceipt::STATUS['RECEIPT_REJECTED'],
-                BankReceipt::STATUS['RECEIPT_SUCCESSFUL'],
-            ]),
-        ],
+        'amount' => 'required|numeric',
     ]);
 
     if ($validator->fails()) {
         return response(['message' => $validator->errors()->first()], 422);
     }
 
-    $admin = Auth::user();
-    $receipt = BankReceipt::find($id);
-
-    if (!$receipt) {
-        return response(['message' => trans('messages.invalid_receipt')], 422);
+    $user = User::find($id);
+    if (!$user) {
+        return response(['message' => trans('messages.no_user_found')], 422);
     }
 
-    DB::beginTransaction();
+    $staff = Auth::user();
+    $outlet = $staff->outlet;
 
+    DB::beginTransaction();
     try {
-        $user = $receipt->user;
+        // Check for an active bonus
+        $bonus = Bonus::where('target', 'first_topup')->where('status', 'active')->first();
+
+        $bonusAmount = 0; // Default to no bonus
+        if ($bonus) {
+            // Calculate bonus based on type
+            $bonusAmount = $bonus->type === 'fixed'
+                ? round($bonus->value, 2) // Fixed bonus
+                : round($request->amount * ($bonus->value / 100), 2); // Percentage bonus
+        }
+
+        $total = $request->amount + $bonusAmount;
+
+        // Ensure User Credit exists
         $userCredit = $user->credit ?? $user->credit()->create(['credit' => 0]);
-        $adminCredit = $admin->credit ?? $admin->admin_credit()->create(['amount' => 0]);
+
+        // Ensure Admin Credit exists
+        $adminCredit = $staff->admin_credit ?? $staff->admin_credit()->create(['amount' => 0]);
+
+        // Ensure User Points exist
         $userPoint = $user->point ?? $user->point()->create(['point' => 0]);
 
-        $bonus = Bonus::where('target', 'first_topup')->where('status', 'active')->first();
-        $bonusAmount = 0;
+        // Create TopUp record
+        $topup = $staff->topUpMorph()->create([
+            'user_id' => $user->id,
+            'amount' => $request->amount,
+            'remark' => $request->remark,
+            'top_up_with' => TopUp::TOP_UP_WITH['Outlet'],
+        ]);
 
+        // Create UserBonus record if applicable
+        $userBonus = null;
         if ($bonus) {
-            // Calculate bonus amount based on type
-            $bonusAmount = $bonus->type === 'fixed' ? $bonus->value : $receipt->amount * ($bonus->value / 100);
-        }
-
-        if (
-            $receipt->status == BankReceipt::STATUS['RECEIPT_REQUESTED']
-            && $request->status == BankReceipt::STATUS['RECEIPT_SUCCESSFUL']
-        ) {
-            $topup = $admin->topUpMorph()->create([
+            $userBonus = UserBonus::create([
                 'user_id' => $user->id,
-                'amount' => $receipt->amount,
-                'remark' => 'Bank transfer',
-                'top_up_with' => TopUp::TOP_UP_WITH['Bank'],
-                'bank_receipt_id' => $receipt->id,
+                'bonus_id' => $bonus->id,
+                'amount' => $bonusAmount,
+                'description' => 'Bonus applied for top-up',
             ]);
 
-            $userBonus = null;
-            if ($bonus) {
-                $userBonus = UserBonus::create([
-                    'user_id' => $user->id,
-                    'bonus_id' => $bonus->id,
-                    'amount' => $bonusAmount,
-                    'description' => 'Bonus applied for bank top-up',
-                ]);
-
-                // Link UserBonus to TopUp
-                $topup->user_bonus_id = $userBonus->id;
-                $topup->save();
-            }
-
-            $creditTransaction = $topup->creditTransaction()->create([
-                'user_id' => $user->id,
-                'amount' => $receipt->amount + $bonusAmount,
-                'type' => CreditTransaction::TYPE['Increase'],
-                'before_amount' => $userCredit->credit,
-                'user_bonus_id' => $userBonus ? $userBonus->id : null, // Link UserBonus if available
-                'outlet_id' => null,
-            ]);
-
-            $userCredit->credit += $receipt->amount + $bonusAmount;
-            $userCredit->save();
-
-            $adminTransaction = $topup->adminTransaction()->create([
-                'admin_id' => $admin->id,
-                'amount' => $receipt->amount,
-                'type' => AdminCreditTransaction::TYPE['Increase'],
-                'before_amount' => $adminCredit->amount,
-                'outlet_id' => null,
-            ]);
-
-            $adminCredit->amount += $receipt->amount;
-            $adminCredit->save();
-
-            $adminTransaction->after_amount = $adminCredit->amount;
-            $adminTransaction->save();
-
-            $pointTransaction = $topup->pointTransaction()->create([
-                'user_id' => $user->id,
-                'point' => $receipt->amount,
-                'type' => PointTransaction::TYPE['Increase'],
-                'before_point' => $userPoint->point,
-                'outlet_id' => null,
-            ]);
-
-            $userPoint->point += $receipt->amount;
-            $userPoint->save();
+            // Link UserBonus to TopUp
+            $topup->user_bonus_id = $userBonus->id;
+            $topup->save();
         }
 
-        if (!$userCredit) {
-            return response(['message' => trans('messages.no_user_credit_found')], 422);
+        // Create CreditTransaction record
+        $creditTransaction = $topup->creditTransaction()->create([
+            'user_id' => $user->id,
+            'amount' => $total, // Total includes bonus
+            'type' => CreditTransaction::TYPE['Increase'],
+            'before_amount' => $userCredit->credit,
+            'user_bonus_id' => $userBonus ? $userBonus->id : null, // Link UserBonus
+            'outlet_id' => $outlet->id,
+        ]);
+
+        // Update User Credit
+        $userCredit->credit += $total;
+        $userCredit->save();
+
+        // Create Admin CreditTransaction record
+        $adminTransaction = $topup->adminTransaction()->create([
+            'admin_id' => $staff->id,
+            'amount' => $request->amount, // Only top-up amount
+            'type' => AdminCreditTransaction::TYPE['Increase'],
+            'before_amount' => $adminCredit->amount,
+            'outlet_id' => $outlet->id,
+        ]);
+
+        // Update Admin Credit
+        $adminCredit->amount += $request->amount;
+        $adminCredit->save();
+
+        // Update AdminTransaction with after amount
+        $adminTransaction->after_amount = $adminCredit->amount;
+        $adminTransaction->save();
+
+        // Create PointTransaction record
+        $pointTransaction = $topup->pointTransaction()->create([
+            'user_id' => $user->id,
+            'point' => $request->amount, // Points based on top-up amount
+            'type' => PointTransaction::TYPE['Increase'],
+            'before_point' => $userPoint->point,
+            'outlet_id' => $outlet->id,
+        ]);
+
+        // Update User Points
+        $userPoint->point += $request->amount;
+        $userPoint->save();
+
+        // Send Notification for Bonus (if applicable)
+        if ($bonus) {
+            $this->sendNotification(
+                env('ONESIGNAL_APP_ID'),
+                env('ONESIGNAL_REST_API_KEY'),
+                $user,
+                [
+                    'title' => 'You have received ' . $bonusAmount . ' bonus credit!',
+                    'message' => 'You have received ' . $bonusAmount . ' bonus credit!',
+                    'deepLink' => '',
+                ],
+                $userCredit
+            );
         }
 
-        $receipt->status = $request->status;
-        $receipt->approved_by = $admin->id;
-
-        if (isset($topup)) {
-            $receipt->top_up_id = $topup->id;
-        }
-
-        $receipt->save();
+        // Send Notification for Top-Up
+        $this->sendNotification(
+            env('ONESIGNAL_APP_ID'),
+            env('ONESIGNAL_REST_API_KEY'),
+            $user,
+            [
+                'title' => 'Top up successfully!',
+                'message' => 'Top up successfully! ' . $request->amount . ' has been added to your wallet.',
+                'deepLink' => '',
+            ],
+            $userCredit
+        );
 
         DB::commit();
 
-        if ($receipt->status == BankReceipt::STATUS['RECEIPT_SUCCESSFUL']) {
-            $notificationData = [
-                'title' => 'Bank Receipt has been approved',
-                'message' => 'Your bank receipt has been approved.',
-                'deepLink' => 'fortknox://bank_receipt/' . $receipt->id,
-            ];
-            $this->sendNotification(env('ONESIGNAL_APP_ID'), env('ONESIGNAL_REST_API_KEY'), $user, $notificationData, $receipt);
-        } elseif ($receipt->status == BankReceipt::STATUS['RECEIPT_REJECTED']) {
-            $notificationData = [
-                'title' => 'Bank Receipt has been rejected',
-                'message' => 'Your bank receipt has been rejected.',
-                'deepLink' => 'fortknox://bank_receipt/' . $receipt->id,
-            ];
-            $this->sendNotification(env('ONESIGNAL_APP_ID'), env('ONESIGNAL_REST_API_KEY'), $user, $notificationData, $receipt);
-        }
-
-        return response([
-            'message' => trans('messages.update_status_successfully'),
-            'ticket' => $receipt,
-        ], 200);
-    } catch (\Exception $e) {
+        return response(['message' => trans('messages.you_had_successfully_top_up') . ' ' . $request->amount . ' ' . trans('messages.credit') . ' ' . trans('messages.for') . ' ' . $user->name], 200);
+    } catch (Exception $e) {
         DB::rollBack();
-        return response(['message' => trans('messages.update_status_failed')], 422);
+        return response(['message' => trans('messages.top_up_failed')], 422);
     }
 }
 

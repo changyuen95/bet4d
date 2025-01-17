@@ -297,7 +297,7 @@ class BankReceiptController extends Controller
         try {
             $user = $receipt->user;
             $userCredit = $user->credit ?? $user->credit()->create(['credit' => 0]);
-            $adminCredit = $admin->credit ?? $admin->admin_credit()->create(['amount' => 0]);
+            $adminCredit = $admin->admin_credit ?? $admin->admin_credit()->create(['amount' => 0]);
             $userPoint = $user->point ?? $user->point()->create(['point' => 0]);
 
             $bonus = Bonus::where('target', 'first_topup')->where('status', 'active')->first();
@@ -351,6 +351,8 @@ class BankReceiptController extends Controller
                     'amount' => $receipt->amount,
                     'type' => AdminCreditTransaction::TYPE['Increase'],
                     'before_amount' => $adminCredit->amount,
+                                        'after_amount' => 0,
+
                     'outlet_id' => null,
                 ]);
 
