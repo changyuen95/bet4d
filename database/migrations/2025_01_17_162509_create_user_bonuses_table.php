@@ -12,15 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user_bonuses', function (Blueprint $table) {
-            $table->uuid('id')->primary(); // UUID for the primary key
+            $table->uuid('id')->primary();
             $table->decimal('amount', 10, 2); // Bonus amount
             $table->text('description')->nullable(); // Optional description
             $table->timestamps();
 
             // Foreign keys
-            $table->foreignUlid('user_id')->nullable()->constrained('users');
+            $table->char('user_id', 26)->nullable(); // Match CHAR(26) of `users`
+            $table->char('bonus_id', 26)->nullable(); // Match CHAR(26) of `bonuses`
 
-            $table->foreignUlid('bonus_id')->nullable()->constrained('bonuses')->onDelete('set null');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('bonus_id')->references('id')->on('bonuses')->onDelete('set null');
         });
     }
 

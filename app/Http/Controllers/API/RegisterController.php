@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Tac;
 use Illuminate\Http\Request;
+use App\Models\Bonus;
+use App\Models\UserBonus;
 use App\Models\User;
 use App\Notifications\TacNotification;
 use App\Rules\Badword;
