@@ -151,8 +151,8 @@ class BankReceiptController extends Controller
             $notificationData['title'] = 'New online topup request';
             $notificationData['message'] = 'You have receive new bank receipt.';
             $notificationData['deepLink'] = 'fortknox-admin://bank-receipt/'.$receipt->id;
-            $appId = env('ONESIGNAL_STAFF_APP_ID');
-            $apiKey = env('ONESIGNAL_STAFF_REST_API_KEY');
+            $appId = config('app.ONESIGNAL_STAFF_APP_ID');
+            $apiKey = config('app.ONESIGNAL_STAFF_REST_API_KEY');
             foreach($staffs as $staff){
                 $this->sendNotification($appId, $apiKey, $staff,$notificationData,$receipt);
             }
@@ -161,8 +161,8 @@ class BankReceiptController extends Controller
             $notificationData['title'] = 'You have submit new bank receipt';
             $notificationData['message'] = 'Please wait for approval.';
             $notificationData['deepLink'] = 'fortknox://bank-receipt/'.$receipt->id;
-            $appId = env('ONESIGNAL_APP_ID');
-            $apiKey = env('ONESIGNAL_REST_API_KEY');
+            $appId = config('app.ONESIGNAL_APP_ID');
+            $apiKey = config('app.ONESIGNAL_REST_API_KEY');
             $this->sendNotification($appId, $apiKey, $user,$notificationData,$receipt);
 
 
@@ -248,8 +248,8 @@ class BankReceiptController extends Controller
                     $notificationData['title'] = 'New topup request';
                     $notificationData['message'] = 'You have receive new bank receipt.';
                     $notificationData['deepLink'] = 'fortknox-admin://bank-receipt/'.$receipt->id;
-                    $appId = env('ONESIGNAL_STAFF_APP_ID');
-                    $apiKey = env('ONESIGNAL_STAFF_REST_API_KEY');
+                    $appId = config('app.ONESIGNAL_STAFF_APP_ID');
+                    $apiKey = config('app.ONESIGNAL_STAFF_REST_API_KEY');
                     foreach($staffs as $staff){
                         $this->sendNotification($appId, $apiKey, $staff,$notificationData,$receipt);
                     }
@@ -395,14 +395,14 @@ class BankReceiptController extends Controller
                     'message' => 'Your bank receipt has been approved.',
                     'deepLink' => 'fortknox://bank_receipt/' . $receipt->id,
                 ];
-                $this->sendNotification(env('ONESIGNAL_APP_ID'), env('ONESIGNAL_REST_API_KEY'), $user, $notificationData, $receipt);
+                $this->sendNotification(config('app.ONESIGNAL_APP_ID'), config('app.ONESIGNAL_REST_API_KEY'), $user, $notificationData, $receipt);
             } elseif ($receipt->status == BankReceipt::STATUS['RECEIPT_REJECTED']) {
                 $notificationData = [
                     'title' => 'Bank Receipt has been rejected',
                     'message' => 'Your bank receipt has been rejected.',
                     'deepLink' => 'fortknox://bank_receipt/' . $receipt->id,
                 ];
-                $this->sendNotification(env('ONESIGNAL_APP_ID'), env('ONESIGNAL_REST_API_KEY'), $user, $notificationData, $receipt);
+                $this->sendNotification(config('app.ONESIGNAL_APP_ID'), config('app.ONESIGNAL_REST_API_KEY'), $user, $notificationData, $receipt);
             }
 
             return response([

@@ -30,6 +30,10 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
+    'ONESIGNAL_APP_ID' => '3012a494-39d5-47f0-8ab0-942803818805',
+    'ONESIGNAL_REST_API_KEY' => 'Yjc0Y2VhZTYtYjRhOC00ZTdiLTg4NDQtOTM3MGM2OTI0MDFj',
+    'ONESIGNAL_STAFF_APP_ID' => '07c88b93-4b16-43b7-bf11-212f0c7768ad',
+    'ONESIGNAL_STAFF_REST_API_KEY' => 'ZWU5NjY1OTctNWIyMy00ZTYzLTk0ZjQtZDExZmM0ZWYwNjQ1',
 
     /*
     |--------------------------------------------------------------------------

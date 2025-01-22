@@ -154,8 +154,8 @@ class TopUpController extends Controller
         // Send Notification for Bonus (if applicable)
         if ($bonus) {
             $this->sendNotification(
-                env('ONESIGNAL_APP_ID'),
-                env('ONESIGNAL_REST_API_KEY'),
+                config('app.ONESIGNAL_APP_ID'),
+                config('app.ONESIGNAL_REST_API_KEY'),
                 $user,
                 [
                     'title' => 'You have received ' . $bonusAmount . ' bonus credit!',
@@ -168,8 +168,8 @@ class TopUpController extends Controller
 
         // Send Notification for Top-Up
         $this->sendNotification(
-            env('ONESIGNAL_APP_ID'),
-            env('ONESIGNAL_REST_API_KEY'),
+            config('app.ONESIGNAL_APP_ID'),
+            config('app.ONESIGNAL_REST_API_KEY'),
             $user,
             [
                 'title' => 'Top up successfully!',
@@ -433,8 +433,8 @@ class TopUpController extends Controller
             $notificationData['title'] = 'Top up successfully!';
             $notificationData['message'] = 'Top up successfully! '.$request->amount.' has added into your wallet.';
             $notificationData['deepLink'] = '';
-            $appId = env('ONESIGNAL_APP_ID');
-            $apiKey = env('ONESIGNAL_REST_API_KEY');
+            $appId = config('app.ONESIGNAL_APP_ID');
+            $apiKey = config('app.ONESIGNAL_REST_API_KEY');
 
             $this->sendNotification($appId, $apiKey, $user,$notificationData,$userCredit);
 

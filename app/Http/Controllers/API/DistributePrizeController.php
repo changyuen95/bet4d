@@ -161,8 +161,8 @@ class DistributePrizeController extends Controller
                         $notificationData['title'] = 'Prize distribution';
                         $notificationData['message'] = 'Your Prize had distributed by our staff';
                         $notificationData['deepLink'] = 'fortknox://me/winner/'.$winner->id;
-                        $appId = env('ONESIGNAL_APP_ID');
-                        $apiKey = env('ONESIGNAL_REST_API_KEY');
+                        $appId = config('app.ONESIGNAL_APP_ID');
+                        $apiKey = config('app.ONESIGNAL_REST_API_KEY');
                         $this->sendNotification($appId, $apiKey, $winnerUser,$notificationData,$winner);
                     }
                     DB::commit();
@@ -302,8 +302,8 @@ class DistributePrizeController extends Controller
                     //     $notificationData['title'] = 'Prize distribution';
                     //     $notificationData['message'] = 'Your Prize had distributed by our staff';
                     //     $notificationData['deepLink'] = 'fortknox://me/winner/'.$winner->id;
-                    //     $appId = env('ONESIGNAL_APP_ID');
-                    //     $apiKey = env('ONESIGNAL_REST_API_KEY');
+                    //     $appId = config('app.ONESIGNAL_APP_ID');
+                    //     $apiKey = config('app.ONESIGNAL_REST_API_KEY');
                     //     $this->sendNotification($appId, $apiKey, $winnerUser,$notificationData,$winner);
                     // }
 

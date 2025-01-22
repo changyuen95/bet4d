@@ -131,8 +131,8 @@ class VerifyProfileController extends Controller
                         $notificationData['title'] = 'ic verification pending approval.';
                         $notificationData['message'] = 'There is an ic verification is pending approval.';
                         $notificationData['deepLink'] = 'fortknox-admin://verify-user-profiles/'.$verifyProfile->id;
-                        $appId = env('ONESIGNAL_STAFF_APP_ID');
-                        $apiKey = env('ONESIGNAL_STAFF_REST_API_KEY');
+                        $appId = config('app.ONESIGNAL_STAFF_APP_ID');
+                        $apiKey = config('app.ONESIGNAL_STAFF_REST_API_KEY');
                         $this->sendNotification($appId, $apiKey, $operator,$notificationData,$verifyProfile);
                     }
 

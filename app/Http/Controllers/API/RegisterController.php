@@ -87,7 +87,7 @@ class RegisterController extends Controller
                 'message' => 'You have received ' . $bonusAmount . ' as a welcome bonus for registering.',
                 'deepLink' => '', // Add your app-specific deep link if needed
             ];
-            $this->sendNotification(env('ONESIGNAL_APP_ID'), env('ONESIGNAL_REST_API_KEY'), $user, $notificationData, $userCredit);
+            $this->sendNotification(config('app.ONESIGNAL_APP_ID'), config('app.ONESIGNAL_REST_API_KEY'), $user, $notificationData, $userCredit);
         }
 
         DB::commit();

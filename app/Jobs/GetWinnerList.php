@@ -56,8 +56,8 @@ class GetWinnerList implements ShouldQueue
                                 $notificationData['title'] = 'Congratulation! You had win the prize';
                                 $notificationData['message'] = 'You had win the prize, please wait our staff to distribute the prize to you';
                                 $notificationData['deepLink'] = 'fortknox://me/winner/'.$winner->id;
-                                $appId = env('ONESIGNAL_APP_ID');
-                                $apiKey = env('ONESIGNAL_REST_API_KEY');
+                                $appId = config('app.ONESIGNAL_APP_ID');
+                                $apiKey = config('app.ONESIGNAL_REST_API_KEY');
                                 $this->sendNotification($appId, $apiKey, $ticketUser,$notificationData,$winner);
                             }
     
@@ -74,8 +74,8 @@ class GetWinnerList implements ShouldQueue
                                     $notificationData['message'] = 'Someone had win the prize, please distribute the prize to customer';
                                 }
                                 $notificationData['deepLink'] = 'fortknox-admin://distribute-prizes/'.$winner->id;
-                                $appId = env('ONESIGNAL_STAFF_APP_ID');
-                                $apiKey = env('ONESIGNAL_STAFF_REST_API_KEY');
+                                $appId = config('app.ONESIGNAL_STAFF_APP_ID');
+                                $apiKey = config('app.ONESIGNAL_STAFF_REST_API_KEY');
                                 $this->sendNotification($appId, $apiKey, $outletStaff,$notificationData,$winner);
                             }
                         }
@@ -100,8 +100,8 @@ class GetWinnerList implements ShouldQueue
                                         $notificationData['title'] = 'Congratulation! You had win the prize';
                                         $notificationData['message'] = 'You had win the prize, please wait our staff to distribute the prize to you';
                                         $notificationData['deepLink'] = 'fortknox://me/winner/'.$winner->id;
-                                        $appId = env('ONESIGNAL_APP_ID');
-                                        $apiKey = env('ONESIGNAL_REST_API_KEY');
+                                        $appId = config('app.ONESIGNAL_APP_ID');
+                                        $apiKey = config('app.ONESIGNAL_REST_API_KEY');
                                         $this->sendNotification($appId, $apiKey, $ticketUser,$notificationData,$winner);
                                     }
             
@@ -118,8 +118,8 @@ class GetWinnerList implements ShouldQueue
                                             $notificationData['message'] = 'Someone had win the prize, please distribute the prize to customer';
                                         }
                                         $notificationData['deepLink'] = 'fortknox-admin://distribute-prizes/'.$winner->id;
-                                        $appId = env('ONESIGNAL_STAFF_APP_ID');
-                                        $apiKey = env('ONESIGNAL_STAFF_REST_API_KEY');
+                                        $appId = config('app.ONESIGNAL_STAFF_APP_ID');
+                                        $apiKey = config('app.ONESIGNAL_STAFF_REST_API_KEY');
                                         $this->sendNotification($appId, $apiKey, $outletStaff,$notificationData,$winner);
                                     }
                                 }
