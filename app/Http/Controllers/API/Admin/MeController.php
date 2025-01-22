@@ -12,9 +12,10 @@ use DB;
 use Illuminate\Support\Facades\Storage;
 use Image;
 use File;
-
+use App\Traits\NotificationTrait;
 class MeController extends Controller
 {
+    use NotificationTrait;
     /**
      * Display a listing of the resource.
      */
