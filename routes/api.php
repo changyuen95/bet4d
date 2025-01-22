@@ -220,6 +220,7 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
         Route::post('','Admin\MeController@update');
         Route::post('update-avatar','Admin\MeController@updateAvatar');
         Route::delete('','Admin\MeController@destroy');
+        Route::post('one-signal-test', 'MeController@oneSignalStaffTest');
     });
 
     Route::prefix('notifications')->group(function () {

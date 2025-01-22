@@ -166,4 +166,16 @@ class MeController extends Controller
             return response(['message' => trans('messages.failed_to_update_avatar')], 422);
         }
     }
+
+    public function oneSignalStaffTest(){
+        $notificationData = [];
+        $notificationData['title'] = 'One Signal Test';
+        $notificationData['message'] = 'Testing';
+        $notificationData['deepLink'] = 'fortknox://me/one-signal-test/test';
+        $appId = env('ONESIGNAL_STAFF_APP_ID');
+        $apiKey = env('ONESIGNAL_STAFF_REST_API_KEY');
+
+        $this->sendNotification($appId, $apiKey, Auth::user(),$notificationData);
+
+    }
 }
