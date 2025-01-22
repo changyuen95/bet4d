@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\ForgotPasswordController;
 use App\Http\Controllers\API\BankReceiptController;
+use App\Http\Controllers\API\SettingController;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -25,6 +26,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::namespace('API')->group(function () {
 
     Route::get('webviews', 'SettingController@index');
+    Route::get('check-version', 'SettingController@checkVersion');
 
 
     Route::post("login", LoginController::class);
@@ -52,6 +54,12 @@ Route::namespace('API')->group(function () {
 
     Route::prefix('banners')->group(function () {
         Route::get('', 'BannerController@index');
+    });
+
+    Route::prefix('popup')->group(function () {
+        Route::get('','SettingController@popup');
+        Route::get('{id}','SettingController@popupShow');
+
     });
 
 
@@ -112,6 +120,7 @@ Route::namespace('API')->group(function () {
             Route::prefix('tickets')->group(function () {
                 Route::get('','TicketController@index');
                 Route::get('{id}','TicketController@show');
+                Route::post('{id}/request-winner', 'MeController@requestWinner');
             });
 
             Route::prefix('transfer-details')->group(function () {
@@ -163,7 +172,7 @@ Route::namespace('API')->group(function () {
                 Route::get('/{id}', [BankReceiptController::class, 'show'])->name('bank-receipts.show');
 
                 // Update a receipt status (user)
-                Route::put('/{id}/update-status', [BankReceiptController::class, 'updateReceiptStatus'])->name('bank-receipts.updateStatus');
+                Route::post('/{id}/update-status', [BankReceiptController::class, 'updateReceiptStatus'])->name('bank-receipts.updateStatus');
 
                 // Get bank account details
             });
@@ -197,6 +206,12 @@ Route::namespace('API')->middleware(['auth:sanctum', 'checkUserType:'.Role::MEMB
     // Routes for Member users
 });
 
+Route::namespace('API')->prefix('admin')->group(function () {
+
+    Route::get('check-version', 'SettingController@checkVersionAdmin');
+
+});
+
 Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAdmin'])->group(function () {
     Route::post('logout', 'LoginController@adminLogout');
 
@@ -228,35 +243,29 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
 
         Route::prefix('bank-receipts')->group(function() {
             // Display all receipts
-            Route::get('/', [BankReceiptController::class, 'index'])->name('bank-receipts.index');
+            Route::get('/', [BankReceiptController::class, 'index'])->name('admin.bank-receipts.index');
+            Route::post('/', [BankReceiptController::class, 'store'])->name('admin.bank-receipts.store');
+            Route::get('/bank-account', [BankReceiptController::class, 'bankAccount'])->name('admin.bank-receipts.bankAccount');
 
             // Show a specific receipt
-            Route::get('/{id}', [BankReceiptController::class, 'show'])->name('bank-receipts.show');
+            Route::get('/{id}', [BankReceiptController::class, 'show'])->name('admin.bank-receipts.show');
 
-            Route::put('/{id}/update-status', [BankReceiptController::class, 'staffUpdateReceiptStatus'])->name('bank-receipts.staffUpdateStatus');
+            Route::post('/{id}/update-status', [BankReceiptController::class, 'staffUpdateReceiptStatus'])->name('admin.bank-receipts.staffUpdateStatus');
 
         });
 
-        Route::prefix('bank-receipts')->group(function() {
-            Route::get('/bank-account', [BankReceiptController::class, 'bankAccount'])->name('bank-receipts.bankAccount');
-
-            // Display all receipts
-            Route::get('/', [BankReceiptController::class, 'index'])->name('bank-receipts.index');
-
-            // Create a new receipt
-            Route::post('/', [BankReceiptController::class, 'store'])->name('bank-receipts.store');
-
-            // Show a specific receipt
-            Route::get('/{id}', [BankReceiptController::class, 'show'])->name('bank-receipts.show');
-
-
-            // admin update receipt
-            Route::post('/{id}/update-status', [BankReceiptController::class, 'staffUpdateReceiptStatus'])->name('bank-receipts.updateStatus');
-
-
-            // Get bank account details
-        });
     });
+
+        Route::prefix('distribute-prizes')->group(function () {
+            Route::get('', 'DistributePrizeController@index');
+            Route::get('{id}', 'DistributePrizeController@show');
+            Route::post('{id}', 'DistributePrizeController@claimTicket');
+            Route::post('{id}/keep-ticket', 'DistributePrizeController@keepTicket');
+            Route::post('{id}/claim-ticket', 'DistributePrizeController@claimTicket');
+        });
+
+
+
 
     Route::middleware(['checkUserType:'.Role::OPERATOR])->group(function () {
 
@@ -292,16 +301,14 @@ Route::namespace('API')->prefix('admin')->middleware(['auth:sanctum', 'checkIsAd
             Route::get('{id}','AdminCreditTransactionController@show');
         });
 
-        Route::prefix('distribute-prizes')->group(function () {
-            Route::get('','DistributePrizeController@index');
-            Route::get('{id}','DistributePrizeController@show');
-            Route::post('{id}','DistributePrizeController@store');
-        });
+
+
 
         Route::get('cleared-transactions/credit-distribute','Admin\DownlineController@creditDistribute');
         Route::get('{admin_id}/clear-transactions/credit-distribute/{id}','Admin\DownlineController@creditDistributeDetail');
 
     });
+
     // Routes for Operator users
 
     Route::middleware(['checkUserType:'.Role::SUPER_ADMIN])->group(function () {

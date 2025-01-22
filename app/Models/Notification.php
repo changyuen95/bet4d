@@ -16,7 +16,7 @@ class Notification extends Model
     {
         return $date->format('Y-m-d H:i:s');
     }
-    
+
     public function targetable()
     {
         return $this->morphTo();
@@ -26,4 +26,10 @@ class Notification extends Model
     {
         return $this->morphTo();
     }
+
+    public function popup()
+    {
+        return $this->belongsTo(Popup::class, 'popup_id');
+    }
+
 }

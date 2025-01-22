@@ -19,7 +19,7 @@ class CheckIsAdmin
         if ($request->user() && ($request->user() instanceof Admin) ) {
             return $next($request);
         }
-    
+
         return response()->json(['message' => 'Unauthorized'], 403);
     }
 }

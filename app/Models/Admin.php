@@ -28,6 +28,10 @@ class Admin extends Authenticatable
         'email',
         'password',
         'profile_image',
+        'outlet_id',
+        'status',
+        'reference_id',
+        'role',
     ];
 
     /**

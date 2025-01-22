@@ -67,7 +67,7 @@ return [
     'unable_to_reject_ticket_request_when_ticket_status_is_not_requested' => 'Unable to reject ticket request when ticket status is not requested',
     'unable_to_complete_ticket_request_when_ticket_status_is_not_in_progress' => 'Unable to complete ticket request when ticket status is not in progress',
     'no_ticket_owner_found' => 'No ticket owner found',
-    'at_least_1_barcode_is_scanned_in_order_to_complete_ticket_request' => 'At least 1 barcode is scanned in order to complete ticket request',
+    'at_least_1_barcode_is_scanned_in_order_to_complete_ticket_request' => 'At least 1 ticket receipt is scanned in order to complete ticket request',
     'ticket_request_selected_is_not_belongs_to_you' => 'Ticket request selected is not belongs to you',
     'successfully_scanned_barcode' => 'Successfully scanned barcode',
     'failed_to_scan_barcode' => 'Failed to scan barcode',
@@ -113,6 +113,7 @@ return [
     'invalid_ticket_number' => 'Invalid Ticket Number',
     'failed_to_insert_permutation_image' => 'Failed to insert permutation image',
     'successfully_insert_permutation_image' => 'Successfully insert permutation image',
+    'successfully_insert_rceipt' => 'Successfully insert receipt',
     'permutation_image_existed' => 'Permutation image existed',
     'permutation_image_not_found' => 'Permutation image not found',
     'successfully_remove_permutation_image' => 'Successfully remove permutation image',
@@ -341,4 +342,5 @@ return [
     'no_pending_verify_prize_found' => 'No pending verify prize found',
     'no_verified_prize_found' => 'No verified prize found',
     'transaction_detail_not_found' => 'Transaction detail not found',
+    'no_winner_found' => 'no winner found',
 ];

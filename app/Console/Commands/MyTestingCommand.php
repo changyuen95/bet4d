@@ -3,6 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Models\Admin;
+use App\Models\Role;
+use App\Models\Outlet;
+use App\Models\TempAdmin;
 use App\Models\WinnerList;
 use Illuminate\Console\Command;
 
@@ -27,25 +30,52 @@ class MyTestingCommand extends Command
      */
     public function handle()
     {
-        //
+        // create admins for each outlet
 
-        // $distributed_winner_list = WinnerList::where('is_distribute', 1)->whereHas('ticketNumber', function($q){
-        //     $q->whereHas('ticket', function($q){
-                
-        //     });
-        // })->where('outlet_id','01hdfv5e9k4axefw12hwk52y8w')->with('drawResult','ticketNumber','winner');
+        // $outlets = Outlet::all();
+        $accounts = TempAdmin::all();
+        $count = 1;
 
-        // $distributed_winner_list = WinnerList::where('is_distribute', 1)
-        //     ->whereHas('ticketNumber.ticket.outlet', function($q){
-        //         $q->where('outlets.id', '01hdfv5e9k4axefw12hwk52y8w');
-        //     })
-        //     ->with('drawResult', 'ticketNumber', 'winner')
-        //     ->get();
-        
-        $winner= WinnerList::where('action_by', '01hqwgalqwgqtew9vj12w00')
-                            ->where('id', '01hevst6g0xt7cc003ssx1t6vs')
-                            ->with('drawResult', 'ticketNumber', 'winner')
-                            ->first();
-        dd($winner);
+        foreach($accounts as $account){
+            $admin = Admin::where('username', $admin->username)->first();
+            $outlet = Outlet::where('name', $account->outlet_name)->first();
+            $admin->outlet_id = $outlet->id;
+            //assign role
+            if($outlet){
+                $admin->assignRole($admin->role);
+                $admin->save();
+           }
+        }
+
+        // foreach($outlets as $outlet) {
+
+        //     for($i = 0; $i < 5; $i++) {
+
+        //         $admin = Admin::create([
+        //             $password = substr(str_shuffle(str_repeat('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', 10)), 0, 10),
+        //             'name' => 'Staff '.$count,
+        //             'username' => 'staff'.$count,
+        //             'email' => 'support@fortknox.group',
+        //             'password' => bcrypt($password),
+        //             'outlet_id' => $outlet->id,
+        //             'role' => Role::OPERATOR,
+        //             'phone_e164' => '-',
+        //         ]);
+        //         $count++;
+        //         $admin->assignRole($admin->role);
+
+        //         $new_admin = TempAdmin::create([
+        //             'username' => $admin->username,
+        //             'password' => $password,
+        //             'outlet_name' => $outlet->name,
+        //         ]);
+
+        //     }
+
+
+        // }
+
+
+
     }
 }

@@ -17,7 +17,7 @@ class CreditTransaction extends Model
         'Increase' => 'increase',
         'Decrease' => 'decrease'
     ];
-    
+
     protected function serializeDate(\DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
@@ -43,6 +43,11 @@ class CreditTransaction extends Model
         return 'Completed';
     }
 
+    public function userbonus()
+    {
+        return $this->belongsTo(UserBonus::class, 'user_bonus_id');
+    }
+
     public function getDescriptionAttribute()
     {
         $relatedModel = $this->targetable;
@@ -64,7 +69,28 @@ class CreditTransaction extends Model
                 $description = trans('messages.ticket_request');
             }
         }
-
+        //expand
         return $description;
     }
+
+    public function scopeFilterByType($query, $type)
+    {
+        return $query->where('type', $type);
+    }
+
+    public function scopeFilterByTargetableType($query, $type)
+    {
+        return $query->where('targetable_type', 'App\\Models\\' . $type);
+    }
+
+    public function scopeFilterByOutlet($query, $outletId)
+    {
+        return $query->where('outlet_id', $outletId);
+    }
+
+    public function scopeFilterByDate($query, $startDate, $endDate)
+    {
+        return $query->whereBetween('created_at', [$startDate, $endDate]);
+    }
+
 }

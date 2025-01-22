@@ -12,6 +12,8 @@ use App\Models\Qrcode;
 use App\Models\QrScannedList;
 use App\Models\BankReceipt;
 use App\Models\BankAccount;
+use App\Models\Bonus;
+use App\Models\UserBonus;
 use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
 use Auth;
@@ -41,112 +43,151 @@ class TopUpController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(), [
-            'amount' => 'required|numeric',
+{
+    $validator = Validator::make($request->all(), [
+        'amount' => 'required|numeric',
+    ]);
+
+    if ($validator->fails()) {
+        return response(['message' => $validator->errors()->first()], 422);
+    }
+
+    $user = User::find($id);
+    if (!$user) {
+        return response(['message' => trans('messages.no_user_found')], 422);
+    }
+
+    $staff = Auth::user();
+    $outlet = $staff->outlet;
+
+    DB::beginTransaction();
+    try {
+        // Check for an active bonus
+        $bonus = Bonus::where('target', 'first_topup')->where('status', 'active')->first();
+
+        $bonusAmount = 0; // Default to no bonus
+        if ($bonus) {
+            // Calculate bonus based on type
+            $bonusAmount = $bonus->type === 'fixed'
+                ? round($bonus->value, 2) // Fixed bonus
+                : round($request->amount * ($bonus->value / 100), 2); // Percentage bonus
+        }
+
+        $total = $request->amount + $bonusAmount;
+
+        // Ensure User Credit exists
+        $userCredit = $user->credit ?? $user->credit()->create(['credit' => 0]);
+
+        // Ensure Admin Credit exists
+        $adminCredit = $staff->admin_credit ?? $staff->admin_credit()->create(['amount' => 0]);
+
+        // Ensure User Points exist
+        $userPoint = $user->point ?? $user->point()->create(['point' => 0]);
+
+        // Create TopUp record
+        $topup = $staff->topUpMorph()->create([
+            'user_id' => $user->id,
+            'amount' => $request->amount,
+            'remark' => $request->remark,
+            'top_up_with' => TopUp::TOP_UP_WITH['Outlet'],
         ]);
 
-        if ($validator->fails()) {
-            return response(['message' => $validator->errors()->first()], 422);
+        // Create UserBonus record if applicable
+        $userBonus = null;
+        if ($bonus) {
+            $userBonus = UserBonus::create([
+                'user_id' => $user->id,
+                'bonus_id' => $bonus->id,
+                'amount' => $bonusAmount,
+                'description' => 'Bonus applied for top-up',
+            ]);
+
+            // Link UserBonus to TopUp
+            $topup->user_bonus_id = $userBonus->id;
+            $topup->save();
         }
 
-        $user = User::find($id);
-        if (!$user) {
-            return response(['message' => trans('messages.no_user_found')], 422);
+        // Create CreditTransaction record
+        $creditTransaction = $topup->creditTransaction()->create([
+            'user_id' => $user->id,
+            'amount' => $total, // Total includes bonus
+            'type' => CreditTransaction::TYPE['Increase'],
+            'before_amount' => $userCredit->credit,
+            'user_bonus_id' => $userBonus ? $userBonus->id : null, // Link UserBonus
+            'outlet_id' => $outlet->id,
+        ]);
+
+        // Update User Credit
+        $userCredit->credit += $total;
+        $userCredit->save();
+
+        // Create Admin CreditTransaction record
+        $adminTransaction = $topup->adminTransaction()->create([
+            'admin_id' => $staff->id,
+            'amount' => $request->amount, // Only top-up amount
+            'type' => AdminCreditTransaction::TYPE['Increase'],
+            'before_amount' => $adminCredit->amount,
+            'outlet_id' => $outlet->id,
+        ]);
+
+        // Update Admin Credit
+        $adminCredit->amount += $request->amount;
+        $adminCredit->save();
+
+        // Update AdminTransaction with after amount
+        $adminTransaction->after_amount = $adminCredit->amount;
+        $adminTransaction->save();
+
+        // Create PointTransaction record
+        $pointTransaction = $topup->pointTransaction()->create([
+            'user_id' => $user->id,
+            'point' => $request->amount, // Points based on top-up amount
+            'type' => PointTransaction::TYPE['Increase'],
+            'before_point' => $userPoint->point,
+            'outlet_id' => $outlet->id,
+        ]);
+
+        // Update User Points
+        $userPoint->point += $request->amount;
+        $userPoint->save();
+
+        // Send Notification for Bonus (if applicable)
+        if ($bonus) {
+            $this->sendNotification(
+                env('ONESIGNAL_APP_ID'),
+                env('ONESIGNAL_REST_API_KEY'),
+                $user,
+                [
+                    'title' => 'You have received ' . $bonusAmount . ' bonus credit!',
+                    'message' => 'You have received ' . $bonusAmount . ' bonus credit!',
+                    'deepLink' => '',
+                ],
+                $userCredit
+            );
         }
-        $staff = Auth::user();
-        $outlet = $staff->outlet;
-        DB::beginTransaction();
-        try{
-            $userCredit = $user->credit;
-            if(!$userCredit){
-                $userCredit = $user->credit()->create([
-                    'credit' => 0
-                ]);
-            }
 
-            $adminCredit = $staff->admin_credit;
-            if(!$adminCredit){
-                $adminCredit = $staff->admin_credit()->create([
-                    'amount' => 0
-                ]);
-            }
+        // Send Notification for Top-Up
+        $this->sendNotification(
+            env('ONESIGNAL_APP_ID'),
+            env('ONESIGNAL_REST_API_KEY'),
+            $user,
+            [
+                'title' => 'Top up successfully!',
+                'message' => 'Top up successfully! ' . $request->amount . ' has been added to your wallet.',
+                'deepLink' => '',
+            ],
+            $userCredit
+        );
 
-            $userPoint = $user->point;
-            if(!$userPoint){
-                $userPoint = $user->point()->create([
-                    'point' => 0
-                ]);
-            }
+        DB::commit();
 
-            // $topup = $user->topup()->create([
-            //     'amount' => $request->amount,
-            //     'remark' => $request->remark,
-            //     'top_up_with' => TopUp::TOP_UP_WITH['Outlet'],
-            //     'created_by' => Auth::user()->id
-            // ]);
-            $topup = $staff->topUpMorph()->create([
-                'user_id' => $user->id,
-                'amount' => $request->amount,
-                'remark' => $request->remark,
-                'top_up_with' => TopUp::TOP_UP_WITH['Outlet'],
-            ]);
-
-            $creditTransaction = $topup->creditTransaction()->create([
-                'user_id' => $user->id,
-                'amount' => $request->amount,
-                'type' => CreditTransaction::TYPE['Increase'],
-                'before_amount' => $userCredit->credit,
-                'outlet_id' => $outlet->id,
-            ]);
-
-            // admin/staff credit
-            $adminTransaction= $topup->adminTransaction()->create([
-                'admin_id' => $staff->id,
-                'amount' => $request->amount,
-                'type' => AdminCreditTransaction::TYPE['Increase'],
-                'before_amount' => $adminCredit->amount,
-                'outlet_id' => $outlet->id,
-                'after_amount' => 0,
-            ]);
-
-            $userCredit->credit = $userCredit->credit + $request->amount;
-            $userCredit->save();
-
-            $adminCredit->amount = $adminCredit->amount + $request->amount;
-            $adminCredit->save();
-
-            $adminTransaction->after_amount = $adminCredit->amount;
-            $adminTransaction->save();
-
-            $pointTransaction = $topup->pointTransaction()->create([
-                'user_id' => $user->id,
-                'point' => $request->amount,
-                'type' => PointTransaction::TYPE['Increase'],
-                'before_point' => $request->amount,
-                'outlet_id' => $outlet->id,
-            ]);
-
-            $userPoint->point = $userPoint->point + $request->amount;
-            $userPoint->save();
-
-            $notificationData = [];
-            $notificationData['title'] = 'Top up successfully!';
-            $notificationData['message'] = 'Top up successfully! '.$request->amount.' has added into your wallet.';
-            $notificationData['deepLink'] = '';
-            $appId = env('ONESIGNAL_APP_ID');
-            $apiKey = env('ONESIGNAL_REST_API_KEY');
-
-            $this->sendNotification($appId, $apiKey, $user,$notificationData,$userCredit);
-
-            DB::commit();
-
-            return response(['message' => trans('messages.you_had_successfully_top_up').' '.$request->amount.' '.trans('messages.credit').' '.trans('messages.for').' '.$user->name], 200);
-        }catch (Exception $e) {
-            DB::rollback();
-            return response(['message' =>  trans('messages.top_up_failed') ], 422);
-        }
+        return response(['message' => trans('messages.you_had_successfully_top_up') . ' ' . $request->amount . ' ' . trans('messages.credit') . ' ' . trans('messages.for') . ' ' . $user->name], 200);
+    } catch (Exception $e) {
+        DB::rollBack();
+        return response(['message' => trans('messages.top_up_failed')], 422);
     }
+}
+
 
     public function bankAccount(Request $request)
     {
@@ -166,6 +207,7 @@ class TopUpController extends Controller
         }
 
         $user = Auth::user();
+
         $upload = BankReceipt::create([
             'user_id' => $user->id,
             'amount' => $request->amount,

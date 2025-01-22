@@ -29,6 +29,7 @@ class User extends Authenticatable
         'avatar',
     ];
 
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -63,7 +64,7 @@ class User extends Authenticatable
         return $date->format('Y-m-d H:i:s');
     }
 
-    protected $appends = ['is_finish_first_time_topup','is_bank_transferrable','winning_amount'];
+    protected $appends = ['is_finish_first_time_topup','is_bank_transferrable','winning_amount','is_verify_pending','is_online_banking_pending'];
 
     protected static function boot()
     {
@@ -116,8 +117,14 @@ class User extends Authenticatable
 
     public function tickets()
     {
-        return $this->hasMany(Ticket::class, 'user_id')->orderby('created_at','desc');
+        return $this->hasMany(Ticket::class, 'user_id');
     }
+
+    public function userRequestPrizes()
+    {
+        return $this->hasMany(UserRequestPrize::class, 'user_id');
+    }
+
 
     public function topup()
     {
@@ -137,6 +144,42 @@ class User extends Authenticatable
     public function verifyProfile()
     {
         return $this->hasMany(VerifyProfile::class, 'user_id');
+    }
+
+    public function requestWinner()
+    {
+        return $this->hasMany(UserRequestPrize::class, 'user_id');
+    }
+
+    public function pendingWinner()
+    {
+        return $this->hasMany(UserRequestPrize::class, 'user_id')->where('status', 'pending');
+    }
+
+    public function getIsVerifyPendingAttribute(){
+        if (!$this->is_verified && $this->pendingVerifyProfiles->count() > 0) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function getIsOnlineBankingPendingAttribute(){
+        if ($this->pendingOnlineBanking->count() > 0) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function pendingVerifyProfiles()
+    {
+        return $this->hasMany(VerifyProfile::class, 'user_id')->where('status', 'pending');
+    }
+
+    public function pendingOnlineBanking()
+    {
+        return $this->hasMany(BankReceipt::class, 'user_id')->where('status', 'requested');
     }
 
     public function getIsFinishFirstTimeTopUpAttribute($status)

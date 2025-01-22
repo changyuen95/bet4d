@@ -36,7 +36,11 @@ class TicketResource extends BaseResource
             'platform' => $this->platform,
             'game' => $this->game,
             'status' => $this->status,
+            'is_claimable' => $this->isClaimable,
+            'keep_ticket' => $this->keep_ticket ?true: false,
+            'claim_status' => $this->claim_status,
             'ticketNumbers' => TicketNumberResource::collection($ticketNumber),
+            'prize' => $this->winner,
             'action_by' => $this->action_by,
             'staff' => $this->staff,
             'reject_reason' => $this->reject_reason,
@@ -45,7 +49,7 @@ class TicketResource extends BaseResource
             'updated_at' => $this->formatDate($this->updated_at),
             'deleted_at' => $this->formatDate($this->updated_at),
             'barcodes' => $this->barcode,
-
+            'receipts' => $this->receipts,
         ];
     }
 }

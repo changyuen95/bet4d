@@ -3,87 +3,161 @@
 namespace App\Http\Controllers\Admin\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
-
-    use AuthenticatesUsers;
-
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/dashboard';
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('guest:admin')->except('logout');
-    }
-
-
+    // Show the login form
     public function showLoginForm()
     {
-        return view('staff.auth.login');
+        return view('auth.login'); // Update the view path if necessary
     }
 
+    // Handle login requests
     public function login(Request $request)
     {
         $this->validateLogin($request);
 
-        // If the class is using the ThrottlesLogins trait, we can automatically throttle
-        // the login attempts for this application. We'll key this by the username and
-        // the IP address of the client making these requests into this application.
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
-
             return $this->sendLockoutResponse($request);
         }
 
         if ($this->attemptLogin($request)) {
-            $user = $this->sendLoginResponse($request);
-            return $user;
+            $this->clearLoginAttempts($request);
+            return $this->sendLoginResponse($request);
         }
 
-
-        // If the login attempt was unsuccessful we will increment the number of attempts
-        // to login and redirect the user back to the login form. Of course, when this
-        // user surpasses their maximum number of attempts they will get locked out.
         $this->incrementLoginAttempts($request);
 
         return $this->sendFailedLoginResponse($request);
     }
 
+    // Log the user out
+    public function logout(Request $request)
+    {
+        $this->guard()->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login'); // Update the route name if necessary
+    }
+
+    // Validate login credentials
+    protected function validateLogin(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string|max:255',
+            'password' => 'required|string|min:6',
+        ]);
+    }
+
+    // Attempt to log the user in
+    protected function attemptLogin(Request $request)
+    {
+        $credentials = $this->credentials($request);
+
+        $user = $this->guard()->getProvider()->retrieveByCredentials($credentials);
+
+        if ($user && Hash::check($request->password, $user->password)) {
+            // Log in the user manually
+            $this->guard()->login($user, $request->boolean('remember'));
+
+            // Return true to indicate successful login
+            return true;
+        }
+
+        return false; // Return false if login fails
+    }
+
+
+
+
+    // Get the login credentials from the request
+    protected function credentials(Request $request)
+    {
+        return $request->only('username', 'password');
+    }
+
+    // Send a successful login response
+    protected function sendLoginResponse(Request $request)
+    {
+        $request->session()->regenerate();
+
+
+        return redirect()->intended($this->redirectPath());
+    }
+    protected function redirectPath()
+    {
+        return route('admin.dashboard'); // Replace with your dashboard route
+    }
+
+    // Send a failed login response
+    protected function sendFailedLoginResponse(Request $request)
+    {
+        throw ValidationException::withMessages([
+            'username' => [trans('auth.failed')],
+        ]);
+    }
+
+    // Redirect path after login
+
+
+    // Throttle login attempts
+    protected function hasTooManyLoginAttempts(Request $request)
+    {
+        return app('Illuminate\Cache\RateLimiter')->tooManyAttempts(
+            $this->throttleKey($request), 5, 1 // 5 attempts per minute
+        );
+    }
+
+    protected function incrementLoginAttempts(Request $request)
+    {
+        app('Illuminate\Cache\RateLimiter')->hit($this->throttleKey($request));
+    }
+
+    protected function clearLoginAttempts(Request $request)
+    {
+        app('Illuminate\Cache\RateLimiter')->clear($this->throttleKey($request));
+    }
+
+    protected function throttleKey(Request $request)
+    {
+        return strtolower($request->input('username')) . '|' . $request->ip();
+    }
+
+    protected function fireLockoutEvent(Request $request)
+    {
+        event(new \Illuminate\Auth\Events\Lockout($request));
+    }
+
+    protected function sendLockoutResponse(Request $request)
+    {
+        $seconds = app('Illuminate\Cache\RateLimiter')->availableIn($this->throttleKey($request));
+
+        throw ValidationException::withMessages([
+            'username' => [trans('auth.throttle', ['seconds' => $seconds])],
+        ]);
+    }
+
+    // Handle post-login actions
     protected function authenticated(Request $request, $user)
     {
-            return redirect()->route('admin.customers.index');
+        return redirect()->route('admin.dashboard'); // Redirect after login
     }
 
+    // Specify the username field for login
     public function username()
     {
-        return 'identification_no';
+        return 'username'; // Specify the username field
     }
 
+    // Get the guard for admin
     protected function guard()
     {
-        return Auth::guard("");
+        return Auth::guard('admin'); // Ensure the 'admin' guard is set up in `config/auth.php`
     }
 }

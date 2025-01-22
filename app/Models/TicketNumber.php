@@ -11,7 +11,7 @@ class TicketNumber extends Model
     use HasFactory, HasUlids;
     protected $guarded = ['id'];
     protected $appends = ['potential_winning'];
-    protected $with = ['tax','refund_tickets','sub_tickets'];
+    protected $with = ['tax','refund_tickets','sub_tickets','win'];
     const TYPE = [
         'Straight' => 'straight',
         'Box' => 'box',
@@ -92,5 +92,23 @@ class TicketNumber extends Model
         return $this->hasMany(self::class,'main_ticket_id','id')
                     ->where('is_main', 0);
     }
+
+    public function scopeFilterByType($query, $type)
+    {
+        return $query->where('type', $type);
+    }
+
+    public function scopeFilterByMain($query, $isMain = true)
+    {
+        return $query->where('is_main', $isMain ? 1 : 0);
+    }
+
+    public function scopeFilterByWinningStatus($query, $status)
+    {
+        return $query->whereHas('win', function ($q) use ($status) {
+            $q->where('status', $status);
+        });
+    }
+
 
 }

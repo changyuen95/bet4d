@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\Bank;
+use App\Models\Ticket;
+use App\Models\WinnerList;
 use App\Traits\NotificationTrait;
 use Auth;
 use Hash;
@@ -18,7 +20,7 @@ use Illuminate\Support\Facades\Storage;
 class MeController extends Controller
 {
     use NotificationTrait;
-    
+
     public function me()
     {
         return new UserResource(Auth::user());
@@ -140,6 +142,60 @@ class MeController extends Controller
         $apiKey = env('ONESIGNAL_REST_API_KEY');
 
         $this->sendNotification($appId, $apiKey, Auth::user(),$notificationData);
-       
+
+    }
+
+    public function requestWinner(Request $request , $id)
+        {
+
+        $validator = Validator::make($request->all(),
+        [
+            'status' => 'required|in:1,0',
+        ]);
+
+
+        $user = Auth::user();
+
+        if(!$user){
+            return response(['message' => trans('messages.no_user_found')], 422);
+        }
+
+        $ticket = Ticket::where('id',$id)->where('user_id',$user->id)->first();
+
+        if(!$ticket){
+            return response(['message' => trans('messages.no_ticket_number_found')], 422);
+        }
+        $ticket_number = $ticket->ticketNumbers->pluck('id');
+
+
+        if($request->status == 1){
+            $winner = WinnerList::whereIn('ticket_number_id', $ticket_number)->where('is_request',0)->get();
+
+            if(count($winner) == 0){
+                return response(['message' => trans('messages.no_winner_found')], 422);
+            }else{
+                $totalAmount = $winner->sum('amount');
+
+                WinnerList::whereIn('ticket_number_id', $ticket_number)->update(['is_request' => 1]);
+
+
+                $userRequestPrize = $user->userRequestPrizes()->create([
+                    'ticket_id' => $ticket->id,
+                    'user_id' => $user->id,
+                    'amount' => $totalAmount,
+                ]);
+
+                return response([
+                    'message' =>  'Successfully request prize',
+                ], 200);
+            }
+        }else{
+            WinnerList::whereIn('ticket_number_id', $ticket_number)->update(['is_request' => 0]);
+            return response([
+                'message' =>  'Successfully cancel request',
+            ], 200);
+        }
+
+
     }
 }

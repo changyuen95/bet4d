@@ -12,7 +12,7 @@ class Ticket extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
     protected $guarded = ['id'];
-    protected $appends = ['sub_total','total_amount','creatable_type','creatable_id','total_refund'];
+    protected $appends = ['sub_total','total_amount','creatable_type','creatable_id','total_refund','is_claimable','claim_status'];
     const STATUS = [
         'TICKET_IMCOMPLETED' => 'incompleted',
         'TICKET_COMPLETED' => 'completed',
@@ -59,6 +59,16 @@ class Ticket extends Model
         return $query;
     }
 
+    public function requestWinner()
+    {
+        return $this->hasMany(UserRequestPrize::class, 'ticket_id');
+    }
+
+    public function pendingWinner()
+    {
+        return $this->hasMany(UserRequestPrize::class, 'ticket_id')->where('status', 'pending');
+    }
+
     public function allTicketNumbers()
     {
         return $this->hasMany(TicketNumber::class, 'ticket_id');
@@ -74,9 +84,23 @@ class Ticket extends Model
         return $this->hasMany(BarCode::class, 'ticket_id');
     }
 
+    public function receipts()
+    {
+        return $this->hasMany(TicketReceipt::class, 'ticket_id');
+    }
+
     public function draws()
     {
         return $this->belongsTo(Draw::class, 'draw_id');
+    }
+
+    public function getWinnerAttribute(){
+        $winner=[];
+        $ticketNumbers = $this->allTicketNumbers;
+        foreach($ticketNumbers as $ticketNumber){
+            $winner[] = $ticketNumber->win;
+        }
+        return $winner;
     }
 
     public function platform()
@@ -87,6 +111,21 @@ class Ticket extends Model
     public function game()
     {
         return $this->belongsTo(Game::class, 'game_id');
+    }
+
+    public function scopeFilterByDate($query, $startDate, $endDate)
+    {
+        return $query->whereBetween('created_at', [$startDate, $endDate]);
+    }
+
+    public function scopeFilterByOutlet($query, $outletId)
+    {
+        return $query->where('outlet_id', $outletId);
+    }
+
+    public function scopeFilterByStaff($query, $staffId)
+    {
+        return $query->where('action_by', $staffId);
     }
 
     public function outlet()
@@ -141,6 +180,61 @@ class Ticket extends Model
 
     public function getCreatableTypeAttribute(){
         return 'App\\Models\\Admin';
+    }
+
+    public function getIsClaimableAttribute()
+    {
+        if (Auth::check() && in_array(Auth::user()->role, [Role::OPERATOR])) {
+            //staff
+            $ticketNumbers = $this->allTicketNumbers->pluck('id');
+            $winner = WinnerList::whereIn('ticket_number_id', $ticketNumbers)->where('is_distribute',0)->where('is_request',1)->get();
+
+            if(count($winner)){
+
+                return true;
+
+            }else{
+                return false;
+            }
+        }else{
+            //user
+            $ticketNumbers = $this->allTicketNumbers->pluck('id');
+            $winner = WinnerList::whereIn('ticket_number_id', $ticketNumbers)->where('is_request',0)->get();
+
+            if(count($winner)){
+
+                return true;
+
+            }else{
+                return false;
+            }
+
+        }
+
+
+
+
+    }
+
+    public function getClaimStatusAttribute()
+    {
+        $ticketNumbers = $this->allTicketNumbers->pluck('id');
+        $winner = WinnerList::whereIn('ticket_number_id', $ticketNumbers)->where('is_request',0)->first();
+
+        if($winner){
+
+            if($winner->is_request)
+            {
+                return 'Requested';
+            }elseif($winner->is_distribute){
+                return 'Claimed';
+            }else{
+                return 'Ready To Request';
+            }
+
+        }else{
+            return 'No Result';
+        }
     }
 
 

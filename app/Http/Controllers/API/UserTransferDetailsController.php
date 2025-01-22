@@ -37,11 +37,26 @@ class UserTransferDetailsController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'transfer_option_id' => ['required','exists:transfer_options,id'],
-            'primary' => ['required',Rule::in(array_values(UserTransferDetails::PRIMARY))],
-        ]);
-       
+        $user = Auth::user();
+
+        $got_primary = UserTransferDetails::where('user_id',$user->id)->where('primary',1)->first();
+
+        if($got_primary){
+
+            $validator = Validator::make($request->all(), [
+                'transfer_option_id' => ['required','exists:transfer_options,id'],
+            ]);
+
+        }else{
+            $validator = Validator::make($request->all(), [
+                'transfer_option_id' => ['required','exists:transfer_options,id'],
+                'primary' => ['required',Rule::in(array_values(UserTransferDetails::PRIMARY))],
+            ]);
+        }
+
+
+
+
         if ($validator->fails()) {
             return response(['message' => $validator->errors()->first()], 422);
         }
@@ -58,10 +73,14 @@ class UserTransferDetailsController extends Controller
                 'phone_owner_name' => ['required'],
             ];
         }elseif($transferOption->type == TransferOption::TYPE['Bank']){
-            $rules = [
-                'bank_no' => ['required'],
-                'bank_account_holder_name' => ['required'],
-            ];
+            if($transferOption->name != 'Cash' ){
+                $rules = [
+                    'bank_no' => ['required'],
+                    'bank_account_holder_name' => ['required'],
+                ];
+            }else{
+                $rules = [];
+            }
         }else{
             return response(['message' => trans('messages.invalid_transfer_option_type')], 422);
         }
@@ -84,8 +103,8 @@ class UserTransferDetailsController extends Controller
             $transferDetails = $user->transferDetails()->create([
                 'transfer_option_id' => $request->transfer_option_id,
                 'primary' => $request->primary,
-                'bank_no' => $request->bank_no,
-                'bank_account_holder_name' => $request->bank_account_holder_name,
+                'bank_no' => $request->bank_no ?? '-',
+                'bank_account_holder_name' => $request->bank_account_holder_name ?? '-',
                 'phone_e164' => $request->phone_e164,
                 'phone_owner_name' => $request->phone_owner_name,
             ]);
@@ -128,17 +147,25 @@ class UserTransferDetailsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $validator = Validator::make($request->all(), [
-            'primary' => ['required',Rule::in(array_values(UserTransferDetails::PRIMARY))],
-        ]);
-       
-        if ($validator->fails()) {
-            return response(['message' => $validator->errors()->first()], 422);
-        }
         $user = Auth::user();
         if(!$user){
             return response(['message' => trans('messages.no_user_found')], 422);
         }
+
+        $got_primary = UserTransferDetails::where('user_id',$user->id)->where('primary',1)->first();
+
+        if(!$got_primary){
+
+            $validator = Validator::make($request->all(), [
+                'primary' => ['required',Rule::in(array_values(UserTransferDetails::PRIMARY))],
+            ]);
+
+        }
+
+        if ($validator->fails()) {
+            return response(['message' => $validator->errors()->first()], 422);
+        }
+
         $transferDetails = $user->transferDetails()->find($id);
         if(!$transferDetails){
             return response(['message' => trans('messages.no_transfer_detail_found')], 422);
@@ -178,7 +205,7 @@ class UserTransferDetailsController extends Controller
                     'primary' => UserTransferDetails::PRIMARY['No']
                 ]);
             }
-            
+
             $transferDetail = $user->transferDetails()->find($id);
             $transferDetail->primary = $request->primary;
             $transferDetail->bank_no = $request->bank_no;
@@ -187,7 +214,7 @@ class UserTransferDetailsController extends Controller
             $transferDetail->phone_owner_name = $request->phone_owner_name;
             $transferDetail->save();
             DB::commit();
-            
+
             $transferDetails = UserTransferDetails::find($id);
 
             return response([
