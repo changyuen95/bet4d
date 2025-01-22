@@ -136,6 +136,14 @@ class TicketController extends Controller
                 return response(['message' => $validator->errors()->first()], 422);
             }
 
+            $currentTime = Carbon::now(); // Get the current time
+            $startTime = Carbon::createFromTime(18, 30); // 6:30 PM
+            $endTime = Carbon::createFromTime(19, 5); // 7:05 PM
+    
+            if ($currentTime->between($startTime, $endTime)) {
+                return response(['message' => 'Ticket orders are unavailable from 6:30 PM to 7:05 PM. Please try again later.'], 422);
+            }
+            
             $user = User::find(Auth::user()->id);
             if(!$user){
                 return response(['message' => trans('messages.no_user_found')], 422);
@@ -310,6 +318,14 @@ class TicketController extends Controller
 
         if ($validator->fails()) {
             return response(['message' => $validator->errors()->first()], 422);
+        }
+
+        $currentTime = Carbon::now(); // Get the current time
+        $startTime = Carbon::createFromTime(18, 30); // 6:30 PM
+        $endTime = Carbon::createFromTime(19, 5); // 7:05 PM
+
+        if ($currentTime->between($startTime, $endTime)) {
+            return response(['message' => 'Ticket orders are unavailable from 6:30 PM to 7:05 PM. Please try again later.'], 422);
         }
 
         $user = Auth::user();
