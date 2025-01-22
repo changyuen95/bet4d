@@ -89,8 +89,23 @@ class DistributePrizeController extends Controller
         }
 
         $winnerList = $query->orderBy('created_at', 'DESC')->paginate($request->get('limit') ?? 10);
+        
+        $todayStart = Carbon::today()->startOfDay();
+        $todayEnd = Carbon::today()->endOfDay();
+        $completed_today = WinnerList::where('action_by',$staff->id)
+                            ->where('is_distribute',1)
+                            ->whereBetween('verified_at', [$todayStart, $todayEnd])
+                            ->count();
+        // $results = [
+        //     'tickets' => $tickets,
+        //     'completed_today' => $completed_today,
+        // ];
+        $completed = collect(['completed_today' => $completed_today , 'total_today' => $completed_today]);
 
-        return response($winnerList, 200);
+        $results = $completed->merge($winnerList);
+
+
+        return response($results, 200);
     }
 
 
@@ -152,7 +167,8 @@ class DistributePrizeController extends Controller
                     $winner->update([
                         'is_distribute' => true,
                         'distribute_attachment' => $distribute_attachment_image_full_path,
-                        'action_by' => $staff->id
+                        'action_by' => $staff->id,
+                        'verified_at' => Carbon::now()
                     ]);
 
                     $winnerUser = $winner->winner;
@@ -293,7 +309,8 @@ class DistributePrizeController extends Controller
                     $winner->update([
                         'is_distribute' => true,
                         'distribute_attachment' => $distribute_attachment_image_full_path,
-                        'action_by' => $staff->id
+                        'action_by' => $staff->id,
+                        'verified_at' => Carbon::now()
                     ]);
 
                     // $winnerUser = $winner->winner;
@@ -302,15 +319,16 @@ class DistributePrizeController extends Controller
                     //     $notificationData['title'] = 'Prize distribution';
                     //     $notificationData['message'] = 'Your Prize had distributed by our staff';
                     //     $notificationData['deepLink'] = 'fortknox://me/winner/'.$winner->id;
-                    //     $appId = config('app.ONESIGNAL_APP_ID');
-                    //     $apiKey = config('app.ONESIGNAL_REST_API_KEY');
+                    //     $appId = env('ONESIGNAL_APP_ID');
+                    //     $apiKey = env('ONESIGNAL_REST_API_KEY');
                     //     $this->sendNotification($appId, $apiKey, $winnerUser,$notificationData,$winner);
                     // }
 
                     $winner->update([
                         'is_distribute' => true,
                         'distribute_attachment' => $distribute_attachment_image_full_path,
-                        'action_by' => $staff->id
+                        'action_by' => $staff->id,
+                        'verified_at' => Carbon::now()
                     ]);
 
 

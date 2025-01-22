@@ -127,6 +127,7 @@ class TopUpController extends Controller
             'amount' => $request->amount, // Only top-up amount
             'type' => AdminCreditTransaction::TYPE['Increase'],
             'before_amount' => $adminCredit->amount,
+            'after_amount' => 0,
             'outlet_id' => $outlet->id,
         ]);
 

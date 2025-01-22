@@ -189,7 +189,17 @@ class VerifyProfileController extends Controller
     }
 
     public function pendingListing(Request $request){
-        $verifyProfiles = VerifyProfile::where('status',VerifyProfile::STATUS['Pending'])->paginate($request->get('limit') ?? 10);
+        
+         if($request->status && count($request->status) > 0){
+
+            $verifyProfiles = VerifyProfile::whereIn('status',$request->status)->paginate($request->get('limit') ?? 10);
+
+        }else{
+            
+            $verifyProfiles = VerifyProfile::paginate($request->get('limit') ?? 10);
+        }
+        
+
 
         return response($verifyProfiles, 200);
     }
@@ -257,6 +267,14 @@ class VerifyProfileController extends Controller
             'status' => VerifyProfile::STATUS['Failed'],
             'action_by' => $staff->id,
         ]);
+        
+        // Send notification about the registration bonus
+        $notificationData = [
+            'title' => 'Please resubmit IC verification',
+            'message' => 'Your IC verification is failed , please retry',
+            'deepLink' => '', // Add your app-specific deep link if needed
+        ];
+        $this->sendNotification(config('app.ONESIGNAL_APP_ID'), config('app.ONESIGNAL_REST_API_KEY'), $user, $notificationData, $verifyProfile);
 
         DB::commit();
         return response([

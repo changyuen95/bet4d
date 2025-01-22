@@ -16,6 +16,7 @@ use Illuminate\Validation\Rule;
 use Validator;
 use DB;
 use App\Traits\NotificationTrait;
+use App\Models\TransferOption;
 
 use Str;
 class RegisterController extends Controller
@@ -84,11 +85,22 @@ class RegisterController extends Controller
             // Send notification about the registration bonus
             $notificationData = [
                 'title' => 'Welcome Bonus Received!',
-                'message' => 'You have received ' . $bonusAmount . ' as a welcome bonus for registering.',
+                'message' => 'You have received ' . $bonusAmount . ' welcome bonus ! Top up to enjoy 10% bonus now !.',
                 'deepLink' => '', // Add your app-specific deep link if needed
             ];
-            $this->sendNotification(config('app.ONESIGNAL_APP_ID'), config('app.ONESIGNAL_REST_API_KEY'), $user, $notificationData, $userCredit);
+            $this->sendNotification(config('app.ONESIGNAL_APP_ID'), config('app.ONESIGNAL_REST_API_KEY'), $user, $notificationData, $userCredit);        
         }
+
+            $transferOption = TransferOption::where('name','Cash')->first();
+            $transferDetails = $user->transferDetails()->create([
+                'transfer_option_id' => $transferOption->id,
+                'primary' => 1,
+                'bank_no' => null,
+                'bank_account_holder_name' =>null ,
+                'phone_e164' => null,
+                'phone_owner_name' => null,
+            ]);
+
 
         DB::commit();
 
