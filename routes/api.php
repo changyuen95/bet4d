@@ -84,6 +84,7 @@ Route::namespace('API')->group(function () {
     Route::prefix('draw-results')->group(function () {
         Route::get('','DrawResultController@index');
         Route::get('{id}','DrawResultController@show');
+        Route::post('stc-master','DrawResultController@stcMasterResult');
     });
 
     Route::prefix('draw-calendar')->group(function () {

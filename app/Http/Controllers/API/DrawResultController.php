@@ -7,6 +7,7 @@ use App\Http\Resources\DrawResource;
 use App\Models\Draw;
 use App\Models\DrawResult;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DrawResultController extends Controller
 {
@@ -75,5 +76,45 @@ class DrawResultController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function stcMasterResult(Request $request)
+    {
+        $results = DB::connection('stcmaster')
+                ->table('tmpresultmaster')
+                ->where('DrwKey', $request->drawNo)
+                ->get();
+
+        $drawNo = str_replace(" ","",$request->drawNo);
+        $drawNoArray = explode('/', $drawNo );
+        $draw = Draw::where('draw_no',ltrim((int)$drawNoArray[0], '0'))->where('year',$drawNoArray[1])->first();
+        if($draw){
+            foreach($results as $stcresult){
+                $position = 0;
+                if($stcresult->DrwPrz == 'F' || $stcresult->DrwPrz == 'S' || $stcresult->DrwPrz == 'T' ){
+                    $position = 1;
+                }elseif($stcresult->DrwPrz == 'C'){
+                    $position = (int)$stcresult->ScrPos - 13;
+                }elseif($stcresult->DrwPrz == 'Z'){
+                    $position = (int)$stcresult->ScrPos;
+                }
+
+                $draw->results()->updateOrCreate([
+                    'type' => DrawResult::STC_MASTER_TYPE[$stcresult->DrwPrz],
+                    'position' => $position,
+                ],[
+                    'number' => $stcresult->DrwNo
+                ]);
+
+                if($stcresult->DrwPrz == 'F' || $stcresult->DrwPrz == 'S' || $stcresult->DrwPrz == 'T'){
+                    $draw->results()->updateOrCreate([
+                        'type' => DrawResult::TYPE['special'],
+                        'position' => $stcresult->ScrPos,
+                    ],[
+                        'number' => '-'
+                    ]);
+                }
+            }
+        }
     }
 }

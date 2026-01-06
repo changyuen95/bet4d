@@ -20,6 +20,14 @@ class DrawResult extends Model
         'consolation' => 'consolation',
     ];
 
+    const STC_MASTER_TYPE = [
+        'F' => '1st',
+        'S' => '2nd',
+        'T' => '3rd',
+        'Z' => 'special',
+        'C' => 'consolation',
+    ];
+
     protected $with = ['draw'];
 
 
