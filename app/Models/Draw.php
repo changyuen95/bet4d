@@ -100,6 +100,11 @@ class Draw extends Model
         return $this->hasMany(DrawResult::class, 'draw_id');
     }
 
+    public function resultsStaging()
+    {
+        return $this->hasMany(DrawResultStaging::class, 'draw_id');
+    }
+
     public function tickets()
     {
         return $this->hasMany(Ticket::class, 'draw_id');

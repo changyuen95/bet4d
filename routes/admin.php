@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\QrcodeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,6 +64,38 @@ use App\Http\Controllers\ProfileController;
         });
         Route::resource("qrcodes", QrcodeController::class);
 
+        Route::get('/scoreboard', function () {
+            return view('scoreboard', ['result' => []]);
+        })->name('scoreboard');
+
+        // Route::get('scoreboard/trigger', function () {
+        //     $payload = [
+        //         'stc4d' => [
+        //             'title' => 'WINNING RESULTS',
+        //             'draw_no' => '001/26',
+        //             'date' => '03/01/2026 (SAT)',
+        //             'first' => '9058',
+        //             'second' => '5706',
+        //             'third' => '0124',
+        //             'special' => ['0590','6087','2711','7952','7428','2318','3512','5466','9736','7233'],
+        //             'consolation' => ['3881','5307','1528','7515','5826','9184','3284','8544','2167','7520'],
+        //             'jackpot1' => '1,000,000',
+        //             'jackpot2' => '500,000'
+        //         ]
+        //     ];
+
+        //     event(new \App\Events\ScoreboardUpdated($payload));
+
+        //     return response()->json(['status' => 'broadcasted', 'payload' => $payload]);
+        // });
+
+        // Route::get('/db-remote-test', function () {
+        //    $data = DB::connection('stcmaster')
+        //         ->table('tmpresultmaster')
+        //         ->where('DrwKey', '001/17')
+        //         ->get();
+        //         dd($data);
+        // });
 
         require __DIR__.'/auth.php';
 

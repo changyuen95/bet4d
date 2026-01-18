@@ -1,0 +1,10 @@
+version: 2
+authtoken: 38NVGJfcAdlmmoFKnw1jpB0BEME_7Szq9cWbm5kZnkGeJg49v
+tunnels:
+  laravel:
+    proto: http
+    addr: 127.0.0.1:80
+    host_header: bet4d.test
+  websocket:
+    proto: http
+    addr: 127.0.0.1:6001
