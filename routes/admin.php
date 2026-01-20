@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\QrcodeController;
+use App\Http\Controllers\Admin\WitnessController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\DB;
@@ -63,6 +64,13 @@ use Illuminate\Support\Facades\DB;
             Route::post('/print-qrcode/{id}', [QrcodeController::class, 'qrCodePrint'])->name('.qr_print');
         });
         Route::resource("qrcodes", QrcodeController::class);
+
+        Route::group(['prefix' => 'witnesses', 'as' => 'witnesses'], function() {
+            Route::get('select-for-draw', [WitnessController::class, 'selectForDraw'])->name('.select-for-draw');
+            Route::post('save-selected', [WitnessController::class, 'saveSelectedWitnesses'])->name('.save-selected');
+            Route::get('print', [WitnessController::class, 'printWitnessForm'])->name('.print');
+        });
+        Route::resource("witnesses", WitnessController::class);
 
         Route::get('/scoreboard', function () {
             return view('scoreboard', ['result' => []]);

@@ -43,6 +43,22 @@
                     <li><a href="{{ route('admin.qrcodes.scanned_list') }}">Scanned List</a></li>
                 </ul>
             </li>
+
+            <li>
+                <div class="iocn-link">
+                <a href="{{ route('admin.witnesses.index') }}" class="arrow">
+                    <i class='fa fa-users' ></i>
+                    <span class="link_name">Witness</span>
+                </a>
+                <i class='fa fa-chevron-down arrow' style="font-size:12px"></i>
+                </div>
+                <ul class="sub-menu">
+                    <li><a href="{{ route('admin.witnesses.index') }}">Witness List</a></li>
+                    <li><a href="{{ route('admin.witnesses.select-for-draw') }}">Select for Draw</a></li>
+                    <li><a href="{{ route('admin.witnesses.print') }}" target="_blank">Print Witness Form</a></li>
+                </ul>
+            </li>
+
             {{-- <li>
                 <a href="#">
                 <i class='bx bx-compass' ></i>
