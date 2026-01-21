@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\QrcodeController;
 use App\Http\Controllers\Admin\WitnessController;
+use App\Http\Controllers\Admin\ScoreboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\DB;
@@ -75,6 +76,7 @@ use Illuminate\Support\Facades\DB;
         Route::get('/scoreboard', function () {
             return view('scoreboard', ['result' => []]);
         })->name('scoreboard');
+        Route::resource("scoreboard", ScoreboardController::class);
 
         // Route::get('scoreboard/trigger', function () {
         //     $payload = [
