@@ -120,6 +120,24 @@ class Draw extends Model
         return $this->belongsTo(Platform::class, 'platform_id');
     }
 
+    /**
+     * Get the witnesses for this draw
+     */
+    public function witnesses()
+    {
+        return $this->belongsToMany(Witness::class, 'draw_witnesses')
+                    ->withPivot(['selected_at', 'has_signed', 'signed_at', 'signature_path'])
+                    ->withTimestamps();
+    }
+
+    /**
+     * Get the witness records for this draw
+     */
+    public function drawWitnesses()
+    {
+        return $this->hasMany(DrawWitness::class);
+    }
+
     public static function getCurrentDraw(){
         // $todayDateString = "25/11/2023 19:00:00";
         $todayDateString = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now()->toDateTimeString())->format('d/m/Y H:i:s');
