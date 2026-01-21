@@ -24,7 +24,7 @@ return new class extends Migration
 
         Schema::create('draw_witnesses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('draw_id')->constrained('draws')->onDelete('cascade');
+            $table->string('draw_id'); // ULID from draws table
             $table->foreignId('witness_id')->constrained('witnesses')->onDelete('cascade');
             $table->timestamp('selected_at')->useCurrent();
             $table->boolean('has_signed')->default(false);
@@ -32,6 +32,7 @@ return new class extends Migration
             $table->string('signature_path')->nullable();
             $table->timestamps();
             
+            $table->foreign('draw_id')->references('id')->on('draws')->onDelete('cascade');
             $table->unique(['draw_id', 'witness_id']);
         });
     }

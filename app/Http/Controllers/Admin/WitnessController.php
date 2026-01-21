@@ -81,7 +81,7 @@ class WitnessController extends Controller
             DB::commit();
 
             Session::flash('success', 'Witness created successfully!');
-            return redirect()->route('witnesses.index');
+            return redirect()->route('admin.witnesses.index');
 
         } catch (Exception $e) {
             DB::rollBack();
@@ -148,7 +148,7 @@ class WitnessController extends Controller
             DB::commit();
 
             Session::flash('success', 'Witness updated successfully!');
-            return redirect()->route('witnesses.index');
+            return redirect()->route('admin.witnesses.index');
 
         } catch (Exception $e) {
             DB::rollBack();
@@ -168,7 +168,7 @@ class WitnessController extends Controller
             $witness->delete();
 
             Session::flash('success', 'Witness deleted successfully!');
-            return redirect()->route('witnesses.index');
+            return redirect()->route('admin.witnesses.index');
 
         } catch (Exception $e) {
             Log::error('Error deleting witness: ' . $e->getMessage());
@@ -187,7 +187,7 @@ class WitnessController extends Controller
 
         if (!$currentDraw) {
             Session::flash('error', 'No active draw found!');
-            return redirect()->route('witnesses.index');
+            return redirect()->route('admin.witnesses.index');
         }
 
         // Get already selected witnesses for this draw
@@ -234,7 +234,7 @@ class WitnessController extends Controller
             DB::commit();
 
             Session::flash('success', 'Witnesses selected successfully!');
-            return redirect()->route('witnesses.select-for-draw');
+            return redirect()->route('admin.witnesses.select-for-draw');
 
         } catch (Exception $e) {
             DB::rollBack();
@@ -254,7 +254,7 @@ class WitnessController extends Controller
 
         if (!$currentDraw) {
             Session::flash('error', 'No active draw found!');
-            return redirect()->route('witnesses.index');
+            return redirect()->route('admin.witnesses.index');
         }
 
         // Get selected witnesses for this draw
@@ -262,7 +262,7 @@ class WitnessController extends Controller
 
         if ($witnesses->isEmpty()) {
             Session::flash('error', 'No witnesses selected for this draw!');
-            return redirect()->route('witnesses.select-for-draw');
+            return redirect()->route('admin.witnesses.select-for-draw');
         }
 
         return view('admin.witness.print', compact('currentDraw', 'witnesses'));
