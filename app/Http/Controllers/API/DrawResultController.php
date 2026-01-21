@@ -138,6 +138,13 @@ class DrawResultController extends Controller
                 $specialPrizes = $draw->results()->where('type',DrawResult::TYPE['special'])->orderBy('position')->pluck('number')->toArray();
                 $consolationPrizes = $draw->results()->where('type',DrawResult::TYPE['consolation'])->orderBy('position')->pluck('number')->toArray();
             }
+        }else{
+            $draw = Draw::where('expired_at', '<', Carbon::now())->orderBy('expired_at', 'DESC')->first();
+            $firstPrize = $draw->results()->where('type',DrawResult::TYPE['1st'])->first();
+            $secondPrize = $draw->results()->where('type',DrawResult::TYPE['2nd'])->first();
+            $thirdPrize = $draw->results()->where('type',DrawResult::TYPE['3rd'])->first();
+            $specialPrizes = $draw->results()->where('type',DrawResult::TYPE['special'])->orderBy('position')->pluck('number')->toArray();
+            $consolationPrizes = $draw->results()->where('type',DrawResult::TYPE['consolation'])->orderBy('position')->pluck('number')->toArray();
         }
 
         $jackpotResult = Jackpot::first();
