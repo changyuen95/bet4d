@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Witness;
 use App\Models\Draw;
 use App\Models\DrawWitness;
+use App\Models\DrawResult;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -208,6 +209,8 @@ class WitnessController extends Controller
             'draw_id' => 'required|exists:draws,id',
             'witness_ids' => 'required|array|min:1|max:10',
             'witness_ids.*' => 'exists:witnesses,id',
+            'positions' => 'required|array',
+            'positions.*' => 'required|integer|min:1',
         ]);
 
         if ($validator->fails()) {
@@ -222,11 +225,13 @@ class WitnessController extends Controller
             // Remove existing witnesses for this draw
             DrawWitness::where('draw_id', $draw->id)->delete();
 
-            // Add selected witnesses
-            foreach ($request->witness_ids as $witnessId) {
+            // Add selected witnesses with positions
+            foreach ($request->witness_ids as $index => $witnessId) {
+                $position = $request->positions[$index] ?? ($index + 1);
                 DrawWitness::create([
                     'draw_id' => $draw->id,
                     'witness_id' => $witnessId,
+                    'position' => $position,
                     'selected_at' => Carbon::now(),
                 ]);
             }
@@ -265,6 +270,15 @@ class WitnessController extends Controller
             return redirect()->route('admin.witnesses.select-for-draw');
         }
 
-        return view('admin.witness.print', compact('currentDraw', 'witnesses'));
+        // Get draw results
+        $results = [
+            'first' => $currentDraw->results()->where('type', DrawResult::TYPE['1st'])->first(),
+            'second' => $currentDraw->results()->where('type', DrawResult::TYPE['2nd'])->first(),
+            'third' => $currentDraw->results()->where('type', DrawResult::TYPE['3rd'])->first(),
+            'special' => $currentDraw->results()->where('type', DrawResult::TYPE['special'])->orderBy('position')->get(),
+            'consolation' => $currentDraw->results()->where('type', DrawResult::TYPE['consolation'])->orderBy('position')->get(),
+        ];
+
+        return view('admin.witness.print', compact('currentDraw', 'witnesses', 'results'));
     }
 }

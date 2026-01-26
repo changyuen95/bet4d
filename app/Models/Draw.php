@@ -126,7 +126,8 @@ class Draw extends Model
     public function witnesses()
     {
         return $this->belongsToMany(Witness::class, 'draw_witnesses')
-                    ->withPivot(['selected_at', 'has_signed', 'signed_at', 'signature_path'])
+                    ->withPivot(['position', 'selected_at', 'has_signed', 'signed_at', 'signature_path'])
+                    ->orderBy('draw_witnesses.position')
                     ->withTimestamps();
     }
 
