@@ -37,8 +37,8 @@
     }
 
     .tv-container {
-        width: 75%;
-        max-width: 1200px;
+        width: 55%;
+        max-width: 900px;
         height: auto;
         display: flex;
         flex-direction: column;
@@ -46,13 +46,62 @@
         transform-origin: center center;
     }
 
+    /* SCORE BOARD TOP */
+    .score-board-top {
+        background: linear-gradient(to bottom, #a0a0a0, #808080);
+        border-radius: 1vw 1vw 0 0;
+        padding: 0.5vh 2vw;
+        text-align: center;
+        border: 2px solid #666;
+    }
+
+    .score-board-top h2 {
+        font-size: 1.2vw;
+        margin: 0;
+        font-weight: bold;
+        color: #1a1a1a;
+        letter-spacing: 0.3vw;
+    }
+
+    /* MARQUEE */
+    .marquee-container {
+        background: linear-gradient(to right, #ffa500, #ffcc00);
+        padding: 0.5vh 0;
+        overflow: hidden;
+        border-left: 2px solid #555;
+        border-right: 2px solid #555;
+        border-radius: 0 0 0.8vw 0.8vw;
+    }
+
+    .marquee {
+        display: inline-block;
+        white-space: nowrap;
+        animation: scroll-left 20s linear infinite;
+        font-size: 1vw;
+        font-weight: bold;
+        color: #000;
+    }
+
+    @keyframes scroll-left {
+        0% {
+            transform: translateX(100%);
+        }
+        100% {
+            transform: translateX(-100%);
+        }
+    }
+
     /* HEADER */
     .header {
         background: linear-gradient(to bottom, #e00000, #b50000);
         border-radius: 1vw;
-        padding: 1vh 2vw;
+        padding: 0.5vh 1.5vw;
         text-align: center;
-        margin-bottom: 0.8vh;
+        margin-bottom: 0.5vh;
+        margin-top: 1vh;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
     .header h1 {
@@ -61,21 +110,34 @@
         margin: 0;
         font-weight: bold;
         line-height: 1.2;
+        flex: 1;
+        text-align: center;
+        white-space: nowrap;
     }
 
     .draw-info {
-        font-size: 0.8424vw;
+        font-size: 0.95vw;
         font-weight: bold;
         color: #ffe600;
-        margin-top: 1vh;
+        white-space: nowrap;
+    }
+
+    .draw-info-left {
+        text-align: left;
+        flex: 1;
+    }
+
+    .draw-info-right {
+        text-align: right;
+        flex: 1;
     }
 
     /* PRIZE ROWS */
     .prize-row {
         background: rgba(0,0,0,0.18);
         border-radius: 1vw;
-        padding: 0.8vh 2vw;
-        margin-bottom: 0.6vh;
+        padding: 0.5vh 1.5vw;
+        margin-bottom: 0.4vh;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -84,8 +146,8 @@
     .prize-label {
         font-size: 1.2312vw;
         font-weight: bold;
-        width: 35%;
-        padding-left: 6vw;
+        width: 20%;
+        padding-left: 1vw;
     }
 
     .prize-number {
@@ -100,7 +162,7 @@
     .box {
         background: rgba(0,0,0,0.18);
         border-radius: 1vw;
-        padding: 1vh 2vw;
+        padding: 0.6vh 1.5vw;
         height: 100%;
     }
 
@@ -108,21 +170,34 @@
         text-align: center;
         font-size: 1.0368vw;
         font-weight: bold;
-        margin-bottom: 1vh;
+        margin-bottom: 0.6vh;
     }
 
     .number-list {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.5vh 3vw;
-        font-size: 1.0368vw;
+        gap: 0.3vh 2vw;
+        font-size: 1.4vw;
         font-weight: bold;
         text-align: center;
     }
 
+    .number-item {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.3vw;
+        align-items: center;
+    }
+
+    .number-index {
+        font-size: 0.8vw;
+        color: rgba(255,255,255,0.6);
+        text-align: right;
+    }
+
     /* JACKPOT */
     .jackpot-table {
-        margin-top: 0.8vh;
+        margin-top: 0.5vh;
         border: 2px solid #d4a000;
         background: linear-gradient(to right, #ffe066, #ffd633);
         overflow: hidden;
@@ -146,7 +221,7 @@
 
     .jp-label {
         width: 30%;
-        padding: 0.8vh 1.5vw;
+        padding: 0.5vh 1vw;
         font-size: 1.0368vw;
         font-weight: bold;
         display: flex;
@@ -156,7 +231,7 @@
 
     .jp-amount {
         width: 70%;
-        padding: 0.8vh 1.5vw;
+        padding: 0.5vh 1vw;
         font-size: 1.35vw;
         font-weight: bold;
         display: flex;
@@ -174,7 +249,7 @@
 
     .jp-combo {
         flex: 1;
-        padding: 0.8vh 1vw;
+        padding: 0.5vh 0.8vw;
         font-size: 1.0368vw;
         font-weight: bold;
         text-align: center;
@@ -191,11 +266,37 @@
     .jp-description {
         background: rgba(0,0,0,0.1);
         color: #000;
-        padding: 0.8vh 1.5vw;
+        padding: 0.5vh 1vw;
         font-size: 0.8424vw;
         text-align: center;
         justify-content: center;
         font-style: italic;
+    }
+
+    .consolation-full {
+        margin-top: 0.5vh;
+    }
+
+    .consolation-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.3vh 0.8vw;
+        justify-items: center;
+    }
+
+    .consolation-grid > div {
+        text-align: center;
+        width: 100%;
+        font-size: 1.4vw;
+        font-weight: bold;
+    }
+
+    .consolation-grid > div:nth-child(9) {
+        grid-column: 2;
+    }
+
+    .consolation-grid > div:nth-child(10) {
+        grid-column: 3;
     }
     
     /* Responsive adjustments for very large screens */
@@ -233,60 +334,91 @@
 
     <div class="tv-container">
 
+        <!-- SCORE BOARD TOP -->
+        <div class="score-board-top">
+            <h2>SCORE BOARD</h2>
+        </div>
+
+        <!-- MARQUEE -->
+        <div class="marquee-container">
+            <div class="marquee" id="sb-marquee">
+                {{ $result['marquee'] ?? 'Welcome to STC 4D Lottery • Good Luck • Check your numbers regularly' }}
+            </div>
+        </div>
+
         <!-- HEADER -->
         <div class="header">
-            <h1 id="sb-title">{{ $result['title'] ?? 'WINNING RESULTS' }}</h1>
-            <div class="draw-info">
+            <div class="draw-info draw-info-left">
                 Draw No: <span id="sb-draw">{{ $result['draw_no'] ?? '-' }}</span>
-                | <span id="sb-date">{{ $result['date'] ?? '-' }}</span>
+            </div>
+            <h1 id="sb-title">{{ $result['title'] ?? 'WINNING RESULTS' }}</h1>
+            <div class="draw-info draw-info-right">
+                Draw Date: <span id="sb-date">{{ $result['date'] ?? '-' }}</span>
             </div>
         </div>
 
-        <!-- PRIZES -->
-        <div>
-
-            <div class="prize-row">
-                <div class="prize-label">1ST PRIZE</div>
-                <div class="prize-number" id="sb-first">{{ $result['first'] ?? '-' }}</div>
+        <!-- PRIZES - 3 COLUMNS -->
+        <div class="row" style="margin-top: 0.5vh;">
+            <div class="col-4">
+                <div class="prize-row">
+                    <div class="prize-label">1ST</div>
+                    <div class="prize-number" id="sb-first">{{ $result['first'] ?? '-' }}</div>
+                </div>
             </div>
-
-            <div class="prize-row">
-                <div class="prize-label">2ND PRIZE</div>
-                <div class="prize-number" id="sb-second">{{ $result['second'] ?? '-' }}</div>
+            <div class="col-4">
+                <div class="prize-row">
+                    <div class="prize-label">2ND</div>
+                    <div class="prize-number" id="sb-second">{{ $result['second'] ?? '-' }}</div>
+                </div>
             </div>
-
-            <div class="prize-row">
-                <div class="prize-label">3RD PRIZE</div>
-                <div class="prize-number" id="sb-third">{{ $result['third'] ?? '-' }}</div>
+            <div class="col-4">
+                <div class="prize-row">
+                    <div class="prize-label">3RD</div>
+                    <div class="prize-number" id="sb-third">{{ $result['third'] ?? '-' }}</div>
+                </div>
             </div>
-
         </div>
 
-        <!-- SPECIAL & CONSOLATION -->
+        <!-- SPECIAL NUMBERS - 2 COLUMNS -->
         <div class="row" style="margin-top: 0.8vh;">
-
             <div class="col-6">
                 <div class="box">
                     <div class="box-title">SPECIAL PRIZE</div>
-                    <ul class="number-list" id="sb-special" style="list-style:none;padding-left:0;">
-                        @for ($i = 0; $i < 10; $i++)
-                            <li>{{ $result['special'][$i] ?? '-' }}</li>
+                    <div id="sb-special-left" class="number-list" style="padding-left:0; display: block;">
+                        @for ($i = 0; $i < 7; $i++)
+                            <div class="number-item" style="margin-bottom: 0.3vh;">
+                                <span class="number-index">{{ $i + 1 }}</span>
+                                <span style="font-size: 1.4vw; font-weight: bold;">{{ $result['special'][$i] ?? '-' }}</span>
+                            </div>
                         @endfor
-                    </ul>
+                    </div>
                 </div>
             </div>
-
             <div class="col-6">
                 <div class="box">
-                    <div class="box-title">CONSOLATION PRIZE</div>
-                    <ul class="number-list" id="sb-consolation" style="list-style:none;padding-left:0;">
-                        @for ($i = 0; $i < 10; $i++)
-                            <li>{{ $result['consolation'][$i] ?? '-' }}</li>
+                    <div class="box-title">SPECIAL PRIZE</div>
+                    <div id="sb-special-right" class="number-list" style="padding-left:0; display: block;">
+                        @for ($i = 7; $i < 13; $i++)
+                            <div class="number-item" style="margin-bottom: 0.3vh;">
+                                <span class="number-index">{{ $i + 1 }}</span>
+                                <span style="font-size: 1.4vw; font-weight: bold;">{{ $result['special'][$i] ?? '-' }}</span>
+                            </div>
                         @endfor
-                    </ul>
+                    </div>
                 </div>
             </div>
+        </div>
 
+        <!-- CONSOLATION PRIZES FULL WIDTH -->
+        <div class="consolation-full">
+            <div class="box">
+                <div class="box-title">CONSOLATION PRIZES</div>
+                <div class="consolation-grid" id="sb-consolation">
+                    @for ($i = 0; $i < 10; $i++)
+                        <div>{{ $result['consolation'][$i] ?? '-' }}</div>
+                    @endfor
+                </div>
+            </div>
         </div>
 
         <!-- JACKPOT -->
@@ -322,6 +454,6 @@
 
 </div>
 
-</body>
 @vite(['resources/js/scoreboard.js'])
+</body>
 </html>

@@ -126,6 +126,25 @@ Route::get('/_debug/db', function () {
 
         Route::resource("ticket_printing", TicketPrintingController::class);
         Route::group(['prefix' => 'reports', 'as' => 'reports.'], function() {
+        Route::get('/scoreboard', function () {
+            return view('scoreboard', ['result' => []]);
+        })->name('scoreboard');
+        
+        // Route::get('scoreboard/trigger', function () {
+        //     $payload = [
+        //         'stc4d' => [
+        //             'title' => 'WINNING RESULTS',
+        //             'draw_no' => '001/26',
+        //             'date' => '03/01/2026 (SAT)',
+        //             'first' => '9058',
+        //             'second' => '5706',
+        //             'third' => '0124',
+        //             'special' => ['0590','6087','2711','7952','7428','2318','3512','5466','9736','7233','5675','7718','5675'],
+        //             'consolation' => ['3881','5307','1528','7515','5826','9184','3284','8544','2167','7520'],
+        //             'jackpot1' => 1000000,
+        //             'jackpot2' => 500000
+        //         ]
+        //     ];
 
 Route::get('test-ticket-print', function () {
     return view('test-print');
@@ -133,6 +152,10 @@ Route::get('test-ticket-print', function () {
 
             Route::resource("tickets", TicketSalesReportController::class);
             Route::resource("topups", TopupReportController::class);
+        //     return response()->json(['status' => 'broadcasted', 'payload' => $payload]);
+        // });
+        
+        Route::resource("scoreboard", ScoreboardController::class);
 
             Route::get('ticket/export-csv', [TicketSalesReportController::class, 'exportCsv'])->name('ticket.exportCsv');
             Route::get('ticket/export-pdf', [TicketSalesReportController::class, 'exportPdf'])->name('ticket.exportPdf');
