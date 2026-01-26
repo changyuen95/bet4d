@@ -43,10 +43,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const thirdEl = document.getElementById('sb-third');
             const jackpotEl = document.getElementById('sb-jackpot');
             const jackpot2El = document.getElementById('sb-jackpot2');
-            const specialUl = document.getElementById('sb-special');
             const consolationUl = document.getElementById('sb-consolation');
 
-            if (!titleEl || !drawEl || !dateEl || !firstEl || !secondEl || !thirdEl || !specialUl || !consolationUl) {
+            if (!titleEl || !drawEl || !dateEl || !firstEl || !secondEl || !thirdEl || !consolationUl) {
                 console.error('Missing scoreboard elements in DOM');
                 return false;
             }
@@ -85,20 +84,39 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (Array.isArray(data.special)) {
-                specialUl.innerHTML = '';
-                data.special.forEach(num => {
-                    const li = document.createElement('li');
-                    li.textContent = num;
-                    specialUl.appendChild(li);
-                });
+                // Left column (1-7)
+                const specialLeft = document.getElementById('sb-special-left');
+                if (specialLeft) {
+                    specialLeft.innerHTML = '';
+                    for (let i = 0; i < 7 && i < data.special.length; i++) {
+                        const div = document.createElement('div');
+                        div.className = 'number-item';
+                        div.style.marginBottom = '0.3vh';
+                        div.innerHTML = `<span class="number-index">${i + 1}</span><span style="font-size: 1.4vw; font-weight: bold;">${data.special[i] || '-'}</span>`;
+                        specialLeft.appendChild(div);
+                    }
+                }
+                
+                // Right column (8-13)
+                const specialRight = document.getElementById('sb-special-right');
+                if (specialRight) {
+                    specialRight.innerHTML = '';
+                    for (let i = 7; i < 13 && i < data.special.length; i++) {
+                        const div = document.createElement('div');
+                        div.className = 'number-item';
+                        div.style.marginBottom = '0.3vh';
+                        div.innerHTML = `<span class="number-index">${i + 1}</span><span style="font-size: 1.4vw; font-weight: bold;">${data.special[i] || '-'}</span>`;
+                        specialRight.appendChild(div);
+                    }
+                }
             }
 
             if (Array.isArray(data.consolation)) {
                 consolationUl.innerHTML = '';
                 data.consolation.forEach(num => {
-                    const li = document.createElement('li');
-                    li.textContent = num;
-                    consolationUl.appendChild(li);
+                    const div = document.createElement('div');
+                    div.textContent = num;
+                    consolationUl.appendChild(div);
                 });
             }
 
@@ -109,46 +127,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function ensureStatusBanner() {
-        let banner = document.getElementById('sb-status');
-        if (!banner) {
-            banner = document.createElement('div');
-            banner.id = 'sb-status';
-            banner.style.position = 'fixed';
-            banner.style.bottom = '1vh';
-            banner.style.left = '1vw';
-            banner.style.padding = '0.6vh 1vw';
-            banner.style.background = 'rgba(0,0,0,0.5)';
-            banner.style.color = '#fff';
-            banner.style.fontSize = '1.2vw';
-            banner.style.borderRadius = '0.6vw';
-            banner.style.zIndex = '9999';
-            document.body.appendChild(banner);
-        }
-        return banner;
-    }
-
-    function setStatus(msg) {
-        const banner = ensureStatusBanner();
-        banner.textContent = msg;
-    }
-
-    setStatus('Connecting to scoreboard channel...');
     const channel = window.Echo.channel('scoreboard');
+    
     channel.listen('.ScoreboardUpdated', (event) => {
-        setStatus('Update received');
         const data = event?.payload?.stc4d ?? null;
         if (!data) {
             console.error('No data in event payload', event);
-            setStatus('Update received (no data)');
             return;
         }
-        const ok = applyScoreboard(data);
-        setStatus(ok ? 'Display updated' : 'Display update failed');
+        applyScoreboard(data);
     });
 
     if (debug) {
-        setStatus('Debug mode: using sample data');
         const sample = {
             title: 'WINNING RESULTS',
             draw_no: '001/26',

@@ -76,8 +76,7 @@ use Illuminate\Support\Facades\DB;
         Route::get('/scoreboard', function () {
             return view('scoreboard', ['result' => []]);
         })->name('scoreboard');
-        Route::resource("scoreboard", ScoreboardController::class);
-
+        
         // Route::get('scoreboard/trigger', function () {
         //     $payload = [
         //         'stc4d' => [
@@ -87,10 +86,10 @@ use Illuminate\Support\Facades\DB;
         //             'first' => '9058',
         //             'second' => '5706',
         //             'third' => '0124',
-        //             'special' => ['0590','6087','2711','7952','7428','2318','3512','5466','9736','7233'],
+        //             'special' => ['0590','6087','2711','7952','7428','2318','3512','5466','9736','7233','5675','7718','5675'],
         //             'consolation' => ['3881','5307','1528','7515','5826','9184','3284','8544','2167','7520'],
-        //             'jackpot1' => '1,000,000',
-        //             'jackpot2' => '500,000'
+        //             'jackpot1' => 1000000,
+        //             'jackpot2' => 500000
         //         ]
         //     ];
 
@@ -98,6 +97,8 @@ use Illuminate\Support\Facades\DB;
 
         //     return response()->json(['status' => 'broadcasted', 'payload' => $payload]);
         // });
+        
+        Route::resource("scoreboard", ScoreboardController::class);
 
         // Route::get('/db-remote-test', function () {
         //    $data = DB::connection('stcmaster')
