@@ -59,6 +59,20 @@
                 </ul>
             </li>
 
+            <li>
+                <div class="iocn-link">
+                <a href="{{ route('admin.reports.tickets.index') }}" class="arrow">
+                    <i class='fa fa-file-text' ></i>
+                    <span class="link_name">Reports</span>
+                </a>
+                <i class='fa fa-chevron-down arrow' style="font-size:12px"></i>
+                </div>
+                <ul class="sub-menu">
+                    <li><a href="{{ route('admin.reports.tickets.index') }}">Ticket Sales Report</a></li>
+                    <li><a href="{{ route('admin.reports.topups.index') }}">Topup Report</a></li>
+                </ul>
+            </li>
+
             {{-- <li>
                 <a href="#">
                 <i class='bx bx-compass' ></i>

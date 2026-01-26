@@ -38,7 +38,7 @@
                         <table class="w-full text-sm text-left text-gray-500">
                             <thead class="text-xs text-gray-700 uppercase bg-green-50">
                                 <tr>
-                                    <th scope="col" class="px-6 py-3">No</th>
+                                    <th scope="col" class="px-6 py-3">Position</th>
                                     <th scope="col" class="px-6 py-3">Name</th>
                                     <th scope="col" class="px-6 py-3">IC Number</th>
                                     <th scope="col" class="px-6 py-3">Phone</th>
@@ -48,7 +48,11 @@
                             <tbody>
                                 @foreach($selectedWitnesses as $index => $witness)
                                 <tr class="bg-white border-b">
-                                    <td class="px-6 py-4">{{ $index + 1 }}</td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-800 font-bold">
+                                            {{ $witness->pivot->position ?? ($index + 1) }}
+                                        </span>
+                                    </td>
                                     <td class="px-6 py-4 font-medium text-gray-900">{{ $witness->name }}</td>
                                     <td class="px-6 py-4">{{ $witness->formatted_ic }}</td>
                                     <td class="px-6 py-4">{{ $witness->phone ?? '-' }}</td>
@@ -92,19 +96,32 @@
                                         <th scope="col" class="px-6 py-3">
                                             <input type="checkbox" id="select-all" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded">
                                         </th>
+                                        <th scope="col" class="px-6 py-3">Position</th>
                                         <th scope="col" class="px-6 py-3">Name</th>
                                         <th scope="col" class="px-6 py-3">IC Number</th>
                                         <th scope="col" class="px-6 py-3">Phone</th>
                                         <th scope="col" class="px-6 py-3">Past Participations</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="witness-tbody">
                                     @foreach($witnesses as $witness)
-                                    <tr class="bg-white border-b hover:bg-gray-50">
+                                    @php
+                                        $selectedWitness = $selectedWitnesses->firstWhere('id', $witness->id);
+                                        $isSelected = $selectedWitness !== null;
+                                        $currentPosition = $isSelected ? ($selectedWitness->pivot->position ?? '') : '';
+                                    @endphp
+                                    <tr class="bg-white border-b hover:bg-gray-50" data-witness-id="{{ $witness->id }}">
                                         <td class="px-6 py-4">
                                             <input type="checkbox" name="witness_ids[]" value="{{ $witness->id }}" 
                                                    class="witness-checkbox w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
-                                                   {{ $selectedWitnesses->contains('id', $witness->id) ? 'checked' : '' }}>
+                                                   {{ $isSelected ? 'checked' : '' }}>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <input type="number" name="positions[]" min="1" max="99" 
+                                                   value="{{ $currentPosition }}"
+                                                   class="position-input w-16 px-2 py-1 border border-gray-300 rounded text-center"
+                                                   placeholder="#"
+                                                   {{ $isSelected ? '' : 'disabled' }}>
                                         </td>
                                         <td class="px-6 py-4 font-medium text-gray-900">{{ $witness->name }}</td>
                                         <td class="px-6 py-4">{{ $witness->formatted_ic }}</td>
@@ -127,13 +144,48 @@
     </div>
 
     <script>
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-assign positions for already selected witnesses that don't have positions
+            autoAssignPositions();
+        });
+
         // Select all functionality
         document.getElementById('select-all').addEventListener('change', function() {
             const checkboxes = document.querySelectorAll('.witness-checkbox');
             checkboxes.forEach(checkbox => {
                 checkbox.checked = this.checked;
+                togglePositionInput(checkbox);
             });
+            autoAssignPositions();
         });
+
+        // Toggle position input when checkbox changes
+        function togglePositionInput(checkbox) {
+            const row = checkbox.closest('tr');
+            const positionInput = row.querySelector('.position-input');
+            positionInput.disabled = !checkbox.checked;
+            if (!checkbox.checked) {
+                positionInput.value = '';
+            }
+        }
+
+        // Auto-assign sequential positions
+        function autoAssignPositions() {
+            const checkedCheckboxes = document.querySelectorAll('.witness-checkbox:checked');
+            let nextPosition = 1;
+            
+            checkedCheckboxes.forEach((checkbox) => {
+                const row = checkbox.closest('tr');
+                const positionInput = row.querySelector('.position-input');
+                
+                // Only auto-assign if the field is empty or has no value
+                if (!positionInput.value || positionInput.value === '' || positionInput.value === '0') {
+                    positionInput.value = nextPosition;
+                }
+                nextPosition++;
+            });
+        }
 
         // Update select-all checkbox when individual checkboxes change
         document.querySelectorAll('.witness-checkbox').forEach(checkbox => {
@@ -141,7 +193,45 @@
                 const allCheckboxes = document.querySelectorAll('.witness-checkbox');
                 const checkedCheckboxes = document.querySelectorAll('.witness-checkbox:checked');
                 document.getElementById('select-all').checked = allCheckboxes.length === checkedCheckboxes.length;
+                
+                togglePositionInput(this);
+                autoAssignPositions();
             });
+        });
+
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const checkedCheckboxes = document.querySelectorAll('.witness-checkbox:checked');
+            const positions = [];
+            let hasError = false;
+
+            checkedCheckboxes.forEach(checkbox => {
+                const row = checkbox.closest('tr');
+                const positionInput = row.querySelector('.position-input');
+                const position = parseInt(positionInput.value);
+
+                if (!position || position < 1) {
+                    hasError = true;
+                    positionInput.classList.add('border-red-500');
+                } else {
+                    positionInput.classList.remove('border-red-500');
+                    positions.push(position);
+                }
+            });
+
+            if (hasError) {
+                e.preventDefault();
+                alert('Please enter valid positions (1 or higher) for all selected witnesses.');
+                return false;
+            }
+
+            // Check for duplicate positions
+            const duplicates = positions.filter((item, index) => positions.indexOf(item) !== index);
+            if (duplicates.length > 0) {
+                e.preventDefault();
+                alert('Duplicate positions found: ' + duplicates.join(', ') + '. Each witness must have a unique position.');
+                return false;
+            }
         });
     </script>
 </x-app-layout>

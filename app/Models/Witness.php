@@ -37,14 +37,14 @@ class Witness extends Model
     }
 
     /**
-     * Format IC for display (xxx,xxx,xx,xx,xxx)
+     * Format IC for display (xxxxxx-xx-xxxx)
      */
     public function getFormattedIcAttribute()
     {
         $ic = preg_replace('/[^0-9]/', '', $this->ic);
         
         if (strlen($ic) === 12) {
-            return substr($ic, 0, 3) . ',' . substr($ic, 3, 3) . ',' . substr($ic, 6, 2) . ',' . substr($ic, 8, 2) . ',' . substr($ic, 10, 3);
+            return substr($ic, 0, 6) . '-' . substr($ic, 6, 2) . '-' . substr($ic, 8, 4);
         }
         
         return $this->ic;
