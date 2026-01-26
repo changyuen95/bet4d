@@ -185,7 +185,7 @@
     .number-item {
         display: grid;
         grid-template-columns: auto 1fr;
-        gap: 0.3vw;
+        gap: 0.5vw;
         align-items: center;
     }
 
@@ -193,6 +193,7 @@
         font-size: 0.8vw;
         color: rgba(255,255,255,0.6);
         text-align: right;
+        padding-left: 1.5vw;
     }
 
     /* JACKPOT */
@@ -379,31 +380,30 @@
             </div>
         </div>
 
-        <!-- SPECIAL NUMBERS - 2 COLUMNS -->
-        <div class="row" style="margin-top: 0.8vh;">
-            <div class="col-6">
-                <div class="box">
-                    <div class="box-title">SPECIAL PRIZE</div>
-                    <div id="sb-special-left" class="number-list" style="padding-left:0; display: block;">
-                        @for ($i = 0; $i < 7; $i++)
-                            <div class="number-item" style="margin-bottom: 0.3vh;">
-                                <span class="number-index">{{ $i + 1 }}</span>
-                                <span style="font-size: 1.4vw; font-weight: bold;">{{ $result['special'][$i] ?? '-' }}</span>
-                            </div>
-                        @endfor
+        <!-- SPECIAL NUMBERS - 2 COLUMNS IN ONE BOX -->
+        <div style="margin-top: 0.8vh;">
+            <div class="box">
+                <div class="box-title">SPECIAL PRIZE</div>
+                <div class="row">
+                    <div class="col-6">
+                        <div id="sb-special-left" class="number-list" style="padding-left:0; display: block;">
+                            @for ($i = 0; $i < 7; $i++)
+                                <div class="number-item" style="margin-bottom: 0.3vh;">
+                                    <span class="number-index">{{ $i + 1 }}</span>
+                                    <span style="font-size: 1.4vw; font-weight: bold;">{{ $result['special'][$i] ?? '-' }}</span>
+                                </div>
+                            @endfor
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="box">
-                    <div class="box-title">SPECIAL PRIZE</div>
-                    <div id="sb-special-right" class="number-list" style="padding-left:0; display: block;">
-                        @for ($i = 7; $i < 13; $i++)
-                            <div class="number-item" style="margin-bottom: 0.3vh;">
-                                <span class="number-index">{{ $i + 1 }}</span>
-                                <span style="font-size: 1.4vw; font-weight: bold;">{{ $result['special'][$i] ?? '-' }}</span>
-                            </div>
-                        @endfor
+                    <div class="col-6">
+                        <div id="sb-special-right" class="number-list" style="padding-left:0; display: block;">
+                            @for ($i = 7; $i < 13; $i++)
+                                <div class="number-item" style="margin-bottom: 0.3vh;">
+                                    <span class="number-index">{{ $i + 1 }}</span>
+                                    <span style="font-size: 1.4vw; font-weight: bold;">{{ $result['special'][$i] ?? '-' }}</span>
+                                </div>
+                            @endfor
+                        </div>
                     </div>
                 </div>
             </div>
