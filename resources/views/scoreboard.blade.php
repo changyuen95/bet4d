@@ -37,8 +37,8 @@
     }
 
     .tv-container {
-        width: 55%;
-        max-width: 900px;
+        width: 75%;
+        max-width: 2400px;
         height: auto;
         display: flex;
         flex-direction: column;
