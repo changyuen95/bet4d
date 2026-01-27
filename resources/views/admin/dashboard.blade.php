@@ -93,6 +93,55 @@
                 </div>
               </div>
           </div>
+          
+          {{-- Marquee Content Update Section --}}
+          <div class="row mt-4">
+              <div class="col-12">
+                  <div class="d-block bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                      <div class="p-6 font-semibold text-md text-gray-800 dark:text-gray-600 leading-tight bg-gradient">
+                          <u>Update Marquee Content</u>
+                      </div>
+                      <div class="p-6">
+                          @if(session('success'))
+                              <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                  <i class="fa fa-check-circle"></i> {{ session('success') }}
+                                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                              </div>
+                          @endif
+                          
+                          @if(session('error'))
+                              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                  <i class="fa fa-exclamation-circle"></i> {{ session('error') }}
+                                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                              </div>
+                          @endif
+                          
+                          <form method="POST" action="{{ route('admin.marquee.update') }}">
+                              @csrf
+                              <div class="mb-3">
+                                  <label for="marquee_content" class="form-label font-semibold text-gray-700">Marquee Text</label>
+                                  <textarea 
+                                      class="form-control @error('marquee_content') is-invalid @enderror" 
+                                      id="marquee_content" 
+                                      name="marquee_content" 
+                                      rows="3" 
+                                      placeholder="Enter marquee content here...">{{ old('marquee_content', $marqueeContent ?? '') }}</textarea>
+                                  @error('marquee_content')
+                                      <div class="invalid-feedback">{{ $message }}</div>
+                                  @enderror
+                                  <small class="form-text text-muted mt-2 d-block">
+                                      <i class="fa fa-info-circle"></i> 
+                                      <strong>Available placeholders:</strong> Use <code>%jackpot1%</code> and <code>%jackpot2%</code> to display current jackpot values dynamically.
+                                  </small>
+                              </div>
+                              <button type="submit" class="btn btn-primary" style="background-color: #007bff; color: white; font-weight: 500; border: 1px solid #007bff;">
+                                  <i class="fa fa-save"></i> Update Marquee
+                              </button>
+                          </form>
+                      </div>
+                  </div>
+              </div>
+          </div>
         </div>
     </div>
     

@@ -150,6 +150,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const channel = window.Echo.channel('scoreboard');
     
     channel.listen('.ScoreboardUpdated', (event) => {
+        // Handle marquee-only updates
+        if (event?.payload?.marquee) {
+            const marqueeEl = document.getElementById('sb-marquee');
+            if (marqueeEl) {
+                let message = event.payload.marquee.message;
+                
+                // Replace placeholders with jackpot values if available
+                const jackpot1 = event.payload.marquee.jackpot1 || 0;
+                const jackpot2 = event.payload.marquee.jackpot2 || 0;
+                const jp1Formatted = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(jackpot1);
+                const jp2Formatted = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(jackpot2);
+                
+                message = message.replace(/%jackpot1%/g, `${jp1Formatted}`);
+                message = message.replace(/%jackpot2%/g, `${jp2Formatted}`);
+                
+                marqueeEl.textContent = message;
+                console.log('Marquee updated:', message);
+            }
+            return;
+        }
+        
+        // Handle full scoreboard updates
         const data = event?.payload?.stc4d ?? null;
         if (!data) {
             console.error('No data in event payload', event);

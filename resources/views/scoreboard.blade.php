@@ -208,7 +208,7 @@
         <!-- MARQUEE -->
         <div class="marquee-container">
             <div class="marquee" id="sb-marquee">
-                Welcome to STC 4D Lottery • Jackpot 1 : RM{{ isset($result['jackpot1']) ? number_format($result['jackpot1'], 2) : '0.00' }} • Jackpot 2 : RM{{ isset($result['jackpot2']) ? number_format($result['jackpot2'], 2) : '0.00' }} • Next Special draw on 10/2/2026
+                {{ $result['marquee'] }}
             </div>
         </div>
 

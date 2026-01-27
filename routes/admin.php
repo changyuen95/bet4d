@@ -89,9 +89,8 @@ Route::get('/_debug/db', function () {
         Route::resource("scoreboard", ScoreboardController::class);
 
         Route::middleware('auth:admin')->group(function () {
-            Route::get('admin/dashboard', function () {
-                return view('admin.dashboard'); // Ensure this view exists
-            })->name('dashboard');
+            Route::get('admin/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+            Route::post('admin/marquee/update', [AdminController::class, 'updateMarquee'])->name('marquee.update');
 
 
 
@@ -145,6 +144,10 @@ Route::get('/_debug/db', function () {
         //             'jackpot2' => 500000
         //         ]
         //     ];
+        //     event(new \App\Events\ScoreboardUpdated($payload));
+
+        //     return response()->json(['status' => 'broadcasted', 'payload' => $payload]);
+        // });
 
 Route::get('test-ticket-print', function () {
     return view('test-print');

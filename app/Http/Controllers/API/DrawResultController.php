@@ -8,6 +8,7 @@ use App\Models\Draw;
 use App\Models\DrawResult;
 use App\Models\DrawResultStaging;
 use App\Models\Jackpot;
+use App\Models\Marquee;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -156,7 +157,7 @@ class DrawResultController extends Controller
 
 
 
-        
+        $marquee = Marquee::first();
         // dd(Carbon::parse($draw->expired_at)->format('d/m/Y (D)'));
         $payload = [
             'stc4d' => [
@@ -170,6 +171,12 @@ class DrawResultController extends Controller
                 'consolation' => $consolationPrizes,
                 'jackpot1' => $jackpotResult->jackpot1,
                 'jackpot2' => $jackpotResult->jackpot2
+            ],
+            'marquee' => [
+                'message' => $marquee?$marquee->message:'',
+                'jackpot1' => $jackpotResult->jackpot1,
+                'jackpot2' => $jackpotResult->jackpot2,
+                'updated_at' => now()->toIso8601String()
             ]
         ];
 

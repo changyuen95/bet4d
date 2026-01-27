@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Mail\NewAdminAddedEmail;
 use App\Models\Admin;
+use App\Models\Jackpot;
+use App\Models\Marquee;
 use App\Models\Outlet;
 use Exception;
 use Illuminate\Http\Request;
@@ -19,6 +21,73 @@ use Illuminate\Support\Facades\Mail;
 
 class AdminController extends Controller
 {
+
+    /**
+     * Display the dashboard
+     */
+    public function dashboard()
+    {
+        // Fetch the first (and only) marquee record
+        $marquee = DB::table('marquees')->first();
+        $marqueeContent = $marquee ? $marquee->message : '';
+        
+        return view('admin.dashboard', compact('marqueeContent'));
+    }
+
+    /**
+     * Update marquee content
+     */
+    public function updateMarquee(Request $request)
+    {
+        $request->validate([
+            'marquee_content' => 'required|string|max:1000'
+        ]);
+
+        try {
+            // Get the first (and only) marquee record
+            $marquee = DB::table('marquees')->first();
+            
+            if ($marquee) {
+                // Update existing record
+                DB::table('marquees')
+                    ->where('id', $marquee->id)
+                    ->update([
+                        'message' => $request->marquee_content,
+                        'updated_at' => now()
+                    ]);
+            } else {
+                // Create new record if none exists
+                DB::table('marquees')->insert([
+                    'message' => $request->marquee_content,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            }
+
+            // Get current jackpot values to replace placeholders
+            $jackpot = Jackpot::first();
+
+            // Broadcast the marquee update via websocket on scoreboard channel
+            $payload = [
+                'marquee' => [
+                    'message' => $request->marquee_content,
+                    'jackpot1' => $jackpot->jackpot1,
+                    'jackpot2' => $jackpot->jackpot2,
+                    'updated_at' => now()->toIso8601String()
+                ]
+            ];
+            event(new \App\Events\ScoreboardUpdated($payload));
+
+            return redirect()->route('admin.dashboard')
+                ->with('success', 'Marquee content updated successfully!');
+                
+        } catch (\Exception $e) {
+            Log::error('Marquee update error: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'Failed to update marquee content. Please try again.')
+                ->withInput();
+        }
+    }
 
 
     /**
