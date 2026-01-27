@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function applyScoreboard(data) {
         try {
-            const titleEl = document.getElementById('sb-title');
+            const marqueeEl = document.getElementById('sb-marquee');
             const drawEl = document.getElementById('sb-draw');
             const dateEl = document.getElementById('sb-date');
             const firstEl = document.getElementById('sb-first');
@@ -45,17 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const jackpot2El = document.getElementById('sb-jackpot2');
             const consolationUl = document.getElementById('sb-consolation');
 
-            if (!titleEl || !drawEl || !dateEl || !firstEl || !secondEl || !thirdEl || !consolationUl) {
-                console.error('Missing scoreboard elements in DOM');
-                return false;
-            }
-
-            titleEl.textContent = data.title ?? titleEl.textContent;
-            drawEl.textContent = data.draw_no ?? drawEl.textContent;
-            dateEl.textContent = data.date ?? dateEl.textContent;
-            firstEl.textContent = data.first ?? firstEl.textContent;
-            secondEl.textContent = data.second ?? secondEl.textContent;
-            thirdEl.textContent = data.third ?? thirdEl.textContent;
+            if (drawEl && data.draw_no) drawEl.textContent = data.draw_no;
+            if (dateEl && data.date) dateEl.textContent = data.date;
+            if (firstEl && data.first) firstEl.textContent = data.first;
+            if (secondEl && data.second) secondEl.textContent = data.second;
+            if (thirdEl && data.third) thirdEl.textContent = data.third;
+            
+            // Update jackpot amounts
             if (jackpotEl && (data.jackpot1 || data.jackpot)) {
                 const jackpotValue = data.jackpot1 || data.jackpot;
                 const formattedValue = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(jackpotValue);
@@ -64,6 +60,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (jackpot2El && data.jackpot2) {
                 const formattedValue2 = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(data.jackpot2);
                 jackpot2El.textContent = 'RM ' + formattedValue2;
+            }
+
+            // Update marquee with jackpot values
+            if (marqueeEl && (data.jackpot1 || data.jackpot2)) {
+                const jp1 = data.jackpot1 || data.jackpot;
+                const jp2 = data.jackpot2;
+                const jp1Formatted = jp1 ? new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(jp1) : '-';
+                const jp2Formatted = jp2 ? new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(jp2) : '-';
+                marqueeEl.textContent = `Welcome to STC 4D Lottery • Jackpot 1 : RM${jp1Formatted} • Jackpot 2 : RM${jp2Formatted} • Next Special draw on 10/2/2026`;
             }
 
             // Update jackpot combinations
@@ -83,35 +88,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (combo6) combo6.textContent = data.third + ' + ' + data.second;
             }
 
+            // Update special prizes (3 columns: 5-4-4 distribution)
             if (Array.isArray(data.special)) {
-                // Left column (1-7)
+                // Left column (1-5)
                 const specialLeft = document.getElementById('sb-special-left');
                 if (specialLeft) {
                     specialLeft.innerHTML = '';
-                    for (let i = 0; i < 7 && i < data.special.length; i++) {
+                    for (let i = 0; i < 5 && i < data.special.length; i++) {
                         const div = document.createElement('div');
                         div.className = 'number-item';
                         div.style.marginBottom = '0.3vh';
-                        div.innerHTML = `<span class="number-index">${i + 1}</span><span style="font-size: 1.4vw; font-weight: bold;">${data.special[i] || '-'}</span>`;
+                        div.innerHTML = `<span class="number-index">${i + 1}</span><span style="font-size: 5vw; font-weight: bold;">${data.special[i] || '-'}</span>`;
                         specialLeft.appendChild(div);
                     }
                 }
                 
-                // Right column (8-13)
-                const specialRight = document.getElementById('sb-special-right');
-                if (specialRight) {
-                    specialRight.innerHTML = '';
-                    for (let i = 7; i < 13 && i < data.special.length; i++) {
+                // Middle column (6-9)
+                const specialMiddle = document.getElementById('sb-special-middle');
+                if (specialMiddle) {
+                    specialMiddle.innerHTML = '';
+                    for (let i = 5; i < 9 && i < data.special.length; i++) {
                         const div = document.createElement('div');
                         div.className = 'number-item';
                         div.style.marginBottom = '0.3vh';
-                        div.innerHTML = `<span class="number-index">${i + 1}</span><span style="font-size: 1.4vw; font-weight: bold;">${data.special[i] || '-'}</span>`;
+                        div.innerHTML = `<span class="number-index">${i + 1}</span><span style="font-size: 5vw; font-weight: bold;">${data.special[i] || '-'}</span>`;
+                        specialMiddle.appendChild(div);
+                    }
+                }
+                
+                // Right column (10-13)
+                const specialRight = document.getElementById('sb-special-right');
+                if (specialRight) {
+                    specialRight.innerHTML = '';
+                    for (let i = 9; i < 13 && i < data.special.length; i++) {
+                        const div = document.createElement('div');
+                        div.className = 'number-item';
+                        div.style.marginBottom = '0.3vh';
+                        div.innerHTML = `<span class="number-index">${i + 1}</span><span style="font-size: 5vw; font-weight: bold;">${data.special[i] || '-'}</span>`;
                         specialRight.appendChild(div);
                     }
                 }
             }
 
-            if (Array.isArray(data.consolation)) {
+            // Update consolation prizes (inherits 3.5rem font size from CSS)
+            if (Array.isArray(data.consolation) && consolationUl) {
                 consolationUl.innerHTML = '';
                 data.consolation.forEach(num => {
                     const div = document.createElement('div');

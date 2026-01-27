@@ -22,7 +22,7 @@
             font-family: Arial, sans-serif;
             line-height: 1.4;
             color: #333;
-            font-size: 12px;
+            font-size: 14px;
         }
         
         .header {
@@ -34,15 +34,15 @@
         
         .header h1 {
             margin: 0;
-            font-size: 20px;
+            font-size: 28px;
             text-transform: uppercase;
         }
         
         .draw-info {
             background-color: #f5f5f5;
-            padding: 8px;
-            margin-bottom: 15px;
-            font-size: 11px;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
         }
         
         .draw-info p {
@@ -52,17 +52,17 @@
         }
         
         .results-section {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             border: 2px solid #333;
-            padding: 10px;
+            padding: 15px;
         }
         
         .results-section h2 {
-            margin: 0 0 8px 0;
-            font-size: 14px;
+            margin: 0 0 12px 0;
+            font-size: 18px;
             background-color: #333;
             color: white;
-            padding: 4px 8px;
+            padding: 6px 10px;
         }
         
         .top-prizes {
@@ -75,18 +75,18 @@
         .prize-box {
             flex: 1;
             border: 1px solid #333;
-            padding: 6px;
+            padding: 10px;
             margin: 0 3px;
         }
         
         .prize-label {
-            font-size: 9px;
+            font-size: 13px;
             color: #666;
-            margin-bottom: 3px;
+            margin-bottom: 5px;
         }
         
         .prize-number {
-            font-size: 16px;
+            font-size: 28px;
             font-weight: bold;
             color: #333;
         }
@@ -101,11 +101,11 @@
         }
         
         .prize-list h3 {
-            font-size: 10px;
+            font-size: 14px;
             background-color: #666;
             color: white;
-            padding: 3px 6px;
-            margin: 0 0 6px 0;
+            padding: 5px 8px;
+            margin: 0 0 8px 0;
         }
         
         .prize-grid {
@@ -116,22 +116,22 @@
         
         .prize-item {
             border: 1px solid #ddd;
-            padding: 3px;
+            padding: 5px;
             text-align: center;
-            font-size: 10px;
+            font-size: 14px;
             font-weight: bold;
         }
         
         .witnesses-section {
-            margin-top: 15px;
+            margin-top: 20px;
         }
         
         .witnesses-section h2 {
-            font-size: 16px;
+            font-size: 18px;
             background-color: #333;
             color: white;
-            padding: 5px 10px;
-            margin: 0 0 10px 0;
+            padding: 6px 12px;
+            margin: 0 0 12px 0;
         }
         
         .witnesses-grid {
@@ -143,7 +143,7 @@
         
         .witness-card {
             border: 2px solid #333;
-            padding: 10px;
+            padding: 20px;
             width: calc(33.333% - 6px);
             box-sizing: border-box;
             page-break-inside: avoid;
@@ -152,48 +152,48 @@
         .witness-number {
             background-color: #333;
             color: white;
-            padding: 2px 8px;
-            margin-bottom: 8px;
+            padding: 4px 10px;
+            margin-bottom: 10px;
             font-weight: bold;
-            font-size: 10px;
+            font-size: 14px;
             display: inline-block;
         }
         
         .manager-number {
             background-color: #666;
             color: white;
-            padding: 2px 8px;
-            margin-bottom: 8px;
+            padding: 4px 10px;
+            margin-bottom: 10px;
             font-weight: bold;
-            font-size: 10px;
+            font-size: 14px;
             display: inline-block;
         }
         
         .witness-info p {
-            margin: 4px 0;
-            font-size: 10px;
+            margin: 6px 0;
+            font-size: 14px;
         }
         
         .witness-info strong {
             display: inline-block;
-            width: 35px;
-            font-size: 9px;
+            width: 40px;
+            font-size: 13px;
         }
         
         .signature-area {
-            margin-top: 15px;
-            padding-top: 8px;
+            margin-top: 25px;
+            padding-top: 12px;
             border-top: 1px solid #ddd;
         }
         
         .signature-line {
             border-bottom: 1px solid #333;
-            margin-top: 25px;
-            margin-bottom: 3px;
+            margin-top: 50px;
+            margin-bottom: 6px;
         }
         
         .signature-label {
-            font-size: 8px;
+            font-size: 11px;
             color: #666;
         }
         
@@ -205,7 +205,7 @@
         
         .manager-card {
             border: 2px solid #666;
-            padding: 10px;
+            padding: 20px;
             width: calc(50% - 4px);
             box-sizing: border-box;
             page-break-inside: avoid;
@@ -231,12 +231,12 @@
         }
         
         .footer {
-            margin-top: 15px;
+            margin-top: 25px;
             text-align: center;
-            font-size: 9px;
+            font-size: 12px;
             color: #666;
             border-top: 1px solid #ddd;
-            padding-top: 10px;
+            padding-top: 12px;
         }
     </style>
 </head>
@@ -306,8 +306,7 @@
     
     <!-- Witnesses Section -->
     <div class="witnesses-section">
-        <h2>📝 Witness Verification</h2>
-        
+
         <div class="witnesses-grid">
             @foreach($witnesses as $index => $witness)
             <div class="witness-card">
@@ -316,7 +315,7 @@
                 <div class="witness-info">
                     <p><strong>Name:</strong> {{ $witness->name }}</p>
                     <p><strong>IC:</strong> {{ $witness->formatted_ic }}</p>
-                    <p><strong>Phone:</strong> {{ $witness->phone ?? 'N/A' }}</p>
+                    <!--<p><strong>Phone:</strong> {{ $witness->phone ?? 'N/A' }}</p>-->
                 </div>
                 
                 <div class="signature-area">
@@ -328,16 +327,15 @@
         </div>
         
         <!-- Verify Managers Section -->
-        <h2 style="margin-top: 10px;">✅ Verification Approval</h2>
-        
+
         <div class="managers-grid">
             <div class="manager-card">
-                <div class="manager-number">VERIFY MANAGER 1</div>
+                <div class="manager-number">Recorded By</div>
                 
                 <div class="witness-info">
-                    <p><strong>Name:</strong> ___________________________</p>
-                    <p><strong>Position:</strong> Verification Manager</p>
-                    <p><strong>Company:</strong> Bet 4D Management</p>
+                    <p><strong>Name:</strong> WENDA WONG LI LING</p>
+                    <p><strong>IC:</strong>850830-12-5314</p>
+
                 </div>
                 
                 <div class="signature-area">
@@ -347,12 +345,12 @@
             </div>
             
             <div class="manager-card">
-                <div class="manager-number">VERIFY MANAGER 2</div>
+                <div class="manager-number">Certified By</div>
                 
                 <div class="witness-info">
-                    <p><strong>Name:</strong> ___________________________</p>
-                    <p><strong>Position:</strong> Verification Manager</p>
-                    <p><strong>Company:</strong> Bet 4D Management</p>
+                    <p><strong>Name:</strong> ROSALYN DUMALIN</p>
+                    <p><strong>IC:</strong>750316-12-5874</p>
+
                 </div>
                 
                 <div class="signature-area">
@@ -362,9 +360,6 @@
             </div>
         </div>
     </div>
-    
-    <div class="footer">
-        <p>This is an official witness verification document for Draw {{ $currentDraw->full_draw_no }}</p>
-    </div>
+
 </body>
 </html>
