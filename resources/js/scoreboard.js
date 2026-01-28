@@ -89,9 +89,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Update special prizes (3 columns: 5-4-4 distribution)
+            const specialLeft = document.getElementById('sb-special-left');
+            specialLeft.innerHTML = '';
+            const specialMiddle = document.getElementById('sb-special-middle');
+            specialMiddle.innerHTML = '';
+            const specialRight = document.getElementById('sb-special-right');
+            specialRight.innerHTML = '';
             if (Array.isArray(data.special)) {
                 // Left column (1-5)
-                const specialLeft = document.getElementById('sb-special-left');
                 if (specialLeft) {
                     specialLeft.innerHTML = '';
                     for (let i = 0; i < 5 && i < data.special.length; i++) {
@@ -102,9 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         specialLeft.appendChild(div);
                     }
                 }
-                
+
                 // Middle column (6-9)
-                const specialMiddle = document.getElementById('sb-special-middle');
                 if (specialMiddle) {
                     specialMiddle.innerHTML = '';
                     for (let i = 5; i < 9 && i < data.special.length; i++) {
@@ -117,7 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 
                 // Right column (10-13)
-                const specialRight = document.getElementById('sb-special-right');
                 if (specialRight) {
                     specialRight.innerHTML = '';
                     for (let i = 9; i < 13 && i < data.special.length; i++) {
@@ -131,6 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Update consolation prizes (inherits 3.5rem font size from CSS)
+            consolationUl.innerHTML = '';
             if (Array.isArray(data.consolation) && consolationUl) {
                 consolationUl.innerHTML = '';
                 data.consolation.forEach(num => {
@@ -168,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 marqueeEl.textContent = message;
                 console.log('Marquee updated:', message);
             }
-            return;
+            // return;
         }
         
         // Handle full scoreboard updates
