@@ -45,6 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const jackpot2El = document.getElementById('sb-jackpot2');
             const consolationUl = document.getElementById('sb-consolation');
 
+            // Check if draw number has changed - if so, reload page to get fresh data
+            if (drawEl && data.draw_no && drawEl.textContent !== data.draw_no && drawEl.textContent !== '-|-') {
+                console.log('Draw number changed from', drawEl.textContent, 'to', data.draw_no, '- reloading page');
+                window.location.reload();
+                return true;
+            }
+
             if (drawEl && data.draw_no) drawEl.textContent = data.draw_no;
             if (dateEl && data.date) dateEl.textContent = data.date;
             if (firstEl && data.first) firstEl.textContent = data.first;
@@ -150,8 +157,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const channel = window.Echo.channel('scoreboard');
     
     channel.listen('.ScoreboardUpdated', (event) => {
-        // Handle marquee-only updates
-        if (event?.payload?.marquee) {
+        console.log('ScoreboardUpdated event received:', event);
+        
+        // Check if this is a full scoreboard update (has stc4d data)
+        if (event?.payload?.stc4d) {
+            const data = event.payload.stc4d;
+            applyScoreboard(data);
+            console.log('Full scoreboard updated with data:', data);
+            return;
+        }
+        
+        // Handle marquee-only updates (no stc4d data)
+        if (event?.payload?.marquee && !event?.payload?.stc4d) {
             const marqueeEl = document.getElementById('sb-marquee');
             if (marqueeEl) {
                 let message = event.payload.marquee.message;
@@ -166,18 +183,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 message = message.replace(/%jackpot2%/g, `${jp2Formatted}`);
                 
                 marqueeEl.textContent = message;
-                console.log('Marquee updated:', message);
+                console.log('Marquee-only updated:', message);
             }
             return;
         }
         
-        // Handle full scoreboard updates
-        const data = event?.payload?.stc4d ?? null;
-        if (!data) {
-            console.error('No data in event payload', event);
-            return;
-        }
-        applyScoreboard(data);
+        console.error('No valid data in event payload', event);
     });
 
     if (debug) {

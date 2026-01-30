@@ -61,6 +61,20 @@
 
             <li>
                 <div class="iocn-link">
+                <a href="{{ route('admin.managers.index') }}" class="arrow">
+                    <i class='fa fa-user-circle' ></i>
+                    <span class="link_name">Manager</span>
+                </a>
+                <i class='fa fa-chevron-down arrow' style="font-size:12px"></i>
+                </div>
+                <ul class="sub-menu">
+                    <li><a href="{{ route('admin.managers.index') }}">Manager List</a></li>
+                    <li><a href="{{ route('admin.managers.create') }}">Create Manager</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <div class="iocn-link">
                 <a href="{{ route('admin.reports.tickets.index') }}" class="arrow">
                     <i class='fa fa-file-text' ></i>
                     <span class="link_name">Reports</span>

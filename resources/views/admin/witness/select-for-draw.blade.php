@@ -85,6 +85,37 @@
                         @csrf
                         <input type="hidden" name="draw_id" value="{{ $currentDraw->id }}">
                         
+                        <!-- Manager Selection Section -->
+                        <div class="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <h4 class="text-base font-semibold mb-4 text-gray-800">Select Recorder & Certifier</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="recorded_by_id" class="block mb-2 text-sm font-medium text-gray-900">Recorded By <span class="text-red-600">*</span></label>
+                                    <select id="recorded_by_id" name="recorded_by_id" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                                        <option value="">Select Recorder</option>
+                                        @foreach($recorders as $recorder)
+                                            <option value="{{ $recorder->id }}" {{ old('recorded_by_id', $drawManager?->recorded_by_id) == $recorder->id ? 'selected' : '' }}>
+                                                {{ $recorder->name }} ({{ $recorder->formatted_ic }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label for="certified_by_id" class="block mb-2 text-sm font-medium text-gray-900">Certified By <span class="text-red-600">*</span></label>
+                                    <select id="certified_by_id" name="certified_by_id" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                                        <option value="">Select Certifier</option>
+                                        @foreach($certifiers as $certifier)
+                                            <option value="{{ $certifier->id }}" {{ old('certified_by_id', $drawManager?->certified_by_id) == $certifier->id ? 'selected' : '' }}>
+                                                {{ $certifier->name }} ({{ $certifier->formatted_ic }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">💡 To add new managers, go to Manager menu</p>
+                        </div>
+                        
                         <div class="mb-4">
                             <p class="text-sm text-gray-600 mb-2">Select witnesses to participate in this draw. You can select multiple witnesses.</p>
                         </div>

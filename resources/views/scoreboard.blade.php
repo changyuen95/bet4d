@@ -44,12 +44,16 @@
         color: #fff;
         letter-spacing: 4px;
     }
+    .score-board-top h1 {
+        font-weight: 900;
+        margin: 0;
+    }
     .marquee-container {
         background: linear-gradient(to right, #ffa500, #ffcc00);
         padding: 1rem 0;
         border-radius: 0 0 10px 10px;
         overflow: hidden;
-        font-size: 2rem;
+        font-size: 2.5rem;
         font-weight: bold;
         color: #000;
     }
@@ -98,6 +102,7 @@
         font-weight: bold;
         width: 30%;
         text-align: left;
+        color: #FFD700;
     }
     .prize-number {
         font-size: 4rem;
@@ -116,6 +121,7 @@
         font-size: 2rem;
         font-weight: bold;
         margin-bottom: 1rem;
+        color: #FFD700;
     }
     .number-list {
         display: grid;
@@ -132,9 +138,12 @@
         padding: 0.2rem 0.5rem;
         gap: 0.8rem;
     }
+    .number-item > span:not(.number-index) {
+        color: #fff;
+    }
     .number-index {
         font-size: 1.3rem;
-        color: rgba(255,255,255,0.6);
+        color: #000;
         text-align: right;
         min-width: 1.5rem;
     }

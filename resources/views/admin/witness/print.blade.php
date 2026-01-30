@@ -333,9 +333,13 @@
                 <div class="manager-number">Recorded By</div>
                 
                 <div class="witness-info">
-                    <p><strong>Name:</strong> WENDA WONG LI LING</p>
-                    <p><strong>IC:</strong>850830-12-5314</p>
-
+                    @if($drawManager && $drawManager->recordedBy)
+                        <p><strong>Name:</strong> {{ $drawManager->recordedBy->name }}</p>
+                        <p><strong>IC:</strong> {{ $drawManager->recordedBy->formatted_ic }}</p>
+                    @else
+                        <p><strong>Name:</strong> -</p>
+                        <p><strong>IC:</strong> -</p>
+                    @endif
                 </div>
                 
                 <div class="signature-area">
@@ -348,9 +352,13 @@
                 <div class="manager-number">Certified By</div>
                 
                 <div class="witness-info">
-                    <p><strong>Name:</strong> ROSALYN DUMALIN</p>
-                    <p><strong>IC:</strong>750316-12-5874</p>
-
+                    @if($drawManager && $drawManager->certifiedBy)
+                        <p><strong>Name:</strong> {{ $drawManager->certifiedBy->name }}</p>
+                        <p><strong>IC:</strong> {{ $drawManager->certifiedBy->formatted_ic }}</p>
+                    @else
+                        <p><strong>Name:</strong> -</p>
+                        <p><strong>IC:</strong> -</p>
+                    @endif
                 </div>
                 
                 <div class="signature-area">

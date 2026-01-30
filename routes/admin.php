@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\TicketSalesReportController;
 use App\Http\Controllers\Admin\TopupReportController;
 use App\Http\Controllers\Admin\TicketPrintingController;
 use App\Http\Controllers\Admin\WitnessController; 
+use App\Http\Controllers\Admin\ManagerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\Auth\LoginController;
@@ -119,6 +120,7 @@ Route::get('/_debug/db', function () {
             Route::get('print', [WitnessController::class, 'printWitnessForm'])->name('.print');
         });
         Route::resource("witnesses", WitnessController::class);
+        Route::resource("managers", ManagerController::class);
         Route::post('sign-ticket', [TicketPrintingController::class, 'sign'])->name('ticket.sign');
 
         Route::get('ticket_printing/{id}/print', [TicketPrintingController::class, 'print'])->name('ticket_printing.print');

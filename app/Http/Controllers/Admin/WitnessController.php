@@ -7,6 +7,8 @@ use App\Models\Witness;
 use App\Models\Draw;
 use App\Models\DrawWitness;
 use App\Models\DrawResult;
+use App\Models\Manager;
+use App\Models\DrawManager;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -197,7 +199,14 @@ class WitnessController extends Controller
         // Get all witnesses for selection
         $witnesses = Witness::orderBy('name', 'asc')->get();
 
-        return view('admin.witness.select-for-draw', compact('currentDraw', 'selectedWitnesses', 'witnesses'));
+        // Get managers for recorder and certifier
+        $recorders = Manager::recorders()->orderBy('name', 'asc')->get();
+        $certifiers = Manager::certifiers()->orderBy('name', 'asc')->get();
+
+        // Get existing draw manager selection
+        $drawManager = DrawManager::where('draw_id', $currentDraw->id)->first();
+
+        return view('admin.witness.select-for-draw', compact('currentDraw', 'selectedWitnesses', 'witnesses', 'recorders', 'certifiers', 'drawManager'));
     }
 
     /**
@@ -211,6 +220,8 @@ class WitnessController extends Controller
             'witness_ids.*' => 'exists:witnesses,id',
             'positions' => 'required|array',
             'positions.*' => 'required|integer|min:1',
+            'recorded_by_id' => 'required|exists:managers,id',
+            'certified_by_id' => 'required|exists:managers,id',
         ]);
 
         if ($validator->fails()) {
@@ -236,9 +247,18 @@ class WitnessController extends Controller
                 ]);
             }
 
+            // Update or create draw manager
+            DrawManager::updateOrCreate(
+                ['draw_id' => $draw->id],
+                [
+                    'recorded_by_id' => $request->recorded_by_id,
+                    'certified_by_id' => $request->certified_by_id,
+                ]
+            );
+
             DB::commit();
 
-            Session::flash('success', 'Witnesses selected successfully!');
+            Session::flash('success', 'Witnesses and managers selected successfully!');
             return redirect()->route('admin.witnesses.select-for-draw');
 
         } catch (Exception $e) {
@@ -279,6 +299,11 @@ class WitnessController extends Controller
             'consolation' => $currentDraw->results()->where('type', DrawResult::TYPE['consolation'])->orderBy('position')->get(),
         ];
 
-        return view('admin.witness.print', compact('currentDraw', 'witnesses', 'results'));
+        // Get draw managers (recorder and certifier)
+        $drawManager = DrawManager::with(['recordedBy', 'certifiedBy'])
+            ->where('draw_id', $currentDraw->id)
+            ->first();
+
+        return view('admin.witness.print', compact('currentDraw', 'witnesses', 'results', 'drawManager'));
     }
 }
