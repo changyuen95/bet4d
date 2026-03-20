@@ -8,6 +8,8 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/js/scoreboard.js',
+                'resources/css/website.css',
+                'resources/js/website.js',
             ],
             refresh: true,
         }),

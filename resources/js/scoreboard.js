@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const jp2 = data.jackpot2;
                 const jp1Formatted = jp1 ? new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(jp1) : '-';
                 const jp2Formatted = jp2 ? new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(jp2) : '-';
-                marqueeEl.textContent = `Welcome to STC 4D Lottery • Jackpot 1 : RM${jp1Formatted} • Jackpot 2 : RM${jp2Formatted} • Next Special draw on 10/2/2026`;
+                marqueeEl.textContent = `Welcome to STC 4D Lottery • Jackpot 1 : RM${jp1Formatted} • Jackpot 2 : RM${jp2Formatted} • Next Special draw on 07/4/2026`;
             }
 
             // Update jackpot combinations

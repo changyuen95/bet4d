@@ -1,0 +1,186 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   Website Custom Styles - STC 4D
+   ========================================================================== */
+
+:root {
+    --font-heading: 'Rubik', sans-serif;
+    --font-body: 'Inter', sans-serif;
+}
+
+/* ==========================================================================
+   Casino / Gold Gradient Effects
+   ========================================================================== */
+.gradient-gold-text {
+    background: linear-gradient(to bottom, #FFF8DC 0%, #FFD700 20%, #DAA520 50%, #FFD700 80%, #FFF8DC 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.gradient-green {
+    background: linear-gradient(135deg, #028a36 0%, #03c050 100%);
+}
+
+.casino-border {
+    position: relative;
+    background: linear-gradient(180deg, #0a1a12 0%, #050505 100%);
+    border: 1px solid #DAA520;
+    box-shadow: 0 0 30px rgba(2, 138, 54, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.8);
+}
+
+.casino-border::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 26px;
+    padding: 2px;
+    background: linear-gradient(45deg, #FFD700, #028a36, #FFD700);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.5;
+}
+
+.jackpot-badge {
+    background: linear-gradient(90deg, #b91c1c 0%, #dc2626 50%, #b91c1c 100%);
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.5);
+    border: 1px solid #fca5a5;
+}
+
+/* ==========================================================================
+   Navigation
+   ========================================================================== */
+.nav-link {
+    position: relative;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(135deg, #028a36, #03c050);
+    border-radius: 2px;
+    transform: scaleX(0);
+    transition: transform 0.2s;
+}
+
+.nav-link:hover::after {
+    transform: scaleX(1);
+}
+
+.nav-link:hover {
+    color: #03c050 !important;
+}
+
+/* Dropdown */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(10, 10, 21, 0.98);
+    border: 1px solid rgba(2, 138, 54, 0.2);
+    border-radius: 12px;
+    padding: 8px;
+    min-width: 180px;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+}
+
+.dropdown-parent:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 8px 14px;
+    color: #9ca3af;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    transition: all 0.15s;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.dropdown-item:hover {
+    background: rgba(2, 138, 54, 0.12);
+    color: #03c050;
+}
+
+/* ==========================================================================
+   Result Number Boxes
+   ========================================================================== */
+.special-num {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 8px 10px;
+    text-align: center;
+    font-weight: 700;
+    color: #e5e7eb;
+    font-size: 1.05rem;
+    letter-spacing: 2px;
+}
+
+.consolation-num {
+    background: rgba(2, 138, 54, 0.06);
+    border: 1px solid rgba(2, 138, 54, 0.15);
+    border-radius: 8px;
+    padding: 8px 10px;
+    text-align: center;
+    font-weight: 700;
+    color: #e5e7eb;
+    font-size: 1.05rem;
+    letter-spacing: 2px;
+}
+
+.jackpot-combo {
+    background: rgba(2, 138, 54, 0.06);
+    border: 1px solid rgba(2, 138, 54, 0.18);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-weight: 700;
+    color: #fff;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    transition: background 0.2s;
+}
+
+.jackpot-combo:hover {
+    background: rgba(2, 138, 54, 0.15);
+}
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+@keyframes shine {
+    0% { background-position: 200% center; }
+    100% { background-position: -200% center; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-gold {
+    0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+    50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.6); }
+}
+
+/* ==========================================================================
+   Responsive helpers
+   ========================================================================== */
+@media (min-width: 1024px) {
+    #desktop-nav { display: flex !important; }
+    #nav-actions-desktop { display: flex !important; }
+    #hamburger-btn { display: none !important; }
+}

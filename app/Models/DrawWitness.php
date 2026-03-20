@@ -12,6 +12,7 @@ class DrawWitness extends Model
     protected $fillable = [
         'draw_id',
         'witness_id',
+        'position',
         'selected_at',
         'has_signed',
         'signed_at',

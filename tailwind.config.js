@@ -13,6 +13,15 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                heading: ['Rubik', 'sans-serif'],
+                body: ['Inter', 'sans-serif'],
+            },
+            colors: {
+                green: {
+                    primary: '#028a36',
+                    light: '#03a843',
+                    dark: '#016828',
+                },
             },
         },
     },
